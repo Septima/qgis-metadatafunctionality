@@ -26,7 +26,7 @@ from qgis.core import QgsMessageLog
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
-from metadata_functionality_dialog import MetadataFunctionalityDialog
+from metadata_functionality_dialog import MetadataFunctionalityDialog, MetadataFunctionalitySettingsDialog
 import os.path
 
 # Import and override postgis create table
@@ -118,10 +118,12 @@ class MetadataFunctionality:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = MetadataFunctionalityDialog()
+        self.settings_dlg = MetadataFunctionalitySettingsDialog()
 
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&MetadataFunctionality')
+
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'MetadataFunctionality')
         self.toolbar.setObjectName(u'MetadataFunctionality')
@@ -221,8 +223,15 @@ class MetadataFunctionality:
         icon_path = ':/plugins/MetadataFunctionality/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Metadata'),
+            text=self.tr(u'Metadata 1'),
             callback=self.run,
+            parent=self.iface.mainWindow())
+
+        icon_path2 = ':/plugins/MetadataFunctionality/icon.png'
+        self.add_action(
+            icon_path2,
+            text=self.tr(u'Metadata 2'),
+            callback=self.settings_run,
             parent=self.iface.mainWindow())
 
 
@@ -243,6 +252,18 @@ class MetadataFunctionality:
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
+        # See if OK was pressed
+        if result:
+            # Do something useful here - delete the line containing pass and
+            # substitute with your code.
+            pass
+
+    def settings_run(self):
+        """Run method that performs all the real work"""
+        # show the dialog
+        self.settings_dlg.show()
+        # Run the dialog event loop
+        result = self.settings_dlg.exec_()
         # See if OK was pressed
         if result:
             # Do something useful here - delete the line containing pass and
