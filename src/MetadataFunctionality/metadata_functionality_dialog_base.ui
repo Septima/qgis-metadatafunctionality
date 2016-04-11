@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>492</width>
-    <height>326</height>
+    <width>772</width>
+    <height>787</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>270</y>
+     <x>420</x>
+     <y>740</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -33,8 +33,8 @@
    <property name="geometry">
     <rect>
      <x>256</x>
-     <y>40</y>
-     <width>200</width>
+     <y>320</y>
+     <width>501</width>
      <height>21</height>
     </rect>
    </property>
@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>40</y>
+     <y>320</y>
      <width>59</width>
      <height>16</height>
     </rect>
@@ -62,7 +62,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>70</y>
+     <y>350</y>
      <width>81</width>
      <height>16</height>
     </rect>
@@ -75,8 +75,8 @@
    <property name="geometry">
     <rect>
      <x>256</x>
-     <y>70</y>
-     <width>200</width>
+     <y>350</y>
+     <width>501</width>
      <height>21</height>
     </rect>
    </property>
@@ -85,7 +85,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>380</y>
      <width>81</width>
      <height>16</height>
     </rect>
@@ -98,8 +98,8 @@
    <property name="geometry">
     <rect>
      <x>256</x>
-     <y>100</y>
-     <width>161</width>
+     <y>380</y>
+     <width>461</width>
      <height>21</height>
     </rect>
    </property>
@@ -108,7 +108,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>130</y>
+     <y>410</y>
      <width>131</width>
      <height>16</height>
     </rect>
@@ -117,24 +117,11 @@
     <string>Dato (oprettelse):</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>160</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Rette dato:</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>190</y>
+     <y>440</y>
      <width>191</width>
      <height>16</height>
     </rect>
@@ -147,7 +134,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>220</y>
+     <y>470</y>
      <width>221</width>
      <height>16</height>
     </rect>
@@ -156,21 +143,11 @@
     <string>Hvilke projekter/Wor filen indgår:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="retteDatoEdit">
-   <property name="geometry">
-    <rect>
-     <x>256</x>
-     <y>160</y>
-     <width>200</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QToolButton" name="journalnrLookupBtn">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>100</y>
+     <x>730</x>
+     <y>380</y>
      <width>26</width>
      <height>21</height>
     </rect>
@@ -183,8 +160,8 @@
    <property name="geometry">
     <rect>
      <x>256</x>
-     <y>190</y>
-     <width>200</width>
+     <y>440</y>
+     <width>501</width>
      <height>21</height>
     </rect>
    </property>
@@ -193,8 +170,8 @@
    <property name="geometry">
     <rect>
      <x>256</x>
-     <y>220</y>
-     <width>200</width>
+     <y>470</y>
+     <width>501</width>
      <height>21</height>
     </rect>
    </property>
@@ -202,11 +179,48 @@
   <widget class="QDateEdit" name="datoEdit">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>130</y>
+     <x>650</x>
+     <y>410</y>
      <width>110</width>
      <height>24</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>540</y>
+     <width>741</width>
+     <height>192</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDockWidget" name="treeDock">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>731</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>500</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tilføj</string>
    </property>
   </widget>
  </widget>

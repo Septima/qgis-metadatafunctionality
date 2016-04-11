@@ -2,4 +2,7 @@
     <qresource prefix="/plugins/MetadataFunctionality" >
         <file>icon.png</file>
     </qresource>
+    <qresource prefix="/plugins/MetadataFunctionality" >
+        <file>metaman.png</file>
+    </qresource>
 </RCC>

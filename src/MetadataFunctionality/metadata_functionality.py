@@ -20,11 +20,14 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject
 from PyQt4.QtGui import QAction, QIcon, QDialog
 from qgis.core import QgsMessageLog
+from PyQt4.QtCore import SIGNAL
+
 # Initialize Qt resources from file resources.py
 import resources
+
 # Import the code for the dialog
 from metadata_functionality_dialog import MetadataFunctionalityDialog, MetadataFunctionalitySettingsDialog
 import os.path
@@ -33,6 +36,11 @@ import os.path
 from db_manager.db_plugins.postgis import connector
 from db_manager.dlg_import_vector import DlgImportVector
 
+# import inspect
+
+# import monkey_patcher
+
+# https://github.com/Oslandia/qgis-menu-builder/blob/master/menu_builder.py
 
 # TODO: Check that db_manager version is as expected (We are in potential trouble when db_manager gets updated)
 # ----------------------------------------------------------------
@@ -269,3 +277,15 @@ class MetadataFunctionality:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
+
+# https://github.com/qgis/QGIS/blob/master/src/app/qgsbrowserdockwidget.h
+# http://gis.stackexchange.com/questions/126903/in-qgis-is-there-a-keyboard-shortcut-to-open-close-the-layers-panel
+# http://gis.stackexchange.com/questions/174008/how-to-set-keyboard-shortcuts-for-layers-and-browser-panels-in-qgis-2-12-1-l/174020
+
+
+# def run():
+#     QgsMessageLog.logMessage("XXXXXXX")
+#
+# from qgis.gui import QgsBrowserTreeView
+#
+# QObject.connect(QgsBrowserTreeView(), SIGNAL("treeExpanded()"), run)
