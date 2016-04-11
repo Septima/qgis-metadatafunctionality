@@ -1,0 +1,111 @@
+ project
+General info
+
+Relation type:
+Table
+Owner:
+informal
+Pages:
+0
+Rows (estimation):
+0
+Rows (counted):
+0
+Privileges:
+select, insert, update, delete
+
+PostGIS
+
+Column:
+area
+Geometry:
+POLYGON
+Dimension:
+2
+Spatial ref:
+WGS 84 (4326)
+Extent:
+(unknown) (find out)
+
+Fields
+
+#
+Name
+Type
+Length
+Null
+Default
+1
+id
+int4
+4
+N
+nextval('project_id_seq'::regclass)
+2
+guid
+varchar
+
+Y
+
+3
+name
+varchar
+
+Y
+
+4
+manager
+varchar
+
+Y
+
+5
+email
+varchar
+
+Y
+
+6
+area
+geometry (Polygon,4326)
+
+Y
+
+
+Constraints
+
+Name
+Type
+Column(s)
+project_pkey
+Primary key
+id
+
+Indexes
+
+Name
+Column(s)
+ix_project_guid
+guid
+idx_project_area
+area
+
+Triggers
+
+Name
+Function
+Type
+Enabled
+RI_ConstraintTrigger_a_794348 (delete)
+RI_FKey_noaction_del
+After DELETE
+for each row
+Yes (disable)
+RI_ConstraintTrigger_a_794349 (delete)
+RI_FKey_noaction_upd
+After UPDATE
+for each row
+Yes (disable)
+
+Enable all triggers / Disable all triggers
+
