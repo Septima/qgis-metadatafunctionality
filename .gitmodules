@@ -1,0 +1,3 @@
+[submodule "src/MetadataFunctionality/qgissettingmanager"]
+	path = src/MetadataFunctionality/qgissettingmanager
+	url = https://github.com/Septima/qgissettingmanager.git
