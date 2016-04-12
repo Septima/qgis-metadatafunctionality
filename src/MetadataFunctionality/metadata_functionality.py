@@ -64,7 +64,7 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
     result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
-    QgsMessageLog.logMessage(str(result))
+    # QgsMessageLog.logMessage(str(result))
     showMetadataDialogue()
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
@@ -281,8 +281,6 @@ class MetadataFunctionality:
 # https://github.com/qgis/QGIS/blob/master/src/app/qgsbrowserdockwidget.h
 # http://gis.stackexchange.com/questions/126903/in-qgis-is-there-a-keyboard-shortcut-to-open-close-the-layers-panel
 # http://gis.stackexchange.com/questions/174008/how-to-set-keyboard-shortcuts-for-layers-and-browser-panels-in-qgis-2-12-1-l/174020
-
-
 # def run():
 #     QgsMessageLog.logMessage("XXXXXXX")
 #

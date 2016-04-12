@@ -39,8 +39,10 @@ def classFactory(iface):  # pylint: disable=invalid-name
 
 pluginName = "MetaMan"
 
-class QlrBrowserSettings(SettingManager):
+
+class MetadataFunctionalitySettings(SettingManager):
+
     def __init__(self):
         SettingManager.__init__(self, pluginName)
-        self.addSetting("tableName", "string", "global", "MetaManTable")
-        self.addSetting("dbSetting", "string", "global", "")
+        self.addSetting("table_name", "string", "global", "MetaMan")
+        self.addSetting("conn_info", "string", "global", "")

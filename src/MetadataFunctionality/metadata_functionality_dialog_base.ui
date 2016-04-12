@@ -30,6 +30,9 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="navnEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>256</x>
@@ -72,6 +75,9 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="beskrivelseEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>256</x>
@@ -95,6 +101,9 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="journalnrEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>256</x>
@@ -144,6 +153,9 @@
    </property>
   </widget>
   <widget class="QToolButton" name="journalnrLookupBtn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>730</x>
@@ -157,6 +169,9 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="ansvarligCenterMedarbejderEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>256</x>
@@ -167,6 +182,9 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="projekterWorEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>256</x>
@@ -176,17 +194,10 @@
     </rect>
    </property>
   </widget>
-  <widget class="QDateEdit" name="datoEdit">
-   <property name="geometry">
-    <rect>
-     <x>650</x>
-     <y>410</y>
-     <width>110</width>
-     <height>24</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QTableView" name="tableView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -194,6 +205,9 @@
      <width>741</width>
      <height>192</height>
     </rect>
+   </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
    </property>
   </widget>
   <widget class="QDockWidget" name="treeDock">
@@ -210,7 +224,10 @@
    </property>
    <widget class="QWidget" name="dockWidgetContents"/>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="saveRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>650</x>
@@ -220,7 +237,89 @@
     </rect>
    </property>
    <property name="text">
+    <string>Gem</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="addRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>500</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
     <string>Tilføj</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>500</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="Button">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>237</red>
+         <green>63</green>
+         <blue>133</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="Button">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>237</red>
+         <green>63</green>
+         <blue>133</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="Button">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>237</red>
+         <green>63</green>
+         <blue>133</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
+   </property>
+   <property name="text">
+    <string>Slet</string>
+   </property>
+  </widget>
+  <widget class="QDateTimeEdit" name="datoEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>613</x>
+     <y>410</y>
+     <width>141</width>
+     <height>24</height>
+    </rect>
    </property>
   </widget>
  </widget>
