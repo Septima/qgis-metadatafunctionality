@@ -45,4 +45,7 @@ class MetadataFunctionalitySettings(SettingManager):
     def __init__(self):
         SettingManager.__init__(self, pluginName)
         self.addSetting("table_name", "string", "global", "MetaMan")
+        self.addSetting("schema", "string", "global", "public")
         self.addSetting("conn_info", "string", "global", "")
+        self.addSetting("db_user", "string", "global", "")
+        self.addSetting("db_pwd", "string", "global", "")

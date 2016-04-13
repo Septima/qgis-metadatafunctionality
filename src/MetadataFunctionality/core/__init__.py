@@ -19,6 +19,9 @@ class MetaManDBTool(object):
         'name':
             { 'type': 'varchar',
               'label': 'Name'},
+        'beskrivelse':
+            {'type': 'varchar',
+             'label': 'Beskrivelse'},
         'db':
             { 'type': 'varchar'},
         'schema':{
@@ -218,7 +221,10 @@ class MetaManDBTool(object):
 
     def delete(self, d={}):
         """
-        Deletes from the table.
+        Deletes from the table given criteria as a dict.
+
+        d = {'blabla': 1} -> DELETE FROM foo where blabla = 1;
+
         :param d:
         :return:
         """
@@ -242,3 +248,40 @@ class MetaManDBTool(object):
             raise RuntimeError('Failed to delete data.')
         db.commit()
         db.close()
+
+    def validate_structure(self, db_conn, table):
+        """
+        Returns true if all field names are contained in the table.
+        Does not check the type of the fields. TODO: implement
+        :return:
+        """
+
+        fld_names = list(self.field_def)
+
+        s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % table
+
+        uri = QgsDataSourceURI(db_conn)
+
+        db = QtSql.QSqlDatabase.addDatabase('QPSQL')
+
+        db.setHostName(uri.host())
+        db.setPort(int(uri.port()))
+        db.setDatabaseName(uri.database())
+        db.setUserName(uri.username())
+        db.setPassword(uri.password())
+
+        db.open()
+
+        query = QtSql.QSqlQuery(db)
+        result = query.exec_(s)
+        if not result:
+            raise RuntimeError('Failed to select data.')
+        else:
+            while query.next():
+                f = query.value(0)
+                try:
+                    fld_names.remove(f)
+                except:
+                    return False
+
+            return len(fld_names) == 0

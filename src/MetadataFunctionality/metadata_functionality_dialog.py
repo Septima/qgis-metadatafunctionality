@@ -138,6 +138,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 if 'name' in list(results):
                     self.navnEdit.setText(results.get('name'))
 
+                if 'beskrivelse' in list(results):
+                    self.beskrivelseEdit.setText(results.get('beskrivelse'))
+
                 if 'timestamp' in list(results):
                     d = results.get('timestamp')
                     da = datetime.strptime(d,'%d/%m/%Y %H.%M')
@@ -170,6 +173,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         self.projekterWorEdit.setEnabled(True)
         self.ansvarligCenterMedarbejderEdit.setEnabled(True)
         self.tableView.setEnabled(True)
+        self.journalnrEdit.setEnabled(True)
+        self.beskrivelseEdit.setEnabled(True)
 
     def deactivate_fields(self):
         self.datoEdit.setEnabled(False)
@@ -180,6 +185,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         self.projekterWorEdit.setEnabled(False)
         self.ansvarligCenterMedarbejderEdit.setEnabled(False)
         self.tableView.setEnabled(False)
+        self.journalnrEdit.setEnabled(False)
+        self.beskrivelseEdit.setEnabled(True)
 
     def itemChanged(self, item):
         """
@@ -255,9 +262,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             current_database = self.tree.currentDatabase().publicUri().connectionInfo()
             self.db_tool.update(
                 {'table': table_name,
-                 'guid': str(uuid.uuid4()),
+                 'guid': self.currentlySelectedLine,
                  'db': current_database,
                  'name': self.navnEdit.text(),
+                 'beskrivelse': self.beskrivelseEdit.text(),
                  'timestamp': self.datoEdit.text(),
                  'journal_nr': self.journalnrEdit.text(),
                  'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
@@ -281,6 +289,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                  'guid': str(uuid.uuid4()),
                  'db': current_database,
                  'name': self.navnEdit.text(),
+                 'beskrivelse': self.beskrivelseEdit.text(),
                  'timestamp': self.datoEdit.text(),
                  'journal_nr': self.journalnrEdit.text(),
                  'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
@@ -317,9 +326,52 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS):
         self.tree = DBTree(self)
         self.treeDock.setWidget(self.tree)
 
-        self.createMetadataTableButton.clicked.connect(self.createDB)
+        self.connect(self.tree, SIGNAL("selectedItemChanged"), self.item_changed)
 
-    def createDB(self):
+        self.createMetadataTableButton.clicked.connect(self.create_db)
+        self.testConnectionButton.clicked.connect(self.test_connection)
+        self.table_structure_ok = False
+        self.current_item = None
+
+        self.databaseUserEdit.textChanged.connect(self.activate_test_button)
+
+        self.buttonBox.accepted.connect(self.save)
+
+    def save(self):
+        """
+        Saves the settings to Options | Advanced
+        :return:
+        """
+        self.settings.setValue('db_user', self.databaseUserEdit.text())
+        self.settings.setValue('db_pwd', self.databasePasswordEdit.text())
+        self.settings.setValue('schema',)
+
+    def item_changed(self, item):
+        self.current_item = item
+        if type(item) in [PGTable]:
+            db = self.tree.currentDatabase().publicUri().connectionInfo()
+            self.table_structure_ok = self.db_tool.validate_structure(db, item.name)
+            self.activate_test_button()
+
+    def activate_test_button(self):
+        """
+        Activates the test connection test button when
+        :return:
+        """
+        db_u = self.databaseUserEdit.text()
+        db_pwd = self.databasePasswordEdit.text()
+        self.testConnectionButton.setEnabled(db_u != '' and db_pwd != '' and type(self.current_item) == PGTable)
+
+
+    def test_connection(self):
+        """
+        :return:
+        """
+        QMessageBox.information(self, self.tr("Please!"), self.tr(str(self.current_item.schema_name)))
+        if self.table_structure_ok:
+            QMessageBox.information(self, self.tr("Please!"), self.tr("DB structure and connection OK."))
+
+    def create_db(self):
 
         current_database = self.tree.currentDatabase()
 

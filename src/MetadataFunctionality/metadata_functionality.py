@@ -130,11 +130,11 @@ class MetadataFunctionality:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&MetadataFunctionality')
+        self.menu = self.tr(u'&MetaMan')
 
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'MetadataFunctionality')
-        self.toolbar.setObjectName(u'MetadataFunctionality')
+        self.toolbar = self.iface.addToolBar(u'MetaMan')
+        self.toolbar.setObjectName(u'MetaMan')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -231,14 +231,15 @@ class MetadataFunctionality:
         icon_path = ':/plugins/MetadataFunctionality/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Metadata 1'),
+            text=self.tr(u'MetaMan Dialogue'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
         icon_path2 = ':/plugins/MetadataFunctionality/icon.png'
         self.add_action(
             icon_path2,
-            text=self.tr(u'Metadata 2'),
+            add_to_toolbar = False,
+            text=self.tr(u'MetaMan Settings'),
             callback=self.settings_run,
             parent=self.iface.mainWindow())
 

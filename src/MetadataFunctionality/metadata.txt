@@ -10,13 +10,39 @@
 name=MetadataFunctionality
 qgisMinimumVersion=2.13.0
 qgisMinimumVersion=2.14.0
-description=MetadataFunctionality
-about=Adds a little sugar to the DBManager.
+description=MetaMan
+about=Metadata Manager
 version=0.1
 author=Bernhard Snizek (Septima P/S)
 email=bernhard@septima.dk
 
-about=cool
+about=
+    <img src="http://www.septima.dk/skin1/img/logo_143x39.png" alt="Septima">
+    <p>MetaMan stores metadata info on any PostgreSQL table.</p>
+
+    In order to get started you have to create a table in one of your PostgreSQL databases.
+
+    <br/>
+    <i>
+    DROP TABLE IF EXISTS "metaman";
+    CREATE TABLE "metaman" (
+        "resp_center_off" varchar COLLATE "default",
+        "beskrivelse" varchar COLLATE "default",
+        "name" varchar COLLATE "default",
+        "timestamp" varchar COLLATE "default",
+        "proj_wor" varchar COLLATE "default",
+        "table" varchar COLLATE "default",
+        "journal_nr" varchar COLLATE "default",
+        "guid" varchar COLLATE "default",
+        "db" varchar COLLATE "default",
+        "schema" varchar COLLATE "default"
+    )
+    WITH (OIDS=FALSE);
+    ALTER TABLE "metaman" OWNER TO "metaman";
+    </i>
+
+    <br/>
+    Then configure MetaMan: navigate to the table, enter username and password and you are set to go.
 
 tracker=https://github.com/Septima/qgis-metadatafunctionality/issues
 repository=https://github.com/Septima/qgis-metadatafunctionality
