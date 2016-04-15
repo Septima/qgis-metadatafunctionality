@@ -43,7 +43,6 @@ class MetaManDBTool(object):
             'type': 'varchar'}
     }
 
-
     def __init__(self):
         """
         Constructor.
@@ -261,7 +260,6 @@ class MetaManDBTool(object):
         """
 
         fld_names = list(self.field_def)
-
         db = self.get_db()
 
         s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % self.get_table()

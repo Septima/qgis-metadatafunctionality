@@ -87,6 +87,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
     def exec_(self):
         if self.db_tool.validate_structure():
             super(MetadataFunctionalityDialog, self).exec_()
+            # self.datoEdit.setDateTime(datetime.now())
         else:
             QMessageBox.information(self, self.tr("Please!"), self.tr("Metadata table does not exist or wrong access rights."))
 
@@ -225,6 +226,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 if 'timestamp' in list(results):
                     d = results.get('timestamp')
                     da = datetime.strptime(d,'%d/%m/%Y %H.%M')
+                    print(da)
                     self.datoEdit.setDate(da)
 
                 if 'journal_nr' in list(results):
