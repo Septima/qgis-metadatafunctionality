@@ -22,7 +22,6 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-from PyQt4.QtCore import QSettings
 from qgissettingmanager import SettingManager
 
 # noinspection PyPep8Naming
@@ -32,20 +31,19 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    #
     from .metadata_functionality import MetadataFunctionality
     return MetadataFunctionality(iface)
 
-
 pluginName = "MetaMan"
-
 
 class MetadataFunctionalitySettings(SettingManager):
 
     def __init__(self):
         SettingManager.__init__(self, pluginName)
-        self.addSetting("table_name", "string", "global", "MetaMan")
+        self.addSetting("host", "string", "global", "")
+        self.addSetting("database", "string", "global", "")
+        self.addSetting("port", "string", "global", "")
         self.addSetting("schema", "string", "global", "public")
-        self.addSetting("conn_info", "string", "global", "")
-        self.addSetting("db_user", "string", "global", "")
-        self.addSetting("db_pwd", "string", "global", "")
+        self.addSetting("table", "string", "global", "metaman")
+        self.addSetting("username", "string", "global", "")
+        self.addSetting("password", "string", "global", "")
