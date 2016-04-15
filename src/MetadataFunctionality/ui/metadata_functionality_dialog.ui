@@ -86,19 +86,6 @@
     <string>Beskrivelse:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="beskrivelseEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>256</x>
-     <y>350</y>
-     <width>501</width>
-     <height>71</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
@@ -261,7 +248,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>430</x>
      <y>550</y>
      <width>113</width>
      <height>32</height>
@@ -281,6 +268,35 @@
      <y>460</y>
      <width>141</width>
      <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>550</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Slet</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="beskrivelseEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>256</x>
+     <y>350</y>
+     <width>501</width>
+     <height>71</height>
     </rect>
    </property>
   </widget>

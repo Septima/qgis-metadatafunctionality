@@ -2,7 +2,6 @@ import os
 
 from PyQt4 import QtGui, uic
 
-
 SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'metadata_functionality_dialog_settings_db_def.ui'))
 

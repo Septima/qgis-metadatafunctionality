@@ -21,18 +21,20 @@ about=
 
     <br/>
     <i>
-    DROP TABLE IF EXISTS "metaman";
     CREATE TABLE "metaman" (
-        "resp_center_off" varchar COLLATE "default",
-        "beskrivelse" varchar COLLATE "default",
-        "name" varchar COLLATE "default",
-        "timestamp" varchar COLLATE "default",
-        "proj_wor" varchar COLLATE "default",
-        "table" varchar COLLATE "default",
-        "journal_nr" varchar COLLATE "default",
-        "guid" varchar COLLATE "default",
-        "db" varchar COLLATE "default",
-        "schema" varchar COLLATE "default"
+        "resp_center_off" varchar,
+        "beskrivelse" varchar,
+        "name" varchar,
+        "timestamp" varchar,
+        "proj_wor" varchar,
+        "journal_nr" varchar,
+        "guid" varchar,
+        "host" varchar,
+        "db" varchar,
+        "port" int,
+        "schema" varchar,
+        "table" varchar,
+        "ts" timestamp without time zone default (now() at time zone 'utc')
     )
     WITH (OIDS=FALSE);
     ALTER TABLE "metaman" OWNER TO "metaman";

@@ -1,23 +1,14 @@
 import os
-import uuid
-from datetime import datetime
 
-#
 from PyQt4 import QtGui, uic
 from PyQt4.QtGui import QMessageBox, QTreeView
-from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject
 
-# TODO: Remove QgsMessageLog after debug phase.
-from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem
-from qgis.gui import QgsBrowserTreeView
-
-from db_manager.db_tree import DBTree
 from db_manager.db_plugins.postgis.plugin import PGVectorTable, PGTable
 
-from MetadataFunctionality import MetadataFunctionalitySettings
-from MetadataFunctionality.core import MetaManDBTool
-from MetadataFunctionality.qgissettingmanager.settingdialog import SettingDialog
-from MetadataFunctionality.ui.metadata_functionality_dialog_settings_db_def import \
+from .. import MetadataFunctionalitySettings
+from ..core import MetaManDBTool
+from ..qgissettingmanager.settingdialog import SettingDialog
+from ..ui.metadata_functionality_dialog_settings_db_def import \
     MetadataFunctionalitySettingsDBDefDialog
 
 SETTINGS_FORM_CLASS, _ = uic.loadUiType(os.path.join(

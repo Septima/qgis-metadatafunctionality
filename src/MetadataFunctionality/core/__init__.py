@@ -1,9 +1,6 @@
-from MetadataFunctionality import MetadataFunctionalitySettings
-from db_manager.db_plugins.connector import DBConnector
+from .. import MetadataFunctionalitySettings
 from qgis.core import QgsVectorLayer, QgsDataSourceURI
 from PyQt4 import QtSql
-
-from qgis.core import QgsMessageLog
 
 class MetaManDBTool(object):
     """
@@ -18,7 +15,7 @@ class MetaManDBTool(object):
             'type': 'varchar'},
         'name':
             { 'type': 'varchar',
-              'label': 'Name'},
+              'label': 'Navn'},
         'beskrivelse':
             {'type': 'varchar',
              'label': 'Beskrivelse'},
@@ -39,10 +36,10 @@ class MetaManDBTool(object):
             'label': 'Journal nr.',
             'type': 'varchar'},
         'resp_center_off': {
-            'label':'Center',
+            'label':'Center / Medarbejder',
             'type': 'varchar'},
         'proj_wor': {
-            'label': u'projekt / WOR',
+            'label': u'Projekt / WOR',
             'type': 'varchar'}
     }
 

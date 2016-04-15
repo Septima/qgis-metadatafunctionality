@@ -38,7 +38,6 @@ from db_manager.db_plugins.postgis import connector
 from db_manager.dlg_import_vector import DlgImportVector
 from db_manager.db_plugins.plugin import DBPlugin, Schema, Table
 from db_manager.db_tree import DBTree
-
 # import inspect
 
 # import monkey_patcher
@@ -68,20 +67,20 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
     result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
-    # QgsMessageLog.logMessage(str(result))
     showMetadataDialogue(table=table, uri=self.uri())
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
 
 # ----------------------------------------------------------------
-#   Monkey patch The import button of the DBManager
+#   Monkey patch the import button of the DBManager
 # ----------------------------------------------------------------
 if not getattr(connector.PostGisDBConnector, 'accept_original', None):
     DlgImportVector.accept_original = DlgImportVector.accept
 
 def new_accept(self):
-    showMetadataDialogue()
+    showMetadataDialogue(table=self.cboTable.currentText(), uri=self.db.uri())
     result = DlgImportVector.accept_original(self)
+    return result
 
 DlgImportVector.accept = new_accept
 

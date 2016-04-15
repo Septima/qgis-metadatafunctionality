@@ -33,8 +33,8 @@ from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject
 from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, QgsDataSourceURI
 from qgis.gui import QgsBrowserTreeView
 
-from MetadataFunctionality import MetadataFunctionalitySettings
-from MetadataFunctionality.core import MetaManDBTool
+from .. import MetadataFunctionalitySettings
+from ..core import MetaManDBTool
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'metadata_functionality_dialog.ui'))
@@ -79,13 +79,12 @@ class SelectedItemProxy(object):
         return self._uri
 
 
-
 class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
     field_def = []
     data_list = []
 
-    def __init__(self, parent=None, new_table=None, table=None, uri=None):
+    def __init__(self, parent=None, table=None, uri=None):
         """Constructor."""
         super(MetadataFunctionalityDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -93,6 +92,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+
+        if type(table) == tuple:
+            table = table[1]
 
         print("New table: " + str(table))
 
@@ -136,10 +138,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         QObject.connect(self.tree.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.selection_changed)
 
-        # self.deleteRecordButton.clicked.connect(self.delete_record)
-
         self.saveRecordButton.clicked.connect(self.save_record)
-        self.addRecordButton.clicked.connect(self.add_record)
+        self.deleteRecordButton.clicked.connect(self.delete_record)
+
+        # self.addRecordButton.clicked.connect(self.add_record)
 
         self.selected_item = None
         self.guids = []
@@ -149,9 +151,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.treeDock.setEnabled(False)
             self.selected_item = SelectedItemProxy(table, uri)
             self.update_grid()
+            self.tableView.selectRow(0)
             self.activate_fields()
-
-    # Accessors for the currently selected table.
 
     def get_selected_uri(self):
         """
@@ -161,28 +162,29 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         return self.selected_item.uri()
 
     def get_selected_db(self):
-        print("db: " + QgsDataSourceURI(self.selected_item.uri()).database())
         return QgsDataSourceURI(self.selected_item.uri()).database()
 
     def get_selected_port(self):
-        print("port: " + QgsDataSourceURI(self.selected_item.uri()).port())
         return QgsDataSourceURI(self.selected_item.uri()).port()
+
+    def get_selected_host(self):
+        return QgsDataSourceURI(self.selected_item.uri()).host()
 
     def get_selected_schema(self):
         """
         :return:
         """
-        print("port: " + QgsDataSourceURI(self.selected_item.uri()).schema())
-        return QgsDataSourceURI(self.selected_item.uri()).schema()
+        s = QgsDataSourceURI(self.selected_item.uri()).schema()
+        if s==None or s=='':
+            return 'public'
+        else:
+            return s
 
     def get_selected_table(self):
         """
         :return:
         """
-        print("port: " + QgsDataSourceURI(self.selected_item.uri()).table())
         return self.selected_item.layerName()
-
-    # ====== ====== ====== ======
 
     def save_record(self):
         if self.currentlySelectedLine is None:
@@ -229,6 +231,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                     self.projekterWorEdit.setText(results.get('proj_wor'))
 
     def delete_record(self):
+        """
+        Delete a record given its GUID.
+        Empties the fields.
+        """
         selected_rows = self.tableView.selectionModel().selectedRows()
         for row in selected_rows:
             guid = self.guids[row.row()]
@@ -236,30 +242,40 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.update_grid()
             if self.has_table_data:
                 self.tableView.selectRow(0)
+        self.empty_fields()
+        self.deleteRecordButton.setEnabled(False)
 
     def activate_fields(self):
-        self.addRecordButton.setEnabled(True)
-        # self.deleteRecordButton.setEnabled(True)
+        """
+        Activates all fields and buttons.
+        :return:
+        """
+        # self.addRecordButton.setEnabled(True)
         self.saveRecordButton.setEnabled(True)
+        self.deleteRecordButton.setEnabled(True)
         self.datoEdit.setEnabled(True)
         self.navnEdit.setEnabled(True)
         self.projekterWorEdit.setEnabled(True)
         self.ansvarligCenterMedarbejderEdit.setEnabled(True)
-        self.tableView.setEnabled(True)
+        # self.tableView.setEnabled(True)
         self.journalnrEdit.setEnabled(True)
         self.beskrivelseEdit.setEnabled(True)
 
     def deactivate_fields(self):
+        """
+        Deactivates all fields and buttons.
+        :return:
+        """
         self.datoEdit.setEnabled(False)
-        # self.deleteRecordButton.setEnabled(False)
         self.addRecordButton.setEnabled(False)
+        self.deleteRecordButton.setEnabled(False)
         self.saveRecordButton.setEnabled(False)
         self.navnEdit.setEnabled(False)
         self.projekterWorEdit.setEnabled(False)
         self.ansvarligCenterMedarbejderEdit.setEnabled(False)
         self.tableView.setEnabled(False)
         self.journalnrEdit.setEnabled(False)
-        self.beskrivelseEdit.setEnabled(True)
+        self.beskrivelseEdit.setEnabled(False)
 
     def selection_changed(self, newSelection, oldSelection):
         """
@@ -268,37 +284,34 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         :param oldSelection:
         :return:
         """
-
         self.empty_fields()
-
         selected = newSelection.indexes()
-
         if len(selected) > 0:
 
             b = self.model.dataItem(selected[0])
 
             if type(b) == QgsLayerItem:
-
                 self.selected_item = b
-
                 self.update_grid()
-
                 self.activate_fields()
-
                 if self.has_table_data:
-
                     self.tableView.selectRow(0)
                 else:
                     self.tableView.setModel(None)
+            else:
+                self.deactivate_fields()
 
     def empty_fields(self):
+        """
+        Empties all fields.
+        :return:
+        """
         self.navnEdit.setText('')
         self.projekterWorEdit.setText('')
         self.ansvarligCenterMedarbejderEdit.setText('')
         self.navnEdit.setText('')
         self.journalnrEdit.setText('')
         self.beskrivelseEdit.setText('')
-
 
     def update_grid(self):
         """
@@ -358,7 +371,6 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
     def show(self):
         super(MetadataFunctionalityDialog, self).show()
-        self.db_tool.connect()
 
     def update_record(self):
         """
@@ -370,16 +382,18 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         port = self.get_selected_port()
         schema = self.get_selected_schema()
         table = self.get_selected_table()
+        host = self.get_selected_host()
 
         self.db_tool.update(
             {
                 'db': db,
                 'port': port,
+                'host': host,
                 'schema': schema,
                 'table': table,
                 'guid': self.currentlySelectedLine,
                 'name': self.navnEdit.text(),
-                'beskrivelse': self.beskrivelseEdit.text(),
+                'beskrivelse': self.beskrivelseEdit.toPlainText(),
                 'timestamp': self.datoEdit.text(),
                 'journal_nr': self.journalnrEdit.text(),
                 'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
@@ -400,6 +414,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         port = self.get_selected_port()
         schema = self.get_selected_schema()
         table = self.get_selected_table()
+        host = self.get_selected_host()
 
         if table:
             self.db_tool.insert(
@@ -408,9 +423,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                     'db': db,
                     'port': port,
                     'schema': schema,
+                    'host': host,
                     'table': table,
                     'name': self.navnEdit.text(),
-                    'beskrivelse': self.beskrivelseEdit.text(),
+                    'beskrivelse': self.beskrivelseEdit.toPlainText(),
                     'timestamp': self.datoEdit.text(),
                     'journal_nr': self.journalnrEdit.text(),
                     'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
