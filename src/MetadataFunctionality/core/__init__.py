@@ -22,8 +22,12 @@ class MetaManDBTool(object):
         'beskrivelse':
             {'type': 'varchar',
              'label': 'Beskrivelse'},
+        'host':
+            {'type': 'varchar'},
         'db':
             { 'type': 'varchar'},
+        'port':
+            {'type': 'int'},
         'schema':{
             'type': 'varchar'},
         'table': {
@@ -44,10 +48,11 @@ class MetaManDBTool(object):
 
 
     def __init__(self):
+        """
+        Constructor.
+        Connects to the QGis settings.
+        """
         self.settings = MetadataFunctionalitySettings()
-        self.conn_info = self.settings.value("conn_info")
-        self.table = self.settings.value("table_name")
-        self.connect()
 
     def get_field_def(self):
         return self.field_def
@@ -58,10 +63,6 @@ class MetaManDBTool(object):
     def _single_quote(self, s):
         return "'%s'" % s
 
-    def connect(self):
-        conn = DBConnector(self.conn_info)
-        # self.table = QgsVectorLayer(self.conn_info, self.table, "postgres")
-
     def _create_db_creation_statement(self):
         """
         Creates the create table SQL statement.
@@ -69,8 +70,7 @@ class MetaManDBTool(object):
         """
 
         b = [self._quote(f) + ' ' + self.field_def.get(f).get('type') for f in list(self.field_def)]
-
-        return 'CREATE TABLE %s (%s)' % (self.table, ",".join(b))
+        return 'CREATE TABLE "%s"."%s" (%s)' % (self.get_schema(), self.get_table(), ",".join(b))
 
     def get_db(self):
         """
@@ -78,17 +78,21 @@ class MetaManDBTool(object):
         :return:
         """
 
-        uri = QgsDataSourceURI(self.conn_info)
-
+        uri = QgsDataSourceURI()
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
-
-        db.setHostName(uri.host())
-        db.setPort(int(uri.port()))
-        db.setDatabaseName(uri.database())
-        db.setUserName(uri.username())
+        db.setHostName(self.settings.value("host"))
+        db.setPort(int(self.settings.value("port")))
+        db.setDatabaseName(self.settings.value("database"))
+        db.setUserName(self.settings.value("username"))
         db.setPassword(uri.password())
 
         return db
+
+    def get_table(self):
+        return self.settings.value("table")
+
+    def get_schema(self):
+        return self.settings.value("schema")
 
     def create_metaman_table(self, db):
         """
@@ -97,15 +101,12 @@ class MetaManDBTool(object):
         """
 
         uri = QgsDataSourceURI(db.publicUri())
-
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
-
         db.setHostName(uri.host())
         db.setPort(int(uri.port()))
         db.setDatabaseName(uri.database())
         db.setUserName(uri.username())
         db.setPassword(uri.password())
-
         query = QtSql.QSqlQuery(db)
 
         db.open()
@@ -140,7 +141,7 @@ class MetaManDBTool(object):
             else:
                 vls.append(str(data.get(k)))
 
-        s = 'INSERT INTO %s (%s) VALUES (%s)' % (self.table, ','.join(flds), ','.join(vls))
+        s = 'INSERT INTO "%s"."%s" (%s) VALUES (%s)' % (self.get_schema(), self.get_table(), ','.join(flds), ','.join(vls))
 
         db.open()
 
@@ -174,10 +175,12 @@ class MetaManDBTool(object):
             else:
                 vls.append(str(data.get(k)))
 
-        s = 'UPDATE %s SET (%s) = (%s) WHERE guid=%s' % (self.table, ','.join(flds), ','.join(vls), self._single_quote(data.get('guid')));
-
-        QgsMessageLog.logMessage(s)
-
+        s = 'UPDATE "%s"."%s" SET (%s) = (%s) WHERE guid=%s' % (self.get_schema(),
+                                                                self.get_table(),
+                                                                ','.join(flds),
+                                                                ','.join(vls),
+                                                                self._single_quote(data.get('guid'))
+                                                                )
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
@@ -187,7 +190,7 @@ class MetaManDBTool(object):
         db.commit()
         db.close()
 
-    def select(self, d={}):
+    def select(self, d, order_by={}):
         """
         Returns records as a list of dicts: [{<field1>: <value1>, <field2>: value2,..}, {...}, ...]
         :param d:
@@ -201,7 +204,11 @@ class MetaManDBTool(object):
                 c.append("%s=%s" % (self._quote(k), self._single_quote((d.get(k)).replace('"', '\\"').replace("'", "''"))))
 
         flds = [self._quote(f) for f in list(self.field_def)]
-        s = 'SELECT %s FROM %s WHERE %s' % (','.join(flds), self.table, ' AND '.join(c))
+        s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (','.join(flds), self.get_schema(), self.get_table(), ' AND '.join(c))
+
+        if order_by != {}:
+            s += ' ORDER BY %s %s' % (order_by.get('field'), order_by.get('direction'))
+
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
@@ -238,7 +245,7 @@ class MetaManDBTool(object):
 
         flds = [self._quote(f) for f in list(self.field_def)]
 
-        s = 'DELETE FROM %s WHERE %s' % (self.table, ' AND '.join(c))
+        s = 'DELETE FROM "%s"."%s" WHERE %s' % (self.get_schema(), self.get_table(), ' AND '.join(c))
 
         db = self.get_db()
         db.open()
@@ -249,7 +256,7 @@ class MetaManDBTool(object):
         db.commit()
         db.close()
 
-    def validate_structure(self, db_conn, table):
+    def validate_structure(self):
         """
         Returns true if all field names are contained in the table.
         Does not check the type of the fields. TODO: implement
@@ -258,17 +265,9 @@ class MetaManDBTool(object):
 
         fld_names = list(self.field_def)
 
-        s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % table
+        db = self.get_db()
 
-        uri = QgsDataSourceURI(db_conn)
-
-        db = QtSql.QSqlDatabase.addDatabase('QPSQL')
-
-        db.setHostName(uri.host())
-        db.setPort(int(uri.port()))
-        db.setDatabaseName(uri.database())
-        db.setUserName(uri.username())
-        db.setPassword(uri.password())
+        s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % self.get_table()
 
         db.open()
 
@@ -282,6 +281,5 @@ class MetaManDBTool(object):
                 try:
                     fld_names.remove(f)
                 except:
-                    return False
-
+                    pass
             return len(fld_names) == 0
