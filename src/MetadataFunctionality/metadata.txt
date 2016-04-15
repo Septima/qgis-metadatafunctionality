@@ -8,14 +8,11 @@
 
 [general]
 name=MetadataFunctionality
-qgisMinimumVersion=2.13.0
-qgisMinimumVersion=2.14.0
+qgisMinimumVersion=2.0
 description=MetaMan
-about=Metadata Manager
 version=0.1
 author=Bernhard Snizek (Septima P/S)
 email=bernhard@septima.dk
-
 about=
     <img src="http://www.septima.dk/skin1/img/logo_143x39.png" alt="Septima">
     <p>MetaMan stores metadata info on any PostgreSQL table.</p>
@@ -54,7 +51,7 @@ repository=https://github.com/Septima/qgis-metadatafunctionality
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=cool, nice, Septima
+tags=cool
 
 homepage=https://github.com/Septima/qgis-metadatafunctionality
 category=Plugins

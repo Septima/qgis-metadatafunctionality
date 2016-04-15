@@ -21,20 +21,23 @@
  ***************************************************************************/
 """
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject
-from PyQt4.QtGui import QAction, QIcon, QDialog
+from PyQt4.QtGui import QAction, QIcon, QDialog, QMenu
 from qgis.core import QgsMessageLog
-from PyQt4.QtCore import SIGNAL
 
 # Initialize Qt resources from file resources.py
 import resources
 
 # Import the code for the dialog
-from metadata_functionality_dialog import MetadataFunctionalityDialog, MetadataFunctionalitySettingsDialog
+from .ui.metadata_functionality_dialog import MetadataFunctionalityDialog
+from .ui.metadata_functionality_dialog_settings import MetadataFunctionalitySettingsDialog
+
 import os.path
 
 # Import and override postgis create table
 from db_manager.db_plugins.postgis import connector
 from db_manager.dlg_import_vector import DlgImportVector
+from db_manager.db_plugins.plugin import DBPlugin, Schema, Table
+from db_manager.db_tree import DBTree
 
 # import inspect
 
@@ -48,14 +51,15 @@ from db_manager.dlg_import_vector import DlgImportVector
 # ----------------------------------------------------------------
 # create backup of old _execute first time
 
-def showMetadataDialogue():
+def showMetadataDialogue(table=None, uri=None):
     # Now show table metadata editor for the newly created table
-    #dialog = QDialog()
-    #dialog.ui = MetadataFunctionalityDialog()
-    # dialog.ui.setupUi(dialog)
-    MetadataFunctionalityDialog().exec_()
-    # dialog.exec_()
-    # TODO: get data here
+    # dialog = QDialog()
+    # dialog.ui = MetadataFunctionalityDialog(table=table, uri=uri)
+    dialog = MetadataFunctionalityDialog(table=table, uri=uri)
+    #MetadataFunctionalityDialog().exec_(table=table, uri=uri)
+    # dialog.exec_(table=table, uri=uri)
+    dialog.exec_()
+
 
 if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original', None):
     connector.PostGisDBConnector.createTable_monkeypatch_original = connector.PostGisDBConnector.createTable
@@ -65,7 +69,7 @@ def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
     result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
     # QgsMessageLog.logMessage(str(result))
-    showMetadataDialogue()
+    showMetadataDialogue(table=table, uri=self.uri())
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
 
@@ -74,7 +78,6 @@ connector.PostGisDBConnector.createTable = monkey_patched_createTable
 # ----------------------------------------------------------------
 if not getattr(connector.PostGisDBConnector, 'accept_original', None):
     DlgImportVector.accept_original = DlgImportVector.accept
-    QgsMessageLog.logMessage("Mounted the DlgImportVector.accept patch.")
 
 def new_accept(self):
     showMetadataDialogue()
@@ -93,6 +96,54 @@ def monkey_patched_execute(self, cursor, sql):
     return connector.PostGisDBConnector._execute_monkeypatch_original(self, cursor, sql)
 
 connector.PostGisDBConnector._execute = monkey_patched_execute
+
+
+def newContextMenuEvent(self, ev):
+    index = self.indexAt(ev.pos())
+    if not index.isValid():
+        return
+
+    if index != self.currentIndex():
+        self.itemChanged(index)
+
+    item = self.currentItem()
+
+    menu = QMenu(self)
+
+    if isinstance(item, (Table, Schema)):
+        menu.addAction(self.tr("Rename"), self.rename)
+        menu.addAction(self.tr("Delete"), self.delete)
+
+        if isinstance(item, Table) and item.canBeAddedToCanvas():
+            menu.addSeparator()
+            menu.addAction(self.tr("Add to canvas"), self.addLayer)
+
+    elif isinstance(item, DBPlugin):
+        if item.database() is not None:
+            menu.addAction(self.tr("Re-connect"), self.reconnect)
+        menu.addAction(self.tr("Remove"), self.delete)
+
+    elif not index.parent().isValid() and item.typeName() == "spatialite":
+        menu.addAction(self.tr("New Connection..."), self.newConnection)
+
+    if isinstance(item, (Table, DBPlugin)):
+        menu.addSeparator()
+        menu.addAction(self.tr("Metadata..."), self.fireMetamanDlg)
+
+    if not menu.isEmpty():
+        menu.exec_(ev.globalPos())
+
+    menu.deleteLater()
+
+def fireMetaManDlg(self):
+    item = self.currentItem()
+    showMetadataDialogue(table=item.name, uri=item.uri())
+
+# ---
+# menu
+
+DBTree.fireMetamanDlg = fireMetaManDlg
+DBTree.contextMenuEvent = newContextMenuEvent
 
 
 class MetadataFunctionality:
@@ -130,11 +181,11 @@ class MetadataFunctionality:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&MetaMan')
+        self.menu = self.tr(u'&MetadataFunctionality')
 
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'MetaMan')
-        self.toolbar.setObjectName(u'MetaMan')
+        self.toolbar = self.iface.addToolBar(u'MetadataFunctionality')
+        self.toolbar.setObjectName(u'MetadataFunctionality')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
