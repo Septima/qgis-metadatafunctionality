@@ -271,7 +271,7 @@ class MetaManDBTool(object):
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
         if not result:
-            raise RuntimeError('Failed to select data.')
+            return False
         else:
             while query.next():
                 f = query.value(0)
@@ -280,3 +280,5 @@ class MetaManDBTool(object):
                 except:
                     pass
             return len(fld_names) == 0
+
+        return True

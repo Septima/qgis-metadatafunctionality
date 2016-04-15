@@ -84,6 +84,12 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
     field_def = []
     data_list = []
 
+    def exec_(self):
+        if self.db_tool.validate_structure():
+            super(MetadataFunctionalityDialog, self).exec_()
+        else:
+            QMessageBox.information(self, self.tr("Please!"), self.tr("Metadata table does not exist or wrong access rights."))
+
     def __init__(self, parent=None, table=None, uri=None):
         """Constructor."""
         super(MetadataFunctionalityDialog, self).__init__(parent)
