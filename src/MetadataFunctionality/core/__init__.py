@@ -263,7 +263,7 @@ class MetaManDBTool(object):
         db = self.get_db()
 
         print(str(db))
-        print(str(db.uri()))
+        # print(str(db.uri()))
 
         s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % self.get_table()
 
