@@ -262,12 +262,16 @@ class MetaManDBTool(object):
         fld_names = list(self.field_def)
         db = self.get_db()
 
+        print(str(db))
+        print(str(db.uri()))
+
         s = "SELECT column_name FROM information_schema.columns WHERE table_name = '%s'" % self.get_table()
 
         db.open()
 
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
+        print(s)
         if not result:
             return False
         else:
@@ -277,6 +281,8 @@ class MetaManDBTool(object):
                     fld_names.remove(f)
                 except:
                     pass
+
+            print("Remaining fields: " + str(fld_names))
             return len(fld_names) == 0
 
         return True
