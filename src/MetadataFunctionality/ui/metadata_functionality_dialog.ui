@@ -301,6 +301,20 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>navnEdit</tabstop>
+  <tabstop>beskrivelseEdit</tabstop>
+  <tabstop>journalnrEdit</tabstop>
+  <tabstop>journalnrLookupBtn</tabstop>
+  <tabstop>datoEdit</tabstop>
+  <tabstop>ansvarligCenterMedarbejderEdit</tabstop>
+  <tabstop>projekterWorEdit</tabstop>
+  <tabstop>addRecordButton</tabstop>
+  <tabstop>deleteRecordButton</tabstop>
+  <tabstop>saveRecordButton</tabstop>
+  <tabstop>tableView</tabstop>
+  <tabstop>navnLabel</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
