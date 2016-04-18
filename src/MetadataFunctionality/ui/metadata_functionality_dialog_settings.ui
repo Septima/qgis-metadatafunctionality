@@ -17,7 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MetadataFunctionality</string>
+   <string>MetaMan Settings</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -138,6 +141,9 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="cursorPosition">
+    <number>0</number>
+   </property>
   </widget>
   <widget class="QLineEdit" name="table">
    <property name="geometry">
@@ -232,6 +238,17 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>database</tabstop>
+  <tabstop>host</tabstop>
+  <tabstop>port</tabstop>
+  <tabstop>table</tabstop>
+  <tabstop>schema</tabstop>
+  <tabstop>username</tabstop>
+  <tabstop>password</tabstop>
+  <tabstop>testConnectionButton</tabstop>
+  <tabstop>databaseDefinitionButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
