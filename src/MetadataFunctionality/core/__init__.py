@@ -43,6 +43,8 @@ class MetaManDBTool(object):
             'type': 'varchar'}
     }
 
+    field_order = ['name', 'beskrivelse', 'journal_nr', 'timestamp', 'resp_center_off', 'proj_wor']
+
     def __init__(self):
         """
         Constructor.

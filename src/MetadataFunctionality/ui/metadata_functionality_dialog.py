@@ -40,6 +40,9 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'metadata_functionality_dialog.ui'))
 
 class MetaTableModel(QAbstractTableModel):
+    """
+    The model for the table view
+    """
     def __init__(self, parent, mylist, header, *args):
         QAbstractTableModel.__init__(self, parent, *args)
         self.mylist = mylist
@@ -103,7 +106,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         if type(table) == tuple:
             table = table[1]
 
-        print("New table: " + str(table))
+        # print("New table: " + str(table))
 
         self.settings = MetadataFunctionalitySettings()
         self.db_tool = MetaManDBTool()
@@ -116,18 +119,18 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         self.model = QgsBrowserModel()
 
-        if True is False:
-            index = self.model.index(5, 0)
-            print("....")
-
-            idx2 = index.child(1, 0)
-
-            print(self.model.data(idx2))
-            print(self.model.dataItem(idx2).paramWidget())
-
-            idx3 = idx2.child(0, 0)
-
-            print(":" + str(self.model.dataItem(idx3)))
+        # if True is False:
+        #     index = self.model.index(5, 0)
+        #     print("....")
+        #
+        #     idx2 = index.child(1, 0)
+        #
+        #     print(self.model.data(idx2))
+        #     print(self.model.dataItem(idx2).paramWidget())
+        #
+        #     idx3 = idx2.child(0, 0)
+        #
+        #     print(":" + str(self.model.dataItem(idx3)))
 
         self.model.reload()
 
@@ -141,7 +144,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         self.datoEdit.setDateTime(datetime.now())
 
-        self.buttonBox.accepted.connect(self.save_record)
+        # self.buttonBox.accepted.connect(self.save_record)
 
         QObject.connect(self.tree.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.selection_changed)
 
@@ -342,9 +345,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         if len(results) > 0:
 
-            labels = [self.db_tool.get_field_def().get(f).get('label') for f in list(self.db_tool.get_field_def()) if
+            labels = [self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
                       'label' in self.db_tool.get_field_def().get(f)]
-            fields = [f for f in list(self.db_tool.get_field_def()) if 'label' in self.db_tool.get_field_def().get(f)]
+
+            fields = self.db_tool.field_order
 
             rws = []
             self.guids = []
@@ -355,10 +359,11 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 rws.append(tuple(t))
                 self.guids.append(result.get('guid'))
 
+            print(labels)
+
             table_model = MetaTableModel(self, rws, labels)
 
             xx = table_model.data(table_model.createIndex(0, 0), Qt.DisplayRole)
-            QgsMessageLog.logMessage(str(xx))
 
             # if self.currentlySelectedLine:
             #     for irow in xrange(table_model.rowCount()):
