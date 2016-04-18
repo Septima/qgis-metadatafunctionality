@@ -262,15 +262,16 @@ class MetaManDBTool(object):
         fld_names = list(self.field_def)
         db = self.get_db()
 
-        print(str(db))
+        # print(str(db))
         # print(str(db.uri()))
 
-        s = """SELECT column_name FROM information_schema.columns WHERE table_name = '%s'""" % self.get_table()
+        s = """SELECT column_name FROM information_schema.columns WHERE table_name = '%s' and table_schema='%s'""" % (
+            self.get_table(), self.get_schema())
 
         db.open()
 
-        print(str(db.isOpenError()))
-        print(str(db.lastError().driverText()) + str(db.lastError().databaseText()))
+        # print(str(db.isOpenError()))
+        # print(str(db.lastError().driverText()) + str(db.lastError().databaseText()))
 
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
@@ -278,7 +279,7 @@ class MetaManDBTool(object):
         print(s)
 
         if not result:
-            print("NO RESULTS")
+            # print("NO RESULTS")
             return False
         else:
             while query.next():
@@ -288,7 +289,7 @@ class MetaManDBTool(object):
                 except:
                     pass
 
-            print("Remaining fields: " + str(fld_names))
+            # print("Remaining fields: " + str(fld_names))
             return len(fld_names) == 0
 
         return True
