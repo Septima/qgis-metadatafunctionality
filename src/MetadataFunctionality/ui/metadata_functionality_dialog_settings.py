@@ -92,6 +92,7 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
         """
         self.settings.setValue('host', self.host.text())
         self.settings.setValue('port', self.port.text())
+        self.settings.setValue('schema', self.schema.text())
         self.settings.setValue('database', self.database.text())
         self.settings.setValue('username', self.username.text())
         self.settings.setValue('password', self.password.text())
