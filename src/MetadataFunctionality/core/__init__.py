@@ -270,13 +270,13 @@ class MetaManDBTool(object):
 
         db.open()
 
-        # print(str(db.isOpenError()))
-        # print(str(db.lastError().driverText()) + str(db.lastError().databaseText()))
+        # TODO: throw exception
+
+        #if db.isOpenError()):
+        #    print(str(db.lastError().driverText()) + str(db.lastError().databaseText()))
 
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
-
-        print(s)
 
         if not result:
             # print("NO RESULTS")
