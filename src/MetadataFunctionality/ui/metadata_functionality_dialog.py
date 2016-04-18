@@ -27,10 +27,11 @@ from datetime import datetime
 
 from PyQt4 import QtGui, uic
 from PyQt4.QtGui import QMessageBox, QTreeView
-from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject
+from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject, pyqtSlot
 
 # TODO: Remove QgsMessageLog after debug phase.
 from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, QgsDataSourceURI
+
 from qgis.gui import QgsBrowserTreeView
 
 from .. import MetadataFunctionalitySettings
@@ -105,8 +106,6 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         if type(table) == tuple:
             table = table[1]
-
-        # print("New table: " + str(table))
 
         self.settings = MetadataFunctionalitySettings()
         self.db_tool = MetaManDBTool()
@@ -202,6 +201,12 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         else:
             self.update_record()
 
+    # def save_record(self):
+    #     if self.currentlySelectedLine is None:
+    #         self.add_record()
+    #     else:
+    #         self.update_record()
+
     def table_row_selected(self, a, b):
 
         v = []
@@ -215,6 +220,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
             guid = self.guids[v[0]]
             self.currentlySelectedLine = guid
+
             results = self.db_tool.select({'guid': guid})
 
             if len(results) == 1:
@@ -229,7 +235,6 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 if 'timestamp' in list(results):
                     d = results.get('timestamp')
                     da = datetime.strptime(d,'%d/%m/%Y %H.%M')
-                    print(da)
                     self.datoEdit.setDate(da)
 
                 if 'journal_nr' in list(results):
@@ -240,6 +245,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
                 if 'proj_wor' in list(results):
                     self.projekterWorEdit.setText(results.get('proj_wor'))
+
+        else:
+            self.currentlySelectedLine = None
 
     def delete_record(self):
         """
@@ -288,6 +296,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         self.journalnrEdit.setEnabled(False)
         self.beskrivelseEdit.setEnabled(False)
 
+    @pyqtSlot("QItemSelection, QItemSelection")
     def selection_changed(self, newSelection, oldSelection):
         """
         Triggered when the user clicks on a postgresql table in the tree.
@@ -297,6 +306,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         """
         self.empty_fields()
         selected = newSelection.indexes()
+
         if len(selected) > 0:
 
             b = self.model.dataItem(selected[0])
@@ -309,6 +319,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                     self.tableView.selectRow(0)
                 else:
                     self.tableView.setModel(None)
+                    self.currentlySelectedLine = None
+                    self.datoEdit.setDateTime(datetime.now())
             else:
                 self.deactivate_fields()
 
@@ -358,8 +370,6 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                     t.append(result.get(k))
                 rws.append(tuple(t))
                 self.guids.append(result.get('guid'))
-
-            print(labels)
 
             table_model = MetaTableModel(self, rws, labels)
 

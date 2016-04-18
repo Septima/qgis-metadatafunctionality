@@ -179,6 +179,7 @@ class MetaManDBTool(object):
                                                                 ','.join(vls),
                                                                 self._single_quote(data.get('guid'))
                                                                 )
+        print(s)
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
@@ -194,6 +195,7 @@ class MetaManDBTool(object):
         :param d:
         :return:
         """
+
         c = []
         results = []
 
