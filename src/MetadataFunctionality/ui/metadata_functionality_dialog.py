@@ -274,10 +274,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         self.deleteRecordButton.setEnabled(True)
         self.datoEdit.setEnabled(True)
         self.navnEdit.setEnabled(True)
-        self.projekterWorEdit.setEnabled(True)
-        self.ansvarligCenterMedarbejderEdit.setEnabled(True)
+        self.projekterWorEdit.setEnabled(False)
+        self.ansvarligCenterMedarbejderEdit.setEnabled(False)
         # self.tableView.setEnabled(True)
-        self.journalnrEdit.setEnabled(True)
+        self.journalnrEdit.setEnabled(False)
         self.beskrivelseEdit.setEnabled(True)
 
     def deactivate_fields(self):
@@ -330,10 +330,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         :return:
         """
         self.navnEdit.setText('')
-        self.projekterWorEdit.setText('')
-        self.ansvarligCenterMedarbejderEdit.setText('')
+        self.projekterWorEdit.setText('Ikke implementeret')
+        self.ansvarligCenterMedarbejderEdit.setText('Ikke implementeret')
         self.navnEdit.setText('')
-        self.journalnrEdit.setText('')
+        self.journalnrEdit.setText('Ikke implementeret')
         self.beskrivelseEdit.setText('')
 
     def update_grid(self):
