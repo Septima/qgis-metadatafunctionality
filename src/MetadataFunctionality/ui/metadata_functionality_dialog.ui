@@ -19,6 +19,12 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>772</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MetadataFunctionality</string>
   </property>
@@ -31,56 +37,24 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>256</x>
+     <x>176</x>
      <y>320</y>
-     <width>501</width>
+     <width>581</width>
      <height>21</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="navnLabel">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>320</y>
-     <width>59</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::TabFocus</enum>
-   </property>
-   <property name="text">
-    <string>Navn:</string>
-   </property>
-   <property name="buddy">
-    <cstring>navnEdit</cstring>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>350</y>
-     <width>81</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Beskrivelse:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>29</x>
      <y>430</y>
-     <width>81</width>
+     <width>141</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Journal nr.:</string>
+    <string>Kle-journal nr.:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="journalnrEdit">
@@ -89,9 +63,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>256</x>
+     <x>176</x>
      <y>430</y>
-     <width>461</width>
+     <width>541</width>
      <height>21</height>
     </rect>
    </property>
@@ -99,40 +73,40 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>460</y>
-     <width>131</width>
+     <x>29</x>
+     <y>525</y>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Dato (oprettelse):</string>
+    <string>Sidste ændring:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>490</y>
-     <width>191</width>
+     <x>29</x>
+     <y>460</y>
+     <width>161</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Ansvarlig center/medarbejder:</string>
+    <string>Ansvarlig center/ medarbejder:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>520</y>
-     <width>221</width>
+     <x>29</x>
+     <y>490</y>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Hvilke projekter/Wor filen indgår:</string>
+    <string>Projekter hvori filen indgår:</string>
    </property>
   </widget>
   <widget class="QToolButton" name="journalnrLookupBtn">
@@ -157,9 +131,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>256</x>
-     <y>490</y>
-     <width>501</width>
+     <x>176</x>
+     <y>460</y>
+     <width>581</width>
      <height>21</height>
     </rect>
    </property>
@@ -170,9 +144,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>256</x>
-     <y>520</y>
-     <width>501</width>
+     <x>176</x>
+     <y>490</y>
+     <width>581</width>
      <height>21</height>
     </rect>
    </property>
@@ -183,9 +157,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>590</y>
-     <width>741</width>
+     <width>731</width>
      <height>192</height>
     </rect>
    </property>
@@ -256,8 +230,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>613</x>
-     <y>460</y>
+     <x>176</x>
+     <y>520</y>
      <width>141</width>
      <height>24</height>
     </rect>
@@ -288,11 +262,81 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>256</x>
+     <x>176</x>
      <y>350</y>
-     <width>501</width>
+     <width>581</width>
      <height>71</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>24</x>
+     <y>22</y>
+     <width>341</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Vælg filen som skal have tilføjet/ændret metadata</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>300</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Metadatainformationer</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>350</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Beskrivelse af filens indhold:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="navnLabel_2">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>320</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::TabFocus</enum>
+   </property>
+   <property name="text">
+    <string>Beskrivende navn:</string>
+   </property>
+   <property name="buddy">
+    <cstring>navnEdit</cstring>
    </property>
   </widget>
  </widget>
@@ -308,7 +352,6 @@
   <tabstop>deleteRecordButton</tabstop>
   <tabstop>saveRecordButton</tabstop>
   <tabstop>tableView</tabstop>
-  <tabstop>navnLabel</tabstop>
  </tabstops>
  <resources/>
  <connections/>
