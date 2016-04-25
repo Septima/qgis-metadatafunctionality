@@ -29,8 +29,6 @@
 
 from types import *
 
-from qgis.core import QgsMessageLog
-
 # to print debug info
 Debug = False
 
@@ -52,9 +50,6 @@ class SettingManager():
             raise NameError("%s is not a valid scope. Must be project or global." % scope)
         SettingClass = globals()[settingType[0].upper() + settingType[1:].lower()]
         setting = SettingClass(self.pluginName, name, scope, defaultValue, options)
-
-        # QgsMessageLog.logMessage(str(setting.getValue()))
-
         self.settings.append(setting)
 
     def setting(self, name):
