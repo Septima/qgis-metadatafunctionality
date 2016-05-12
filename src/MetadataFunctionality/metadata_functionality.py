@@ -50,11 +50,11 @@ from db_manager.db_tree import DBTree
 # ----------------------------------------------------------------
 # create backup of old _execute first time
 
-def showMetadataDialogue(table=None, uri=None):
+def showMetadataDialogue(table=None, uri=None, schema=None):
     # Now show table metadata editor for the newly created table
     # dialog = QDialog()
     # dialog.ui = MetadataFunctionalityDialog(table=table, uri=uri)
-    dialog = MetadataFunctionalityDialog(table=table, uri=uri)
+    dialog = MetadataFunctionalityDialog(table=table, uri=uri, schema=schema)
     #MetadataFunctionalityDialog().exec_(table=table, uri=uri)
     # dialog.exec_(table=table, uri=uri)
     dialog.exec_()
@@ -67,7 +67,7 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
     result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
-    showMetadataDialogue(table=table, uri=self.uri())
+    showMetadataDialogue(table=table, uri=self.uri(), schema=table[0])
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
 
@@ -78,7 +78,9 @@ if not getattr(connector.PostGisDBConnector, 'accept_original', None):
     DlgImportVector.accept_original = DlgImportVector.accept
 
 def new_accept(self):
-    showMetadataDialogue(table=self.cboTable.currentText(), uri=self.db.uri())
+    showMetadataDialogue(table=self.cboTable.currentText(),
+                         uri=self.db.uri(),
+                         schema=self.cboSchema.currentText())
     result = DlgImportVector.accept_original(self)
     return result
 

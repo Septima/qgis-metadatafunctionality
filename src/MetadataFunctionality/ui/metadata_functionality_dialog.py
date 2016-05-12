@@ -95,7 +95,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         else:
             QMessageBox.information(self, self.tr("Please!"), self.tr("Metadata table does not exist or wrong access rights."))
 
-    def __init__(self, parent=None, table=None, uri=None):
+    def __init__(self, parent=None, table=None, uri=None, schema=None):
         """Constructor."""
         super(MetadataFunctionalityDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -106,6 +106,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         if type(table) == tuple:
             table = table[1]
+
+        self.schema = schema
 
         self.settings = MetadataFunctionalitySettings()
         self.db_tool = MetaManDBTool()
@@ -183,11 +185,10 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         """
         :return:
         """
-        s = QgsDataSourceURI(self.selected_item.uri()).schema()
-        if s==None or s=='':
+        if self.schema is None or self.schema == '':
             return 'public'
         else:
-            return s
+            return self.schema
 
     def get_selected_table(self):
         """
