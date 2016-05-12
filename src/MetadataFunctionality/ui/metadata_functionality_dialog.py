@@ -200,12 +200,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.add_record()
         else:
             self.update_record()
-
-    # def save_record(self):
-    #     if self.currentlySelectedLine is None:
-    #         self.add_record()
-    #     else:
-    #         self.update_record()
+        self.close();
 
     def table_row_selected(self, a, b):
 
