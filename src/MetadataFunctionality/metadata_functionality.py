@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject
-from PyQt4.QtGui import QAction, QIcon, QDialog, QMenu
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject, Qt
+from PyQt4.QtGui import QAction, QIcon, QDialog, QMenu, QCursor, QApplication
 from qgis.core import QgsMessageLog
 
 # Initialize Qt resources from file resources.py
@@ -52,12 +52,14 @@ from db_manager.db_tree import DBTree
 
 def showMetadataDialogue(table=None, uri=None, schema=None):
     # Now show table metadata editor for the newly created table
-    # dialog = QDialog()
-    # dialog.ui = MetadataFunctionalityDialog(table=table, uri=uri)
+
+    QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
+
     dialog = MetadataFunctionalityDialog(table=table, uri=uri, schema=schema)
-    #MetadataFunctionalityDialog().exec_(table=table, uri=uri)
-    # dialog.exec_(table=table, uri=uri)
+
     dialog.exec_()
+
+    QApplication.restoreOverrideCursor()
 
 
 if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original', None):
