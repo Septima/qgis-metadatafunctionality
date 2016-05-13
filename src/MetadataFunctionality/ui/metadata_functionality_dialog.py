@@ -229,6 +229,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
                 self.schema = results.get('schema')
 
+                # print(self.schema)
+
                 if 'name' in list(results):
                     self.navnEdit.setText(results.get('name'))
 
@@ -316,11 +318,12 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             b = self.model.dataItem(selected[0])
 
             if type(b) == QgsLayerItem:
+
+                self.schema = QgsDataSourceURI(b.uri()).schema()
+
                 self.selected_item = b
                 self.update_grid()
                 self.activate_fields()
-
-                self.schema = QgsDataSourceURI(b.uri()).schema()
 
                 if self.has_table_data:
                     self.tableView.selectRow(0)
@@ -353,6 +356,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         port = self.get_selected_port()
         schema = self.get_selected_schema()
         table = self.get_selected_table()
+
+        # print("-> " + schema)
 
         results = self.db_tool.select(
             {
@@ -400,9 +405,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             # self.deleteRecordButton.setEnabled(False)
 
     def show(self):
-        self.model.reload()
-        self.tree.update()
-        print("tree refreshed show()")
+        # self.model.reload()
+        # self.tree.update()
+        # print("tree refreshed show()")
         super(MetadataFunctionalityDialog, self).show()
 
     def update_record(self):

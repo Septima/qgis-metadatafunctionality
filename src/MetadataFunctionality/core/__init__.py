@@ -209,6 +209,8 @@ class MetaManDBTool(object):
         if order_by != {}:
             s += ' ORDER BY %s %s' % (order_by.get('field'), order_by.get('direction'))
 
+        print(s)
+
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
