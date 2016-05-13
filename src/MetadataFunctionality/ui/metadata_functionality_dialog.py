@@ -88,13 +88,6 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
     field_def = []
     data_list = []
 
-    def exec_(self):
-        if self.db_tool.validate_structure():
-            super(MetadataFunctionalityDialog, self).exec_()
-            # self.datoEdit.setDateTime(datetime.now())
-        else:
-            QMessageBox.information(self, self.tr("Please!"), self.tr("Metadata table does not exist or wrong access rights."))
-
     def __init__(self, parent=None, table=None, uri=None, schema=None):
         """Constructor."""
         super(MetadataFunctionalityDialog, self).__init__(parent)
@@ -165,6 +158,18 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.tableView.selectRow(0)
             self.activate_fields()
 
+    def exec_(self):
+
+        self.model.reload()
+        # self.tree.refresh()
+
+        if self.db_tool.validate_structure():
+            super(MetadataFunctionalityDialog, self).exec_()
+            # self.datoEdit.setDateTime(datetime.now())
+        else:
+            QMessageBox.information(self, self.tr("Please!"),
+                                    self.tr("Metadata table does not exist or wrong access rights."))
+
     def get_selected_uri(self):
         """
         :return:
@@ -201,7 +206,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.add_record()
         else:
             self.update_record()
-        self.close();
+        # self.close()
 
     def table_row_selected(self, a, b):
 
@@ -222,6 +227,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             if len(results) == 1:
                 results = results[0]
 
+                self.schema = results.get('schema')
+
                 if 'name' in list(results):
                     self.navnEdit.setText(results.get('name'))
 
@@ -230,7 +237,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
                 if 'timestamp' in list(results):
                     d = results.get('timestamp')
-                    da = datetime.strptime(d,'%d/%m/%Y %H.%M')
+                    da = datetime.strptime(d,'%d/%m-%Y %H:%M')
                     self.datoEdit.setDate(da)
 
                 if 'journal_nr' in list(results):
@@ -300,6 +307,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         :param oldSelection:
         :return:
         """
+
         self.empty_fields()
         selected = newSelection.indexes()
 
@@ -311,6 +319,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 self.selected_item = b
                 self.update_grid()
                 self.activate_fields()
+
+                self.schema = QgsDataSourceURI(b.uri()).schema()
+
                 if self.has_table_data:
                     self.tableView.selectRow(0)
                 else:
@@ -389,6 +400,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             # self.deleteRecordButton.setEnabled(False)
 
     def show(self):
+        self.model.reload()
+        self.tree.update()
+        print("tree refreshed show()")
         super(MetadataFunctionalityDialog, self).show()
 
     def update_record(self):
