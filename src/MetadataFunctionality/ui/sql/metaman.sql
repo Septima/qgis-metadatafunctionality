@@ -1,17 +1,17 @@
-CREATE TABLE "metaman" (
-	"resp_center_off" varchar,
-	"beskrivelse" varchar,
-	"name" varchar,
-	"timestamp" varchar,
-	"proj_wor" varchar,
-	"journal_nr" varchar,
-	"guid" varchar,
-	"host" varchar,
-	"db" varchar,
-	"port" int,
-	"schema" varchar,
-	"table" varchar,
-	"ts" timestamp without time zone default (now() at time zone 'utc')
+CREATE TABLE schema.metadata (
+    "name" varchar,
+    "beskrivelse" varchar,
+    "journal_nr" varchar,
+    "resp_center_off" varchar,
+    "proj_wor" varchar,
+    "host" varchar,
+    "db" varchar,
+    "port" int,
+    "schema" varchar,
+    "table" varchar,
+    "guid" varchar,
+    "timestamp" varchar,
+    "ts" timestamp without time zone default (now() at time zone 'utc')
 )
 WITH (OIDS=FALSE);
-ALTER TABLE "metaman" OWNER TO "metaman";
+ALTER TABLE schema.metadata OWNER TO owner;
