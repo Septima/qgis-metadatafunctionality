@@ -9,39 +9,30 @@
 [general]
 name=MetadataFunctionality
 qgisMinimumVersion=2.0
-description=MetaMan
+description=A plugin to enter and edit metadata stored in a postgres-database table.
 version=0.1
-author=Bernhard Snizek (Septima P/S)
-email=bernhard@septima.dk
+author=Septima P/S
+email=kontakt@septima.dk
 about=
+    <p>This plugin is made to allow entering metadata for new and existing tables stored in a postgresdatabase.</p>
+    <p>A QGIS plugin to ease handling of metadatainformation for new and existing tables in Postgresdatabase.
+    <p>Adding metadata to a new file:</p>
+    <p>The dialogbox to enter metadata is automatically launched when a new file is added to a postgresdatabase
+    with the import function in DB Manager or created as a new file with DB Manager.</p>
+    <p>Adding metadata to an existing file:</p>
+    <p>Metadata to existing tables can be added with the dialogue from either the Plugin-menu or the plugin-button.
+    In the dialogue, navigate to the file to which you want to add metadata and enter the metadata in the fields.</p>
+    <p>Changing metadata of an existing file:</p>
+    <p>Metadata to existing tables can be changed with the dialogue from either the Plugin-menu or with the plugin-button.
+    In the dialogue, navigate to the file that you want to edit metadata. Change the metadata and save.</p>
+    <p></p>
+    <p>To get started - the first time:</p>
+    <p>Create the postgresdatabase-table in which you want to store metadata.
+    The table needs to follow a specific structure. Therefore, use the sql found under 'Database definition' in the
+    Settings-dialogue.
+    Specify the databaseconnection (host, port, username) in which the metadata is stored.
+    Test the connection with 'Test Connection'.</p>
     <img src="http://www.septima.dk/skin1/img/logo_143x39.png" alt="Septima">
-    <p>MetaMan stores metadata info on any PostgreSQL table.</p>
-
-    In order to get started you have to create a table in one of your PostgreSQL databases.
-
-    <br/>
-    <i>
-    CREATE TABLE "metaman" (
-        "resp_center_off" varchar,
-        "beskrivelse" varchar,
-        "name" varchar,
-        "timestamp" varchar,
-        "proj_wor" varchar,
-        "journal_nr" varchar,
-        "guid" varchar,
-        "host" varchar,
-        "db" varchar,
-        "port" int,
-        "schema" varchar,
-        "table" varchar,
-        "ts" timestamp without time zone default (now() at time zone 'utc')
-    )
-    WITH (OIDS=FALSE);
-    ALTER TABLE "metaman" OWNER TO "metaman";
-    </i>
-
-    <br/>
-    Then configure MetaMan: navigate to the table, enter username and password and you are set to go.
 
 tracker=https://github.com/Septima/qgis-metadatafunctionality/issues
 repository=https://github.com/Septima/qgis-metadatafunctionality
@@ -50,17 +41,17 @@ repository=https://github.com/Septima/qgis-metadatafunctionality
 # Recommended items:
 
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=
+    2016-0?-?? First release, version 0.1
 
 # Tags are comma separated with spaces allowed
-tags=cool
+tags=metadata, enter metadata, edit metadata, DBmanager
 
 homepage=https://github.com/Septima/qgis-metadatafunctionality
 category=Plugins
-icon=icon.png
+icon=resources/icon.png
 # experimental flag
 experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
-
