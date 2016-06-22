@@ -282,14 +282,14 @@ class MetadataFunctionality:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/MetadataFunctionality/icon.png'
+        icon_path = ':/plugins/MetadataFunctionality/resources/metaman.png'
         self.add_action(
             icon_path,
             text=self.tr(u'MetaMan Dialogue'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
-        icon_path2 = ':/plugins/MetadataFunctionality/icon.png'
+        icon_path2 = ':/plugins/MetadataFunctionality/resources/settings.png'
         self.add_action(
             icon_path2,
             add_to_toolbar = False,
