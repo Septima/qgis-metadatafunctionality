@@ -475,7 +475,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.update_grid()
             self.tableView.selectRow(0)
         else:
-            QMessageBox.information(self, self.tr("Please!"), self.tr("Husk at stille dig på en table foroven."))
+            QMessageBox.information(self, self.tr("Please!"), self.tr("Remember to select a table."))
 
 
 
