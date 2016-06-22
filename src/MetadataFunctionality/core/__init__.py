@@ -94,7 +94,7 @@ class MetaManDBTool(object):
 
     def create_metaman_table(self, db):
         """
-        Creates the metaman table.
+        Creates the table to store metadata.
         :return:
         """
 
@@ -232,7 +232,7 @@ class MetaManDBTool(object):
         """
         Deletes from the table given criteria as a dict.
 
-        d = {'blabla': 1} -> DELETE FROM foo where blabla = 1;
+        d = {'sometext': 1} -> DELETE FROM foo where sometext = 1;
 
         :param d:
         :return:
