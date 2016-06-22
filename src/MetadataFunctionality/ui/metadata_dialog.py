@@ -35,7 +35,7 @@ from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, 
 from qgis.gui import QgsBrowserTreeView
 
 from .. import MetadataFunctionalitySettings
-from ..core import MetaManDBTool
+from ..core import MetadataDbLinkerTool
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'metadata_functionality_dialog.ui'))

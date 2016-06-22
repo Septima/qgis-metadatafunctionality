@@ -6,7 +6,7 @@ from PyQt4.QtGui import QMessageBox, QTreeView
 from db_manager.db_plugins.postgis.plugin import PGVectorTable, PGTable
 
 from .. import MetadataFunctionalitySettings
-from ..core import MetaManDBTool
+from ..core import MetadataDbLinkerTool
 from ..qgissettingmanager.settingdialog import SettingDialog
 from ..ui.metadata_functionality_dialog_settings_db_def import \
     MetadataFunctionalitySettingsDBDefDialog
@@ -25,7 +25,7 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
-        self.db_tool = MetaManDBTool()
+        self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
 
@@ -96,6 +96,6 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
         self.settings.setValue('database', self.database.text())
         self.settings.setValue('username', self.username.text())
         self.settings.setValue('password', self.password.text())
-        mmt = MetaManDBTool()
+        mmt = MetadataDbLinkerTool()
         if mmt.validate_structure():
             QMessageBox.information(self, self.tr("Please!"), self.tr("DB structure and connection OK."))

@@ -36,7 +36,7 @@ def classFactory(iface):  # pylint: disable=invalid-name
 
 pluginName = "MetaMan"
 
-class MetadataFunctionalitySettings(SettingManager):
+class MetadataDbLinkerSettings(SettingManager):
 
     def __init__(self):
         SettingManager.__init__(self, pluginName)
