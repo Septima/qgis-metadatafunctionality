@@ -7,8 +7,8 @@
                              -------------------
         begin                : 2016-04-04
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Bernhard Snizek (Septima P/S)
-        email                : bernhard@septima.dk
+        copyright            : (C) 2016 Septima P/S
+        email                : kontakt@septima.dk
  ***************************************************************************/
 
 /***************************************************************************
