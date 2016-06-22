@@ -285,7 +285,7 @@ class MetadataFunctionality:
         icon_path = ':/plugins/MetadataFunctionality/resources/metaman.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'MetaMan Dialogue'),
+            text=self.tr(u'Enter or edit metadata'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -293,7 +293,7 @@ class MetadataFunctionality:
         self.add_action(
             icon_path2,
             add_to_toolbar = False,
-            text=self.tr(u'MetaMan Settings'),
+            text=self.tr(u'Settings'),
             callback=self.settings_run,
             parent=self.iface.mainWindow())
 
