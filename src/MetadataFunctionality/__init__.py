@@ -6,8 +6,8 @@
  MetadataFunctionality
                              -------------------
         begin                : 2016-04-04
-        copyright            : (C) 2016 by Bernhard Snizek (Septima P/S)
-        email                : bernhard@septima.dk
+        copyright            : (C) 2016 Septima P/S
+        email                : kontakt@septima.dk
         git sha              : $Format:%H$
  ***************************************************************************/
 
