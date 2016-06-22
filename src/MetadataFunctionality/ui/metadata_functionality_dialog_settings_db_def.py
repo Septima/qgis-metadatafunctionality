@@ -18,6 +18,6 @@ class MetadataFunctionalitySettingsDBDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_C
         :return:
         """
 
-        nf = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sql','metaman.sql')
+        nf = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sql','metadata_table.sql')
         with open(nf, 'r') as myfile:
             self.textEdit.setText(myfile.read())
