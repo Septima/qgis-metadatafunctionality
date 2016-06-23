@@ -1,12 +1,12 @@
 #/***************************************************************************
-# MetadataFunctionality
+# MetadataDbLinker
 #
-# MetadataFunctionality
+# MetadataDbLinker
 #							 -------------------
 #		begin				: 2016-04-04
 #		git sha				: $Format:%H$
-#		copyright			: (C) 2016 by Bernhard Snizek (Septima P/S)
-#		email				: bernhard@septima.dk
+#		copyright			: (C) 2016 Septima P/S
+#		email				: kontakt@septima.dk
 # ***************************************************************************/
 #
 #/***************************************************************************
@@ -26,27 +26,33 @@
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
 # LOCALES = af
-LOCALES =
+LOCALES = da
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
 # lrelease
-#LRELEASE = lrelease
+LRELEASE = lrelease
 #LRELEASE = lrelease-qt4
 
 
 # translation
 SOURCES = \
 	__init__.py \
-	metadata_functionality.py metadata_functionality_dialog.py
+	metadata_functionality.py \
+	dialog_metadata.py 
 
-PLUGINNAME = MetadataFunctionality
+PLUGINNAME = Metadata-DB-Linker
 
 PY_FILES = \
 	__init__.py \
-	metadata_functionality.py metadata_functionality_dialog.py
+	metadata_functionality.py \
+	dialog_metadata.py
 
-UI_FILES = metadata_functionality_dialog_base.ui
+UI_FILES = \
+	dialog_metadata.ui \
+	dialog_settings.ui \
+	dialog_settings_db_def.ui
+	
 
 EXTRAS = metadata.txt icon.png
 
