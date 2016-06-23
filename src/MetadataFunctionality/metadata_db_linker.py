@@ -20,9 +20,31 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject, Qt
-from PyQt4.QtGui import QAction, QIcon, QDialog, QMenu, QCursor, QApplication
+import os.path
 from qgis.core import QgsMessageLog
+from PyQt4.QtCore import (
+    QSettings,
+    QTranslator,
+    qVersion,
+    QCoreApplication,
+    Qt
+)
+from PyQt4.QtGui import (
+    QAction,
+    QIcon,
+    QMenu,
+    QCursor,
+    QApplication
+)
+
+from db_manager.db_plugins.plugin import (
+    DBPlugin,
+    Schema,
+    Table
+)
+from db_manager.db_plugins.postgis import connector
+from db_manager.dlg_import_vector import DlgImportVector
+from db_manager.db_tree import DBTree
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -31,13 +53,8 @@ import resources
 from .ui.dialog_metadata import MetadataDialog
 from .ui.dialog_settings import SettingsDialog
 
-import os.path
 
 # Import and override postgis create table
-from db_manager.db_plugins.postgis import connector
-from db_manager.dlg_import_vector import DlgImportVector
-from db_manager.db_plugins.plugin import DBPlugin, Schema, Table
-from db_manager.db_tree import DBTree
 # import inspect
 
 # import monkey_patcher
@@ -66,9 +83,16 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
     connector.PostGisDBConnector.createTable_monkeypatch_original = connector.PostGisDBConnector.createTable
     QgsMessageLog.logMessage("Adding the createTable patch.")
 
+
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
-    result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
+    # TODO: USE OR REMOVE variable
+    result = connector.PostGisDBConnector.createTable_monkeypatch_original(
+        self,
+        table,
+        field_defs,
+        pkey
+    )
     showMetadataDialogue(table=table, uri=self.uri(), schema=table[0])
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
@@ -78,6 +102,7 @@ connector.PostGisDBConnector.createTable = monkey_patched_createTable
 # ----------------------------------------------------------------
 if not getattr(connector.PostGisDBConnector, 'accept_original', None):
     DlgImportVector.accept_original = DlgImportVector.accept
+
 
 def new_accept(self):
     showMetadataDialogue(table=self.cboTable.currentText(),
@@ -95,8 +120,13 @@ DlgImportVector.accept = new_accept
 if not getattr(connector.PostGisDBConnector, '_execute_monkeypatch_original', None):
     connector.PostGisDBConnector._execute_monkeypatch_original = connector.PostGisDBConnector._execute
 
+
 def monkey_patched_execute(self, cursor, sql):
-    return connector.PostGisDBConnector._execute_monkeypatch_original(self, cursor, sql)
+    return connector.PostGisDBConnector._execute_monkeypatch_original(
+        self,
+        cursor,
+        sql
+    )
 
 connector.PostGisDBConnector._execute = monkey_patched_execute
 
@@ -138,6 +168,7 @@ def newContextMenuEvent(self, ev):
 
     menu.deleteLater()
 
+
 def fireMetadataDlg(self):
     item = self.currentItem()
     showMetadataDialogue(table=item.name, uri=item.uri())
@@ -149,7 +180,7 @@ DBTree.fireMetamanDlg = fireMetadataDlg
 DBTree.contextMenuEvent = newContextMenuEvent
 
 
-class MetadataDbLinker:
+class MetadataDbLinker(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -186,10 +217,6 @@ class MetadataDbLinker:
         self.actions = []
         self.menu = self.tr(u'&Metadata-DB-linker')
 
-        # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar('Metadata-DB-linker')
-        self.toolbar.setObjectName('Metadata-DB-linker')
-
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -205,98 +232,27 @@ class MetadataDbLinker:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('Metadata-DB-linker', message)
 
-
-    def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-        """Add a toolbar icon to the toolbar.
-
-        :param icon_path: Path to the icon for this action. Can be a resource
-            path (e.g. ':/plugins/foo/bar.png') or a normal file system path.
-        :type icon_path: str
-
-        :param text: Text that should be shown in menu items for this action.
-        :type text: str
-
-        :param callback: Function to be called when the action is triggered.
-        :type callback: function
-
-        :param enabled_flag: A flag indicating if the action should be enabled
-            by default. Defaults to True.
-        :type enabled_flag: bool
-
-        :param add_to_menu: Flag indicating whether the action should also
-            be added to the menu. Defaults to True.
-        :type add_to_menu: bool
-
-        :param add_to_toolbar: Flag indicating whether the action should also
-            be added to the toolbar. Defaults to True.
-        :type add_to_toolbar: bool
-
-        :param status_tip: Optional text to show in a popup when mouse pointer
-            hovers over the action.
-        :type status_tip: str
-
-        :param parent: Parent widget for the new action. Defaults None.
-        :type parent: QWidget
-
-        :param whats_this: Optional text to show in the status bar when the
-            mouse pointer hovers over the action.
-
-        :returns: The action that was created. Note that the action is also
-            added to self.actions list.
-        :rtype: QAction
-        """
-
-        icon = QIcon(icon_path)
-        action = QAction(icon, text, parent)
-        action.triggered.connect(callback)
-        action.setEnabled(enabled_flag)
-
-        if status_tip is not None:
-            action.setStatusTip(status_tip)
-
-        if whats_this is not None:
-            action.setWhatsThis(whats_this)
-
-        if add_to_toolbar:
-            self.toolbar.addAction(action)
-
-        if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
-
-        self.actions.append(action)
-
-        return action
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/MetadataFunctionality/resources/metadata.png'
-        self.add_action(
-            icon_path,
-            text=self.tr(u'Enter or edit metadata'),
-            callback=self.run,
-            parent=self.iface.mainWindow())
+        self.editmetadata_action = QAction(
+            QIcon(':/plugins/MetadataFunctionality/resources/metadata.png'),
+            self.tr(u'Enter or edit metadata'),
+            self.iface.mainWindow()
+        )
+        self.editmetadata_action.triggered.connect(self.run)
+        self.editmetadata_action.setEnabled(True)
+        self.iface.addPluginToMenu(self.menu, self.editmetadata_action)
+        self.iface.addToolBarIcon(self.editmetadata_action)
 
-        icon_path2 = ':/plugins/MetadataFunctionality/resources/settings.png'
-        self.add_action(
-            icon_path2,
-            add_to_toolbar = False,
-            text=self.tr(u'Settings'),
-            callback=self.settings_run,
-            parent=self.iface.mainWindow())
-
+        self.settings_action = QAction(
+            QIcon(':/plugins/MetadataFunctionality/resources/settings.png'),
+            self.tr(u'Settings'),
+            self.iface.mainWindow()
+        )
+        self.settings_action.triggered.connect(self.settings_run)
+        self.settings_action.setEnabled(True)
+        self.iface.addPluginToMenu(self.menu, self.settings_action)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -307,7 +263,6 @@ class MetadataDbLinker:
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
-
 
     def run(self):
         """Run method that performs all the real work"""
@@ -332,13 +287,3 @@ class MetadataDbLinker:
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
-
-# https://github.com/qgis/QGIS/blob/master/src/app/qgsbrowserdockwidget.h
-# http://gis.stackexchange.com/questions/126903/in-qgis-is-there-a-keyboard-shortcut-to-open-close-the-layers-panel
-# http://gis.stackexchange.com/questions/174008/how-to-set-keyboard-shortcuts-for-layers-and-browser-panels-in-qgis-2-12-1-l/174020
-# def run():
-#     QgsMessageLog.logMessage("XXXXXXX")
-#
-# from qgis.gui import QgsBrowserTreeView
-#
-# QObject.connect(QgsBrowserTreeView(), SIGNAL("treeExpanded()"), run)
