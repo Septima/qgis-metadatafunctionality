@@ -31,7 +31,7 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    from .metadata_functionality import MetadataDbLinker
+    from .metadata_db_linker import MetadataDbLinker
     return MetadataDbLinker(iface)
 
 pluginName = "Metadata-DB-linker"
