@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>MetadataFunctionalityDialogBase</class>
  <widget class="QDialog" name="MetadataFunctionalityDialogBase">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>257</height>
+    <width>772</width>
+    <height>798</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,272 +19,339 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>772</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MetaMan Settings</string>
+   <string>Metadata-DB-Linker</string>
   </property>
-  <property name="sizeGripEnabled">
-   <bool>true</bool>
+  <property name="modal">
+   <bool>false</bool>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>220</y>
-     <width>161</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Database:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="testConnectionButton">
+  <widget class="QLineEdit" name="nameEdit">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>220</y>
-     <width>131</width>
+     <x>176</x>
+     <y>320</y>
+     <width>581</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="kleNo_label">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>430</y>
+     <width>141</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Kle-journal-number:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="kleNoEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>176</x>
+     <y>430</y>
+     <width>501</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="date_label">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>635</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Latest change:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="responsible_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>570</y>
+     <width>161</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Responsible center or employee:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="project_label">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>600</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Projects which contain the file:</string>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="kleNoLookupBtn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>685</x>
+     <y>430</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Search KLE</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="responsibleEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>176</x>
+     <y>570</y>
+     <width>581</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="projectEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>176</x>
+     <y>600</y>
+     <width>581</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>700</y>
+     <width>731</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="selectionBehavior">
+    <enum>QAbstractItemView::SelectRows</enum>
+   </property>
+   <attribute name="horizontalHeaderStretchLastSection">
+    <bool>true</bool>
+   </attribute>
+  </widget>
+  <widget class="QDockWidget" name="treeDock">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>731</width>
+     <height>281</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::NoDockWidgetFeatures</set>
+   </property>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QPushButton" name="saveRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>660</y>
+     <width>113</width>
      <height>32</height>
     </rect>
    </property>
    <property name="text">
-    <string>Test Connection</string>
+    <string>Gem</string>
    </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>160</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Database user:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>190</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Database password:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="username">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>160</y>
-     <width>301</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="password">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>190</y>
-     <width>301</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="echoMode">
-    <enum>QLineEdit::Password</enum>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="databaseDefinitionButton">
-   <property name="enabled">
+   <property name="default">
     <bool>true</bool>
    </property>
+  </widget>
+  <widget class="QDateTimeEdit" name="dateEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>220</y>
-     <width>151</width>
+     <x>176</x>
+     <y>630</y>
+     <width>141</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="displayFormat">
+    <string>dd/MM-yyyy HH:mm</string>
+   </property>
+   <property name="calendarPopup">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="deleteRecordButton">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>660</y>
+     <width>113</width>
      <height>32</height>
     </rect>
    </property>
    <property name="text">
-    <string>Database Definition</string>
+    <string>Slet</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="database">
+  <widget class="QTextEdit" name="descriptionEdit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>10</y>
-     <width>301</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="cursorPosition">
-    <number>0</number>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="table">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>100</y>
-     <width>301</width>
-     <height>21</height>
+     <x>176</x>
+     <y>350</y>
+     <width>581</width>
+     <height>71</height>
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
+  <widget class="QLabel" name="chosefile_label">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>100</y>
-     <width>111</width>
+     <x>24</x>
+     <y>22</y>
+     <width>341</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Vælg filen som skal have tilføjet/ændret metadata</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="metadatainformations_label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>300</y>
+     <width>151</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Metadatainformations</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="description_label">
+   <property name="geometry">
+    <rect>
+     <x>29</x>
+     <y>350</y>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Table:</string>
+    <string>Description of file content:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="schema">
+  <widget class="QLabel" name="name_label">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>130</y>
-     <width>301</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>130</y>
-     <width>111</width>
+     <x>29</x>
+     <y>320</y>
+     <width>151</width>
      <height>16</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Schema:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_6">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>70</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
+   <property name="focusPolicy">
+    <enum>Qt::TabFocus</enum>
    </property>
    <property name="text">
-    <string>Port:</string>
+    <string>Descriping name:</string>
+   </property>
+   <property name="buddy">
+    <cstring>nameEdit</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="port">
+  <widget class="QLineEdit" name="kleSuggestions">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>70</y>
-     <width>301</width>
-     <height>21</height>
+     <x>176</x>
+     <y>460</y>
+     <width>581</width>
+     <height>91</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="host">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>40</y>
-     <width>301</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_7">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>111</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Host:</string>
    </property>
   </widget>
  </widget>
  <tabstops>
-  <tabstop>database</tabstop>
-  <tabstop>host</tabstop>
-  <tabstop>port</tabstop>
-  <tabstop>table</tabstop>
-  <tabstop>schema</tabstop>
-  <tabstop>username</tabstop>
-  <tabstop>password</tabstop>
-  <tabstop>testConnectionButton</tabstop>
-  <tabstop>databaseDefinitionButton</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>descriptionEdit</tabstop>
+  <tabstop>kleNoEdit</tabstop>
+  <tabstop>kleNoLookupBtn</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>responsibleEdit</tabstop>
+  <tabstop>projectEdit</tabstop>
+  <tabstop>deleteRecordButton</tabstop>
+  <tabstop>saveRecordButton</tabstop>
+  <tabstop>tableView</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>MetadataFunctionalityDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>MetadataFunctionalityDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
