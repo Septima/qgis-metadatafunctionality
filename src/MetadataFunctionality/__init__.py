@@ -26,7 +26,7 @@ from qgissettingmanager import SettingManager
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load MetadataFunctionality class from file MetadataFunctionality.
+    """Load MetadataDbLinker class from file metadata_db_linker.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface

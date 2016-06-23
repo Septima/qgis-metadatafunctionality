@@ -3,7 +3,7 @@
 /***************************************************************************
  MetadataDialog
                                  A QGIS plugin
- MetadataFunctionality
+ MetadataDbLinker
                              -------------------
         begin                : 2016-04-04
         git sha              : $Format:%H$

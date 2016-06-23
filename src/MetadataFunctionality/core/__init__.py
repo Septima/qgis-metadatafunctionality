@@ -1,4 +1,4 @@
-from .. import MetadataFunctionalitySettings
+from .. import MetadataDbLinkerSettings
 from qgis.core import QgsVectorLayer, QgsDataSourceURI
 from PyQt4 import QtSql
 
