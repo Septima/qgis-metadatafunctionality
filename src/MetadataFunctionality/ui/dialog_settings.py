@@ -96,7 +96,7 @@ class SettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         database = self.database.text()
         port = self.port.text()
         schema = self.schema.text()
-        sourcetable = self.table.text()
+        sourcetable = self.sourcetable.text()
         username = self.username.text()
         password = self.password.text()
 
