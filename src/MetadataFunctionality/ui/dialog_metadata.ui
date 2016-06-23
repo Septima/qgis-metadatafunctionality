@@ -26,7 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MetadataFunctionality</string>
+   <string>Metadata-DB-linker</string>
   </property>
   <property name="modal">
    <bool>false</bool>
