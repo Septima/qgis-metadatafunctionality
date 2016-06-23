@@ -38,14 +38,14 @@ LRELEASE = lrelease
 # translation
 SOURCES = \
 	__init__.py \
-	metadata_functionality.py \
+	metadata_db_linker.py \
 	dialog_metadata.py 
 
 PLUGINNAME = Metadata-DB-Linker
 
 PY_FILES = \
 	__init__.py \
-	metadata_functionality.py \
+	metadata_db_linker.py \
 	dialog_metadata.py
 
 UI_FILES = \
