@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- Dialog_settings
+ SettingsDialog
                                  A QGIS plugin
  MetadataFunctionality
                              -------------------
@@ -28,20 +28,20 @@ from PyQt4.QtGui import QMessageBox, QTreeView
 
 from db_manager.db_plugins.postgis.plugin import PGVectorTable, PGTable
 
-from .. import MetadataFunctionalitySettings
+from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
 from ..qgissettingmanager.settingdialog import SettingDialog
-from ..ui.metadata_functionality_dialog_settings_db_def import \
-    MetadataFunctionalitySettingsDBDefDialog
+from ..ui.dialog_settings_db_def import \
+    SettingsDbDefDialog
 
 SETTINGS_FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'metadata_functionality_dialog_settings.ui'))
+    os.path.dirname(__file__), 'dialog_settings.ui'))
 
-class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
+class SettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
 
     def __init__(self, parent=None):
         """Constructor."""
-        super(MetadataFunctionalitySettingsDialog, self).__init__(parent)
+        super(SettingsDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -52,12 +52,12 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
 
         self.setupUi(self)
 
-        self.settings = MetadataFunctionalitySettings()
+        self.settings = MetadataDbLinkerSettings()
         SettingDialog.__init__(self, self.settings)
 
-        self.db_def_dlg = MetadataFunctionalitySettingsDBDefDialog()
+        self.db_def_dlg = SettingsDbDefDialog()
 
-        self.table_name = self.settings.value('table')
+        self.table_name = self.settings.value('sourcetable')
 
         self.testConnectionButton.clicked.connect(self.test_connection)
 

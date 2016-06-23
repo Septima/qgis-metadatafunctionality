@@ -38,7 +38,7 @@ from .. import MetadataFunctionalitySettings
 from ..core import MetadataDbLinkerTool
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'metadata_functionality_dialog.ui'))
+    os.path.dirname(__file__), 'dialog_metadata.ui'))
 
 class MetaTableModel(QAbstractTableModel):
     """
@@ -103,7 +103,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
         self.schema = schema
 
         self.settings = MetadataFunctionalitySettings()
-        self.db_tool = MetaManDBTool()
+        self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
 
