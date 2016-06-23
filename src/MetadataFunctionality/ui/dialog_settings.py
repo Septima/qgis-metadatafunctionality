@@ -70,7 +70,7 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
         self.database.textChanged.connect(self.activate_test_button)
         self.port.textChanged.connect(self.activate_test_button)
         self.schema.textChanged.connect(self.activate_test_button)
-        self.table.textChanged.connect(self.activate_test_button)
+        self.sourcetable.textChanged.connect(self.activate_test_button)
         self.username.textChanged.connect(self.activate_test_button)
         self.password.textChanged.connect(self.activate_test_button)
 
@@ -96,11 +96,11 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, Se
         database = self.database.text()
         port = self.port.text()
         schema = self.schema.text()
-        table = self.table.text()
+        sourcetable = self.table.text()
         username = self.username.text()
         password = self.password.text()
 
-        return host != '' and database != '' and port != '' and schema != '' and table != '' and username != '' and password != ''
+        return host != '' and database != '' and port != '' and schema != '' and sourcetable != '' and username != '' and password != ''
 
     def activate_test_button(self):
         """

@@ -232,24 +232,24 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                 # print(self.schema)
 
                 if 'name' in list(results):
-                    self.navnEdit.setText(results.get('name'))
+                    self.nameEdit.setText(results.get('name'))
 
-                if 'beskrivelse' in list(results):
-                    self.beskrivelseEdit.setText(results.get('beskrivelse'))
+                if 'description' in list(results):
+                    self.descriptionEdit.setText(results.get('description'))
 
-                if 'timestamp' in list(results):
-                    d = results.get('timestamp')
+                if 'ts_timezone' in list(results):
+                    d = results.get('ts_timezone')
                     da = datetime.strptime(d,'%d/%m-%Y %H:%M')
-                    self.datoEdit.setDate(da)
+                    self.dateEdit.setDate(da)
 
-                if 'journal_nr' in list(results):
-                    self.journalnrEdit.setText(results.get('journal_nr'))
+                if 'kle_no' in list(results):
+                    self.kleNoEdit.setText(results.get('kle_no'))
 
-                if 'resp_center_off' in list(results):
-                    self.ansvarligCenterMedarbejderEdit.setText(results.get('resp_center_off'))
+                if 'responsible' in list(results):
+                    self.responsibleEdit.setText(results.get('responsible'))
 
-                if 'proj_wor' in list(results):
-                    self.projekterWorEdit.setText(results.get('proj_wor'))
+                if 'project' in list(results):
+                    self.projectEdit.setText(results.get('project'))
 
         else:
             self.currentlySelectedLine = None
@@ -274,32 +274,30 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
         Activates all fields and buttons.
         :return:
         """
-        # self.addRecordButton.setEnabled(True)
+        self.nameEdit.setEnabled(True)
+        self.descriptionEdit.setEnabled(True)
+        self.kleNoEdit.setEnabled(True)
+        self.responsibleEdit.setEnabled(True)
+        self.projectEdit.setEnabled(True)
+        self.dateEdit.setEnabled(True)
         self.saveRecordButton.setEnabled(True)
         self.deleteRecordButton.setEnabled(True)
-        self.datoEdit.setEnabled(True)
-        self.navnEdit.setEnabled(True)
-        self.projekterWorEdit.setEnabled(True)
-        self.ansvarligCenterMedarbejderEdit.setEnabled(True)
         # self.tableView.setEnabled(True)
-        self.journalnrEdit.setEnabled(True)
-        self.beskrivelseEdit.setEnabled(True)
 
     def deactivate_fields(self):
         """
         Deactivates all fields and buttons.
         :return:
         """
-        self.datoEdit.setEnabled(False)
-        self.addRecordButton.setEnabled(False)
-        self.deleteRecordButton.setEnabled(False)
+        self.nameEdit.setEnabled(False)
+        self.descriptionEdit.setEnabled(False)
+        self.kleNoEdit.setEnabled(False)
+        self.responsibleEdit.setEnabled(False)
+        self.projectEdit.setEnabled(False)
+        self.dateEdit.setEnabled(False)
         self.saveRecordButton.setEnabled(False)
-        self.navnEdit.setEnabled(False)
-        self.projekterWorEdit.setEnabled(False)
-        self.ansvarligCenterMedarbejderEdit.setEnabled(False)
-        self.tableView.setEnabled(False)
-        self.journalnrEdit.setEnabled(False)
-        self.beskrivelseEdit.setEnabled(False)
+        self.deleteRecordButton.setEnabled(False)
+        # self.tableView.setEnabled(False)
 
     @pyqtSlot("QItemSelection, QItemSelection")
     def selection_changed(self, newSelection, oldSelection):
@@ -339,12 +337,12 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
         Empties all fields.
         :return:
         """
-        self.navnEdit.setText('')
-        self.projekterWorEdit.setText('')
-        self.ansvarligCenterMedarbejderEdit.setText('')
-        self.navnEdit.setText('')
-        self.journalnrEdit.setText('')
-        self.beskrivelseEdit.setText('')
+        self.nameEdit.setText('')
+        ##self.nameEdit.setText('')
+        self.descriptionEdit.setText('')
+        self.responsibleEdit.setText('')
+        self.kleNoEdit.setText('')
+        self.projectEdit.setText('')
 
     def update_grid(self):
         """
@@ -364,7 +362,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                 'db': db,
                 'port': port,
                 'schema': schema,
-                'table': table,
+                'sourcetable': table,
             }, order_by={'field':'ts', 'direction':'DESC'})
 
         if len(results) > 0:
@@ -428,14 +426,14 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                 'port': port,
                 'host': host,
                 'schema': schema,
-                'table': table,
+                'sourcetable': table,
                 'guid': self.currentlySelectedLine,
-                'name': self.navnEdit.text(),
-                'beskrivelse': self.beskrivelseEdit.toPlainText(),
-                'timestamp': self.datoEdit.text(),
-                'journal_nr': self.journalnrEdit.text(),
-                'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
-                'proj_wor': self.projekterWorEdit.text()
+                'name': self.nameEdit.text(),
+                'description': self.descriptionEdit.toPlainText(),
+                'ts_timezone': self.dateEdit.text(),
+                'kle_no': self.kleNoEdit.text(),
+                'responsible': self.responsibleEdit.text(),
+                'project': self.projectEdit.text()
             }
         )
         self.update_grid()
@@ -462,13 +460,13 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                     'port': port,
                     'schema': schema,
                     'host': host,
-                    'table': table,
+                    'sourcetable': table,
                     'name': self.navnEdit.text(),
-                    'beskrivelse': self.beskrivelseEdit.toPlainText(),
-                    'timestamp': self.datoEdit.text(),
-                    'journal_nr': self.journalnrEdit.text(),
-                    'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
-                    'proj_wor': self.projekterWorEdit.text()
+                    'description': self.descriptionEdit.toPlainText(),
+                    'ts_timezone': self.dateEdit.text(),
+                    'kle_no': self.kleNoEdit.text(),
+                    'responsible': self.responsibleEdit.text(),
+                    'project': self.projectEdit.text()
                 }
             )
             self.currentlySelectedLine = guid
@@ -476,7 +474,6 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             self.tableView.selectRow(0)
         else:
             QMessageBox.information(self, self.tr("Please!"), self.tr("Remember to select a table."))
-
 
 
 

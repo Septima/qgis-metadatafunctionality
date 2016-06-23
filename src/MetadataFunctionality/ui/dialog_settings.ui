@@ -145,7 +145,7 @@
     <number>0</number>
    </property>
   </widget>
-  <widget class="QLineEdit" name="table">
+  <widget class="QLineEdit" name="sourcetable">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -242,7 +242,7 @@
   <tabstop>database</tabstop>
   <tabstop>host</tabstop>
   <tabstop>port</tabstop>
-  <tabstop>table</tabstop>
+  <tabstop>sourcetable</tabstop>
   <tabstop>schema</tabstop>
   <tabstop>username</tabstop>
   <tabstop>password</tabstop>

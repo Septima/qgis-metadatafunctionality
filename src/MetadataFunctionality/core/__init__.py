@@ -15,10 +15,19 @@ class MetaManDBTool(object):
             'type': 'varchar'},
         'name':
             { 'type': 'varchar',
-              'label': 'Navn'},
-        'beskrivelse':
+              'label': 'Name'},
+        'description':
             {'type': 'varchar',
-             'label': 'Beskrivelse'},
+             'label': 'Description'},
+        'kle_no': {
+            'label': 'KLE-numbering',
+            'type': 'varchar'},
+        'responsible': {
+            'label':'Responsible Center or Employee',
+            'type': 'varchar'},
+        'project': {
+            'label': 'Project',
+            'type': 'varchar'},
         'host':
             {'type': 'varchar'},
         'db':
@@ -27,23 +36,14 @@ class MetaManDBTool(object):
             {'type': 'int'},
         'schema':{
             'type': 'varchar'},
-        'table': {
+        'sourcetable': {
             'type': 'varchar'},
-        'timestamp': {
-            'label': 'Dato',
+        'ts_timezone': {
+            'label': 'Date',
             'type': 'varchar'},
-        'journal_nr': {
-            'label': 'Journal nr.',
-            'type': 'varchar'},
-        'resp_center_off': {
-            'label':'Center / Medarbejder',
-            'type': 'varchar'},
-        'proj_wor': {
-            'label': u'Projekt / WOR',
-            'type': 'varchar'}
     }
 
-    field_order = ['name', 'beskrivelse', 'journal_nr', 'timestamp', 'resp_center_off', 'proj_wor']
+    field_order = ['name', 'description', 'kle_no', 'ts_timezone', 'responsible', 'project']
 
     def __init__(self):
         """

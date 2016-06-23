@@ -44,6 +44,6 @@ class MetadataDbLinkerSettings(SettingManager):
         self.addSetting("database", "string", "global", "")
         self.addSetting("port", "string", "global", "")
         self.addSetting("schema", "string", "global", "public")
-        self.addSetting("table", "string", "global", "metaman")
+        self.addSetting("sourcetable", "string", "global", "metadata")
         self.addSetting("username", "string", "global", "")
         self.addSetting("password", "string", "global", "")
