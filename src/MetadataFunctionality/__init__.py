@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- MetadataFunctionality
+ MetadataDBlinker
                                  A QGIS plugin
- MetadataFunctionality
+ MetadataDBlinker
                              -------------------
         begin                : 2016-04-04
         copyright            : (C) 2016 Septima P/S

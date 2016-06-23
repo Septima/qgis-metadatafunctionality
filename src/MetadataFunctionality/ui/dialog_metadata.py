@@ -34,7 +34,7 @@ from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, 
 
 from qgis.gui import QgsBrowserTreeView
 
-from .. import MetadataFunctionalitySettings
+from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -102,7 +102,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
         self.schema = schema
 
-        self.settings = MetadataFunctionalitySettings()
+        self.settings = MetadataDbLinkerSettings()
         self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
