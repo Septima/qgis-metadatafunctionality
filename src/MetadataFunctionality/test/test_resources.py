@@ -31,7 +31,7 @@ class MetadataFunctionalityDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/MetadataFunctionality/icon.png'
+        path = ':/plugins/MetadataFunctionality/resources/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
