@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/MetadataFunctionality" >
-        <file>icon.png</file>
-    </qresource>
-    <qresource prefix="/plugins/MetadataFunctionality" >
-        <file>metaman.png</file>
+        <file>resources/icon.png</file>
+        <file>resources/metadata.png</file>
     </qresource>
 </RCC>

@@ -52,12 +52,12 @@ class SettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDialog):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
+        self.settings = MetadataDbLinkerSettings()
+        SettingDialog.__init__(self, self.settings)
+
         self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
-
-        self.settings = MetadataDbLinkerSettings()
-        SettingDialog.__init__(self, self.settings)
 
         self.db_def_dlg = SettingsDbDefDialog()
 
