@@ -136,7 +136,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
         self.treeDock.setWidget(self.tree)
 
-        self.datoEdit.setDateTime(datetime.now())
+        self.dateEdit.setDateTime(datetime.now())
 
         # self.buttonBox.accepted.connect(self.save_record)
 
@@ -165,7 +165,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
         if self.db_tool.validate_structure():
             super(MetadataDialog, self).exec_()
-            # self.datoEdit.setDateTime(datetime.now())
+            # self.dateEdit.setDateTime(datetime.now())
         else:
             QMessageBox.information(self, self.tr("Please!"),
                                     self.tr("Table with metadata does not exist or wrong access rights."))
@@ -330,7 +330,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                 else:
                     self.tableView.setModel(None)
                     self.currentlySelectedLine = None
-                    self.datoEdit.setDateTime(datetime.now())
+                    self.dateEdit.setDateTime(datetime.now())
             else:
                 self.deactivate_fields()
 
