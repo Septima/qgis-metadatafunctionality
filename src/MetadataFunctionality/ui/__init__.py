@@ -1,3 +1,3 @@
-from .metadata_functionality_dialog import MetadataFunctionalityDialog
-from .metadata_functionality_dialog_settings import MetadataFunctionalitySettingsDialog
-from .metadata_functionality_dialog_settings_db_def import MetadataFunctionalitySettingsDBDefDialog
+from .dialog_metadata import MetadataDialog
+from .dialog_settings import SettingsDialog
+from .dialog_settings_db_def import SettingsDbDefDialog

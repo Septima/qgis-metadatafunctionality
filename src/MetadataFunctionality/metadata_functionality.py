@@ -28,8 +28,8 @@ from qgis.core import QgsMessageLog
 import resources
 
 # Import the code for the dialog
-from .ui.metadata_functionality_dialog import MetadataFunctionalityDialog
-from .ui.metadata_functionality_dialog_settings import MetadataFunctionalitySettingsDialog
+from .ui.dialog_metadata import MetadataDialog
+from .ui.dialog_settings import SettingsDialog
 
 import os.path
 
@@ -55,7 +55,7 @@ def showMetadataDialogue(table=None, uri=None, schema=None):
 
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
 
-    dialog = MetadataFunctionalityDialog(table=table, uri=uri, schema=schema)
+    dialog = MetadataDialog(table=table, uri=uri, schema=schema)
 
     dialog.exec_()
 
@@ -131,25 +131,25 @@ def newContextMenuEvent(self, ev):
 
     if isinstance(item, (Table, DBPlugin)):
         menu.addSeparator()
-        menu.addAction(self.tr("Metadata..."), self.fireMetamanDlg)
+        menu.addAction(self.tr("Metadata..."), self.fireMetadataDlg)
 
     if not menu.isEmpty():
         menu.exec_(ev.globalPos())
 
     menu.deleteLater()
 
-def fireMetaManDlg(self):
+def fireMetadataDlg(self):
     item = self.currentItem()
     showMetadataDialogue(table=item.name, uri=item.uri())
 
 # ---
 # menu
 
-DBTree.fireMetamanDlg = fireMetaManDlg
+DBTree.fireMetamanDlg = fireMetadataDlg
 DBTree.contextMenuEvent = newContextMenuEvent
 
 
-class MetadataFunctionality:
+class MetadataDbLinker:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -179,16 +179,16 @@ class MetadataFunctionality:
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MetadataFunctionalityDialog()
-        self.settings_dlg = MetadataFunctionalitySettingsDialog()
+        self.dlg = MetadataDialog()
+        self.settings_dlg = SettingsDialog()
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&MetadataFunctionality')
+        self.menu = self.tr(u'&Metadata-DB-linker')
 
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'MetadataFunctionality')
-        self.toolbar.setObjectName(u'MetadataFunctionality')
+        self.toolbar = self.iface.addToolBar('Metadata-DB-linker')
+        self.toolbar.setObjectName('Metadata-DB-linker')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -203,7 +203,7 @@ class MetadataFunctionality:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('MetadataFunctionality', message)
+        return QCoreApplication.translate('Metadata-DB-linker', message)
 
 
     def add_action(
@@ -302,7 +302,7 @@ class MetadataFunctionality:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&MetadataFunctionality'),
+                self.tr(u'&Metadata-DB-linker'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar

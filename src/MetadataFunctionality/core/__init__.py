@@ -2,7 +2,7 @@ from .. import MetadataFunctionalitySettings
 from qgis.core import QgsVectorLayer, QgsDataSourceURI
 from PyQt4 import QtSql
 
-class MetaManDBTool(object):
+class MetadataDbLinkerTool(object):
     """
     The tool responsible for reading and writing to the database.
     """
@@ -50,7 +50,7 @@ class MetaManDBTool(object):
         Constructor.
         Connects to the QGIS settings.
         """
-        self.settings = MetadataFunctionalitySettings()
+        self.settings = MetadataDbLinkerSettings()
 
     def get_field_def(self):
         return self.field_def
@@ -92,7 +92,7 @@ class MetaManDBTool(object):
     def get_schema(self):
         return self.settings.value("schema")
 
-    def create_metaman_table(self, db):
+    def create_metadata_table(self, db):
         """
         Creates the table to store metadata.
         :return:

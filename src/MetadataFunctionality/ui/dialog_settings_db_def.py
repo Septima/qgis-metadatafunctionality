@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- DB definition in settingsdialog
+ SettingsDbDefDialog
                                  A QGIS plugin
  MetadataFunctionality
                              -------------------
@@ -26,13 +26,13 @@ import os
 from PyQt4 import QtGui, uic
 
 SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'metadata_functionality_dialog_settings_db_def.ui'))
+    os.path.dirname(__file__), 'dialog_settings_db_def.ui'))
 
-class MetadataFunctionalitySettingsDBDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_CLASS):
+class SettingsDbDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_CLASS):
 
     def __init__(self, parent=None):
         """Constructor."""
-        super(MetadataFunctionalitySettingsDBDefDialog, self).__init__(parent)
+        super(SettingsDbDefDialog, self).__init__(parent)
         self.setupUi(self)
         self.load_db_def()
 
