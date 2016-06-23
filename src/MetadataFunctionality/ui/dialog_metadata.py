@@ -168,7 +168,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             # self.datoEdit.setDateTime(datetime.now())
         else:
             QMessageBox.information(self, self.tr("Please!"),
-                                    self.tr("Metadata table does not exist or wrong access rights."))
+                                    self.tr("Table with metadata does not exist or wrong access rights."))
 
     def get_selected_uri(self):
         """
@@ -474,11 +474,3 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             self.tableView.selectRow(0)
         else:
             QMessageBox.information(self, self.tr("Please!"), self.tr("Remember to select a table."))
-
-
-
-
-
-
-
-

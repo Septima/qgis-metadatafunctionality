@@ -185,7 +185,7 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
         if not result:
-            raise RuntimeError('Failed to udpate data.')
+            raise RuntimeError('Failed to update data.')
         db.commit()
         db.close()
 
