@@ -48,7 +48,7 @@ class MetaManDBTool(object):
     def __init__(self):
         """
         Constructor.
-        Connects to the QGis settings.
+        Connects to the QGIS settings.
         """
         self.settings = MetadataFunctionalitySettings()
 
