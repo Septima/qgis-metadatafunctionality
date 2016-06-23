@@ -343,6 +343,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
         self.responsibleEdit.setText('')
         self.kleNoEdit.setText('')
         self.projectEdit.setText('')
+        self.kleSuggestions.setText('')
 
     def update_grid(self):
         """
