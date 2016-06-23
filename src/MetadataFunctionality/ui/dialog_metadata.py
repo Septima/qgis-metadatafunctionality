@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- MetadataFunctionalityDialog
+ MetadataDialog
                                  A QGIS plugin
- MetadataFunctionality
+ MetadataDbLinker
                              -------------------
         begin                : 2016-04-04
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Bernhard Snizek (Septima P/S)
-        email                : bernhard@septima.dk
+        copyright            : (C) 2016 Septima P/S
+        email                : kontakt@septima.dk
  ***************************************************************************/
 
 /***************************************************************************
@@ -48,13 +48,13 @@ from qgis.core import (
 
 from qgis.gui import QgsBrowserTreeView
 
-from .. import MetadataFunctionalitySettings
-from ..core import MetaManDBTool
+from .. import MetadataDbLinkerSettings
+from ..core import MetadataDbLinkerTool
 
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
         os.path.dirname(__file__),
-        'metadata_functionality_dialog.ui'
+        'dialog_metadata.ui'
     )
 )
 
@@ -103,14 +103,14 @@ class SelectedItemProxy(object):
         return self._uri
 
 
-class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
+class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
     field_def = []
     data_list = []
 
     def __init__(self, parent=None, table=None, uri=None, schema=None):
         """Constructor."""
-        super(MetadataFunctionalityDialog, self).__init__(parent)
+        super(MetadataDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
@@ -122,8 +122,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         self.schema = schema
 
-        self.settings = MetadataFunctionalitySettings()
-        self.db_tool = MetaManDBTool()
+        self.settings = MetadataDbLinkerSettings()
+        self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
 
@@ -156,7 +156,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         self.treeDock.setWidget(self.tree)
 
-        self.datoEdit.setDateTime(datetime.now())
+        self.dateEdit.setDateTime(datetime.now())
 
         # self.buttonBox.accepted.connect(self.save_record)
 
@@ -188,8 +188,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         # self.tree.refresh()
 
         if self.db_tool.validate_structure():
-            super(MetadataFunctionalityDialog, self).exec_()
-            # self.datoEdit.setDateTime(datetime.now())
+            super(MetadataDialog, self).exec_()
+            # self.dateEdit.setDateTime(datetime.now())
         else:
             QMessageBox.information(
                 self,
@@ -259,26 +259,24 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 # print(self.schema)
 
                 if 'name' in list(results):
-                    self.navnEdit.setText(results.get('name'))
+                    self.nameEdit.setText(results.get('name'))
 
-                if 'beskrivelse' in list(results):
-                    self.beskrivelseEdit.setText(results.get('beskrivelse'))
+                if 'description' in list(results):
+                    self.descriptionEdit.setText(results.get('description'))
 
-                if 'timestamp' in list(results):
-                    d = results.get('timestamp')
+                if 'ts_timezone' in list(results):
+                    d = results.get('ts_timezone')
                     da = datetime.strptime(d, '%d/%m-%Y %H:%M')
-                    self.datoEdit.setDate(da)
+                    self.dateEdit.setDate(da)
 
-                if 'journal_nr' in list(results):
-                    self.journalnrEdit.setText(results.get('journal_nr'))
+                if 'kle_no' in list(results):
+                    self.kleNoEdit.setText(results.get('kle_no'))
 
-                if 'resp_center_off' in list(results):
-                    self.ansvarligCenterMedarbejderEdit.setText(
-                        results.get('resp_center_off')
-                    )
+                if 'responsible' in list(results):
+                    self.responsibleEdit.setText(results.get('responsible'))
 
-                if 'proj_wor' in list(results):
-                    self.projekterWorEdit.setText(results.get('proj_wor'))
+                if 'project' in list(results):
+                    self.projectEdit.setText(results.get('project'))
 
         else:
             self.currentlySelectedLine = None
@@ -303,32 +301,32 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         Activates all fields and buttons.
         :return:
         """
-        # self.addRecordButton.setEnabled(True)
+        self.nameEdit.setEnabled(True)
+        self.descriptionEdit.setEnabled(True)
+        self.kleNoEdit.setEnabled(True)
+        self.kleNoLookupBtn.setEnabled(True)
+        self.responsibleEdit.setEnabled(True)
+        self.projectEdit.setEnabled(True)
+        self.dateEdit.setEnabled(True)
         self.saveRecordButton.setEnabled(True)
         self.deleteRecordButton.setEnabled(True)
-        self.datoEdit.setEnabled(True)
-        self.navnEdit.setEnabled(True)
-        self.projekterWorEdit.setEnabled(True)
-        self.ansvarligCenterMedarbejderEdit.setEnabled(True)
         # self.tableView.setEnabled(True)
-        self.journalnrEdit.setEnabled(True)
-        self.beskrivelseEdit.setEnabled(True)
 
     def deactivate_fields(self):
         """
         Deactivates all fields and buttons.
         :return:
         """
-        self.datoEdit.setEnabled(False)
-        self.addRecordButton.setEnabled(False)
-        self.deleteRecordButton.setEnabled(False)
+        self.nameEdit.setEnabled(False)
+        self.descriptionEdit.setEnabled(False)
+        self.kleNoEdit.setEnabled(False)
+        self.kleNoLookupBtn.setEnabled(False)
+        self.responsibleEdit.setEnabled(False)
+        self.projectEdit.setEnabled(False)
+        self.dateEdit.setEnabled(False)
         self.saveRecordButton.setEnabled(False)
-        self.navnEdit.setEnabled(False)
-        self.projekterWorEdit.setEnabled(False)
-        self.ansvarligCenterMedarbejderEdit.setEnabled(False)
-        self.tableView.setEnabled(False)
-        self.journalnrEdit.setEnabled(False)
-        self.beskrivelseEdit.setEnabled(False)
+        self.deleteRecordButton.setEnabled(False)
+        # self.tableView.setEnabled(False)
 
     @pyqtSlot("QItemSelection, QItemSelection")
     def selection_changed(self, newSelection, oldSelection):
@@ -359,7 +357,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 else:
                     self.tableView.setModel(None)
                     self.currentlySelectedLine = None
-                    self.datoEdit.setDateTime(datetime.now())
+                    self.dateEdit.setDateTime(datetime.now())
             else:
                 self.deactivate_fields()
 
@@ -368,12 +366,12 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         Empties all fields.
         :return:
         """
-        self.navnEdit.setText('')
-        self.projekterWorEdit.setText('')
-        self.ansvarligCenterMedarbejderEdit.setText('')
-        self.navnEdit.setText('')
-        self.journalnrEdit.setText('')
-        self.beskrivelseEdit.setText('')
+        self.nameEdit.setText('')
+        self.descriptionEdit.setText('')
+        self.responsibleEdit.setText('')
+        self.kleNoEdit.setText('')
+        self.projectEdit.setText('')
+        self.kleSuggestions.setText('')
 
     def update_grid(self):
         """
@@ -386,22 +384,22 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         schema = self.get_selected_schema()
         table = self.get_selected_table()
 
-        # print("-> " + schema)
-
         results = self.db_tool.select(
             {
                 'db': db,
                 'port': port,
                 'schema': schema,
-                'table': table,
+                'sourcetable': table,
             },
             order_by={'field': 'ts', 'direction': 'DESC'}
         )
 
         if len(results) > 0:
 
-            labels = [self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
-                      'label' in self.db_tool.get_field_def().get(f)]
+            labels = [
+                self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
+                'label' in self.db_tool.get_field_def().get(f)
+            ]
 
             fields = self.db_tool.field_order
 
@@ -441,7 +439,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
         # self.model.reload()
         # self.tree.update()
         # print("tree refreshed show()")
-        super(MetadataFunctionalityDialog, self).show()
+        super(MetadataDialog, self).show()
 
     def update_record(self):
         """
@@ -461,14 +459,14 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 'port': port,
                 'host': host,
                 'schema': schema,
-                'table': table,
+                'sourcetable': table,
                 'guid': self.currentlySelectedLine,
-                'name': self.navnEdit.text(),
-                'beskrivelse': self.beskrivelseEdit.toPlainText(),
-                'timestamp': self.datoEdit.text(),
-                'journal_nr': self.journalnrEdit.text(),
-                'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
-                'proj_wor': self.projekterWorEdit.text()
+                'name': self.nameEdit.text(),
+                'description': self.descriptionEdit.toPlainText(),
+                'ts_timezone': self.dateEdit.text(),
+                'kle_no': self.kleNoEdit.text(),
+                'responsible': self.responsibleEdit.text(),
+                'project': self.projectEdit.text()
             }
         )
         self.update_grid()
@@ -495,13 +493,13 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                     'port': port,
                     'schema': schema,
                     'host': host,
-                    'table': table,
+                    'sourcetable': table,
                     'name': self.navnEdit.text(),
-                    'beskrivelse': self.beskrivelseEdit.toPlainText(),
-                    'timestamp': self.datoEdit.text(),
-                    'journal_nr': self.journalnrEdit.text(),
-                    'resp_center_off': self.ansvarligCenterMedarbejderEdit.text(),
-                    'proj_wor': self.projekterWorEdit.text()
+                    'description': self.descriptionEdit.toPlainText(),
+                    'ts_timezone': self.dateEdit.text(),
+                    'kle_no': self.kleNoEdit.text(),
+                    'responsible': self.responsibleEdit.text(),
+                    'project': self.projectEdit.text()
                 }
             )
             self.currentlySelectedLine = guid
@@ -511,5 +509,5 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             QMessageBox.information(
                 self,
                 self.tr("Please!"),
-                self.tr("Husk at stille dig på en table foroven.")
+                self.tr("Remember to select a table.")
             )

@@ -175,7 +175,7 @@
     <bool>true</bool>
    </attribute>
   </widget>
-  <widget class="QDockWidget" name="treeDock">
+  <widget class="QLineEdit" name="sourcetable">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -341,16 +341,15 @@
   </widget>
  </widget>
  <tabstops>
-  <tabstop>nameEdit</tabstop>
-  <tabstop>descriptionEdit</tabstop>
-  <tabstop>kleNoEdit</tabstop>
-  <tabstop>kleNoLookupBtn</tabstop>
-  <tabstop>dateEdit</tabstop>
-  <tabstop>responsibleEdit</tabstop>
-  <tabstop>projectEdit</tabstop>
-  <tabstop>deleteRecordButton</tabstop>
-  <tabstop>saveRecordButton</tabstop>
-  <tabstop>tableView</tabstop>
+  <tabstop>database</tabstop>
+  <tabstop>host</tabstop>
+  <tabstop>port</tabstop>
+  <tabstop>sourcetable</tabstop>
+  <tabstop>schema</tabstop>
+  <tabstop>username</tabstop>
+  <tabstop>password</tabstop>
+  <tabstop>testConnectionButton</tabstop>
+  <tabstop>databaseDefinitionButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

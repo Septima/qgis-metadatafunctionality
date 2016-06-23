@@ -1,3 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+ SettingsDialog
+                                 A QGIS plugin
+ MetadataFunctionality
+                             -------------------
+        begin                : 2016-04-04
+        git sha              : $Format:%H$
+        copyright            : (C) 2016 Septima P/S
+        email                : kontakt@septima.dk
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
+
 import os
 
 from PyQt4 import QtGui, uic
@@ -5,40 +28,40 @@ from PyQt4.QtGui import QMessageBox
 
 from db_manager.db_plugins.postgis.plugin import PGTable
 
-from .. import MetadataFunctionalitySettings
-from ..core import MetaManDBTool
+from .. import MetadataDbLinkerSettings
+from ..core import MetadataDbLinkerTool
 from ..qgissettingmanager.settingdialog import SettingDialog
-from ..ui.metadata_functionality_dialog_settings_db_def import MetadataFunctionalitySettingsDBDefDialog
+from ..ui.dialog_settings_db_def import SettingsDbDefDialog
 
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
         os.path.dirname(__file__),
-        'metadata_functionality_dialog_settings.ui'
+        'dialog_settings.ui'
     )
 )
 
 
-class MetadataFunctionalitySettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDialog):
+class SettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDialog):
 
     def __init__(self, parent=None):
         """Constructor."""
-        super(MetadataFunctionalitySettingsDialog, self).__init__(parent)
+        super(SettingsDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
-        self.db_tool = MetaManDBTool()
+        self.db_tool = MetadataDbLinkerTool()
 
         self.setupUi(self)
 
-        self.settings = MetadataFunctionalitySettings()
+        self.settings = MetadataDbLinkerSettings()
         SettingDialog.__init__(self, self.settings)
 
-        self.db_def_dlg = MetadataFunctionalitySettingsDBDefDialog()
+        self.db_def_dlg = SettingsDbDefDialog()
 
-        self.table_name = self.settings.value('table')
+        self.table_name = self.settings.value('sourcetable')
 
         self.testConnectionButton.clicked.connect(self.test_connection)
 
@@ -51,7 +74,7 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDial
         self.database.textChanged.connect(self.activate_test_button)
         self.port.textChanged.connect(self.activate_test_button)
         self.schema.textChanged.connect(self.activate_test_button)
-        self.table.textChanged.connect(self.activate_test_button)
+        self.sourcetable.textChanged.connect(self.activate_test_button)
         self.username.textChanged.connect(self.activate_test_button)
         self.password.textChanged.connect(self.activate_test_button)
 
@@ -77,11 +100,11 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDial
         database = self.database.text()
         port = self.port.text()
         schema = self.schema.text()
-        table = self.table.text()
+        sourcetable = self.sourcetable.text()
         username = self.username.text()
         password = self.password.text()
 
-        return host != '' and database != '' and port != '' and schema != '' and table != '' and username != '' and password != ''
+        return host != '' and database != '' and port != '' and schema != '' and sourcetable != '' and username != '' and password != ''
 
     def activate_test_button(self):
         """
@@ -100,6 +123,6 @@ class MetadataFunctionalitySettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDial
         self.settings.setValue('database', self.database.text())
         self.settings.setValue('username', self.username.text())
         self.settings.setValue('password', self.password.text())
-        mmt = MetaManDBTool()
+        mmt = MetadataDbLinkerTool()
         if mmt.validate_structure():
             QMessageBox.information(self, self.tr("Please!"), self.tr("DB structure and connection OK."))

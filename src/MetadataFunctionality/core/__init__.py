@@ -1,12 +1,11 @@
 from PyQt4 import QtSql
 from qgis.core import (
-    QgsDataSourceURI,
-    QgsMessageLog
+    QgsDataSourceURI
 )
-from .. import MetadataFunctionalitySettings
+from .. import MetadataDbLinkerSettings
 
 
-class MetaManDBTool(object):
+class MetadataDbLinkerTool(object):
     """
     The tool responsible for reading and writing to the database.
     """
@@ -19,10 +18,19 @@ class MetaManDBTool(object):
             'type': 'varchar'},
         'name':
             { 'type': 'varchar',
-              'label': 'Navn'},
-        'beskrivelse':
+              'label': 'Name'},
+        'description':
             {'type': 'varchar',
-             'label': 'Beskrivelse'},
+             'label': 'Description'},
+        'kle_no': {
+            'label': 'KLE-numbering',
+            'type': 'varchar'},
+        'responsible': {
+            'label':'Responsible Center or Employee',
+            'type': 'varchar'},
+        'project': {
+            'label': 'Project',
+            'type': 'varchar'},
         'host':
             {'type': 'varchar'},
         'db':
@@ -31,30 +39,21 @@ class MetaManDBTool(object):
             {'type': 'int'},
         'schema':{
             'type': 'varchar'},
-        'table': {
+        'sourcetable': {
             'type': 'varchar'},
-        'timestamp': {
-            'label': 'Dato',
+        'ts_timezone': {
+            'label': 'Date',
             'type': 'varchar'},
-        'journal_nr': {
-            'label': 'Journal nr.',
-            'type': 'varchar'},
-        'resp_center_off': {
-            'label':'Center / Medarbejder',
-            'type': 'varchar'},
-        'proj_wor': {
-            'label': u'Projekt / WOR',
-            'type': 'varchar'}
     }
 
-    field_order = ['name', 'beskrivelse', 'journal_nr', 'timestamp', 'resp_center_off', 'proj_wor']
+    field_order = ['name', 'description', 'kle_no', 'ts_timezone', 'responsible', 'project']
 
     def __init__(self):
         """
         Constructor.
-        Connects to the QGis settings.
+        Connects to the QGIS settings.
         """
-        self.settings = MetadataFunctionalitySettings()
+        self.settings = MetadataDbLinkerSettings()
 
     def get_field_def(self):
         return self.field_def
@@ -96,9 +95,9 @@ class MetaManDBTool(object):
     def get_schema(self):
         return self.settings.value("schema")
 
-    def create_metaman_table(self, db):
+    def create_metadata_table(self, db):
         """
-        Creates the metaman table.
+        Creates the table to store metadata.
         :return:
         """
 
@@ -189,7 +188,7 @@ class MetaManDBTool(object):
         query = QtSql.QSqlQuery(db)
         result = query.exec_(s)
         if not result:
-            raise RuntimeError('Failed to udpate data.')
+            raise RuntimeError('Failed to update data.')
         db.commit()
         db.close()
 
@@ -236,7 +235,7 @@ class MetaManDBTool(object):
         """
         Deletes from the table given criteria as a dict.
 
-        d = {'blabla': 1} -> DELETE FROM foo where blabla = 1;
+        d = {'sometext': 1} -> DELETE FROM foo where sometext = 1;
 
         :param d:
         :return:

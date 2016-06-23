@@ -7,8 +7,8 @@
                               -------------------
         begin                : 2016-04-04
         git sha              : $Format:%H$
-        copyright            : (C) 2016 by Bernhard Snizek (Septima P/S)
-        email                : bernhard@septima.dk
+        copyright            : (C) 2016 by Septima P/S
+        email                : kontakt@septima.dk
  ***************************************************************************/
 
 /***************************************************************************
@@ -49,8 +49,8 @@ from qgis.core import QgsMessageLog
 import resources
 
 # Import the code for the dialog
-from .ui.metadata_functionality_dialog import MetadataFunctionalityDialog
-from .ui.metadata_functionality_dialog_settings import MetadataFunctionalitySettingsDialog
+from .ui.dialog_metadata import MetadataDialog
+from .ui.dialog_settings import SettingsDialog
 
 # Import and override postgis create table
 # import inspect
@@ -71,7 +71,7 @@ def showMetadataDialogue(table=None, uri=None, schema=None):
 
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
 
-    dialog = MetadataFunctionalityDialog(table=table, uri=uri, schema=schema)
+    dialog = MetadataDialog(table=table, uri=uri, schema=schema)
 
     dialog.exec_()
 
@@ -160,7 +160,7 @@ def newContextMenuEvent(self, ev):
 
     if isinstance(item, (Table, DBPlugin)):
         menu.addSeparator()
-        menu.addAction(self.tr("Metadata..."), self.fireMetamanDlg)
+        menu.addAction(self.tr("Metadata..."), self.fireMetadataDlg)
 
     if not menu.isEmpty():
         menu.exec_(ev.globalPos())
@@ -168,18 +168,18 @@ def newContextMenuEvent(self, ev):
     menu.deleteLater()
 
 
-def fireMetaManDlg(self):
+def fireMetadataDlg(self):
     item = self.currentItem()
     showMetadataDialogue(table=item.name, uri=item.uri())
 
 # ---
 # menu
 
-DBTree.fireMetamanDlg = fireMetaManDlg
+DBTree.fireMetamanDlg = fireMetadataDlg
 DBTree.contextMenuEvent = newContextMenuEvent
 
 
-class MetadataFunctionality(object):
+class MetadataDbLinker(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -209,16 +209,16 @@ class MetadataFunctionality(object):
                 QCoreApplication.installTranslator(self.translator)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MetadataFunctionalityDialog()
-        self.settings_dlg = MetadataFunctionalitySettingsDialog()
+        self.dlg = MetadataDialog()
+        self.settings_dlg = SettingsDialog()
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&MetadataFunctionality')
+        self.menu = self.tr(u'&Metadata-DB-linker')
 
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'MetadataFunctionality')
-        self.toolbar.setObjectName(u'MetadataFunctionality')
+        self.toolbar = self.iface.addToolBar('Metadata-DB-linker')
+        self.toolbar.setObjectName('Metadata-DB-linker')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -233,7 +233,7 @@ class MetadataFunctionality(object):
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('MetadataFunctionality', message)
+        return QCoreApplication.translate('Metadata-DB-linker', message)
 
     def add_action(
         self,
@@ -312,18 +312,18 @@ class MetadataFunctionality(object):
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/MetadataFunctionality/icon.png'
+        icon_path = ':/plugins/MetadataFunctionality/resources/metadata.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'MetaMan Dialogue'),
+            text=self.tr(u'Enter or edit metadata'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
-        icon_path2 = ':/plugins/MetadataFunctionality/icon.png'
+        icon_path2 = ':/plugins/MetadataFunctionality/resources/settings.png'
         self.add_action(
             icon_path2,
             add_to_toolbar=False,
-            text=self.tr(u'MetaMan Settings'),
+            text=self.tr(u'Settings'),
             callback=self.settings_run,
             parent=self.iface.mainWindow()
         )
@@ -332,7 +332,7 @@ class MetadataFunctionality(object):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&MetadataFunctionality'),
+                self.tr(u'&Metadata-DB-linker'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar

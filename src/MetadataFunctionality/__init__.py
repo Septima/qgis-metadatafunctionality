@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- MetadataFunctionality
+ MetadataDBlinker
                                  A QGIS plugin
- MetadataFunctionality
+ MetadataDBlinker
                              -------------------
         begin                : 2016-04-04
-        copyright            : (C) 2016 by Bernhard Snizek (Septima P/S)
-        email                : bernhard@septima.dk
+        copyright            : (C) 2016 Septima P/S
+        email                : kontakt@septima.dk
         git sha              : $Format:%H$
  ***************************************************************************/
 
@@ -27,25 +27,24 @@ from .qgissettingmanager import SettingManager
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load MetadataFunctionality class from file MetadataFunctionality.
+    """Load MetadataDbLinker class from file metadata_db_linker.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
-    from .metadata_functionality import MetadataFunctionality
-    return MetadataFunctionality(iface)
+    from .metadata_db_linker import MetadataDbLinker
+    return MetadataDbLinker(iface)
 
-pluginName = "MetaMan"
+pluginName = "Metadata-DB-linker"
 
 
-class MetadataFunctionalitySettings(SettingManager):
-
+class MetadataDbLinkerSettings(SettingManager):
     def __init__(self):
         SettingManager.__init__(self, pluginName)
         self.addSetting("host", "string", "global", "")
         self.addSetting("database", "string", "global", "")
         self.addSetting("port", "string", "global", "")
         self.addSetting("schema", "string", "global", "public")
-        self.addSetting("table", "string", "global", "metaman")
+        self.addSetting("sourcetable", "string", "global", "metadata")
         self.addSetting("username", "string", "global", "")
         self.addSetting("password", "string", "global", "")

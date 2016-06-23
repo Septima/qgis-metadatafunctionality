@@ -8,9 +8,9 @@
 
 """
 
-__author__ = 'bernhard@septima.dk'
+__author__ = 'kontakt@septima.dk'
 __date__ = '2016-04-04'
-__copyright__ = 'Copyright 2016, Bernhard Snizek (Septima P/S)'
+__copyright__ = 'Copyright 2016, Septima P/S'
 
 import unittest
 
@@ -31,7 +31,7 @@ class MetadataFunctionalityDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/MetadataFunctionality/icon.png'
+        path = ':/plugins/MetadataFunctionality/resources/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
