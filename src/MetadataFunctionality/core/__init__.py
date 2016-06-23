@@ -1,6 +1,10 @@
-from .. import MetadataFunctionalitySettings
-from qgis.core import QgsVectorLayer, QgsDataSourceURI
 from PyQt4 import QtSql
+from qgis.core import (
+    QgsDataSourceURI,
+    QgsMessageLog
+)
+from .. import MetadataFunctionalitySettings
+
 
 class MetaManDBTool(object):
     """

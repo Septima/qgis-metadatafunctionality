@@ -25,20 +25,39 @@ import os
 import uuid
 from datetime import datetime
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QMessageBox, QTreeView
-from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject, pyqtSlot
+from PyQt4.QtGui import QMessageBox
+from PyQt4 import (
+    QtGui,
+    uic
+)
+from PyQt4.QtCore import (
+    QAbstractTableModel,
+    Qt,
+    SIGNAL,
+    QObject,
+    pyqtSlot
+)
 
 # TODO: Remove QgsMessageLog after debug phase.
-from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, QgsDataSourceURI
+from qgis.core import (
+    QgsMessageLog,
+    QgsBrowserModel,
+    QgsLayerItem,
+    QgsDataSourceURI
+)
 
 from qgis.gui import QgsBrowserTreeView
 
 from .. import MetadataFunctionalitySettings
 from ..core import MetaManDBTool
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'metadata_functionality_dialog.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(
+        os.path.dirname(__file__),
+        'metadata_functionality_dialog.ui'
+    )
+)
+
 
 class MetaTableModel(QAbstractTableModel):
     """
@@ -69,6 +88,7 @@ class MetaTableModel(QAbstractTableModel):
 
     def setData(self, d):
         self.mylist = d
+
 
 class SelectedItemProxy(object):
 
@@ -140,7 +160,11 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
         # self.buttonBox.accepted.connect(self.save_record)
 
-        QObject.connect(self.tree.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.selection_changed)
+        QObject.connect(
+            self.tree.selectionModel(),
+            SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
+            self.selection_changed
+        )
 
         self.saveRecordButton.clicked.connect(self.save_record)
         self.deleteRecordButton.clicked.connect(self.delete_record)
@@ -167,8 +191,11 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             super(MetadataFunctionalityDialog, self).exec_()
             # self.datoEdit.setDateTime(datetime.now())
         else:
-            QMessageBox.information(self, self.tr("Please!"),
-                                    self.tr("Metadata table does not exist or wrong access rights."))
+            QMessageBox.information(
+                self,
+                self.tr("Please!"),
+                self.tr("Metadata table does not exist or wrong access rights.")
+            )
 
     def get_selected_uri(self):
         """
@@ -239,14 +266,16 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
                 if 'timestamp' in list(results):
                     d = results.get('timestamp')
-                    da = datetime.strptime(d,'%d/%m-%Y %H:%M')
+                    da = datetime.strptime(d, '%d/%m-%Y %H:%M')
                     self.datoEdit.setDate(da)
 
                 if 'journal_nr' in list(results):
                     self.journalnrEdit.setText(results.get('journal_nr'))
 
                 if 'resp_center_off' in list(results):
-                    self.ansvarligCenterMedarbejderEdit.setText(results.get('resp_center_off'))
+                    self.ansvarligCenterMedarbejderEdit.setText(
+                        results.get('resp_center_off')
+                    )
 
                 if 'proj_wor' in list(results):
                     self.projekterWorEdit.setText(results.get('proj_wor'))
@@ -365,7 +394,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
                 'port': port,
                 'schema': schema,
                 'table': table,
-            }, order_by={'field':'ts', 'direction':'DESC'})
+            },
+            order_by={'field': 'ts', 'direction': 'DESC'}
+        )
 
         if len(results) > 0:
 
@@ -385,7 +416,7 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
 
             table_model = MetaTableModel(self, rws, labels)
 
-            xx = table_model.data(table_model.createIndex(0, 0), Qt.DisplayRole)
+            # xx = table_model.data(table_model.createIndex(0, 0), Qt.DisplayRole)
 
             # if self.currentlySelectedLine:
             #     for irow in xrange(table_model.rowCount()):
@@ -395,7 +426,9 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             #             row.append(cell)
 
             self.tableView.setModel(table_model)
-            self.tableView.selectionModel().selectionChanged.connect(self.table_row_selected)
+            self.tableView.selectionModel().selectionChanged.connect(
+                self.table_row_selected
+            )
             self.has_table_data = True
             # self.deleteRecordButton.setEnabled(True)
         else:
@@ -475,13 +508,8 @@ class MetadataFunctionalityDialog(QtGui.QDialog, FORM_CLASS):
             self.update_grid()
             self.tableView.selectRow(0)
         else:
-            QMessageBox.information(self, self.tr("Please!"), self.tr("Husk at stille dig på en table foroven."))
-
-
-
-
-
-
-
-
-
+            QMessageBox.information(
+                self,
+                self.tr("Please!"),
+                self.tr("Husk at stille dig på en table foroven.")
+            )

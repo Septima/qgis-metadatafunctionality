@@ -20,8 +20,29 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QObject, Qt
-from PyQt4.QtGui import QAction, QIcon, QDialog, QMenu, QCursor, QApplication
+import os.path
+from PyQt4.QtCore import (
+    QSettings,
+    QTranslator,
+    qVersion,
+    QCoreApplication,
+    Qt
+)
+from PyQt4.QtGui import (
+    QAction,
+    QIcon,
+    QMenu,
+    QCursor,
+    QApplication
+)
+from db_manager.db_plugins.plugin import (
+    DBPlugin,
+    Schema,
+    Table
+)
+from db_manager.dlg_import_vector import DlgImportVector
+from db_manager.db_plugins.postgis import connector
+from db_manager.db_tree import DBTree
 from qgis.core import QgsMessageLog
 
 # Initialize Qt resources from file resources.py
@@ -31,13 +52,7 @@ import resources
 from .ui.metadata_functionality_dialog import MetadataFunctionalityDialog
 from .ui.metadata_functionality_dialog_settings import MetadataFunctionalitySettingsDialog
 
-import os.path
-
 # Import and override postgis create table
-from db_manager.db_plugins.postgis import connector
-from db_manager.dlg_import_vector import DlgImportVector
-from db_manager.db_plugins.plugin import DBPlugin, Schema, Table
-from db_manager.db_tree import DBTree
 # import inspect
 
 # import monkey_patcher
@@ -49,6 +64,7 @@ from db_manager.db_tree import DBTree
 #   Monkey patch PostGisDBConnector._execute
 # ----------------------------------------------------------------
 # create backup of old _execute first time
+
 
 def showMetadataDialogue(table=None, uri=None, schema=None):
     # Now show table metadata editor for the newly created table
@@ -66,9 +82,16 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
     connector.PostGisDBConnector.createTable_monkeypatch_original = connector.PostGisDBConnector.createTable
     QgsMessageLog.logMessage("Adding the createTable patch.")
 
+
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
-    result =  connector.PostGisDBConnector.createTable_monkeypatch_original(self, table, field_defs, pkey)
+    # TODO: Either use result or get rid of
+    result = connector.PostGisDBConnector.createTable_monkeypatch_original(
+        self,
+        table,
+        field_defs,
+        pkey
+    )
     showMetadataDialogue(table=table, uri=self.uri(), schema=table[0])
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
@@ -78,6 +101,7 @@ connector.PostGisDBConnector.createTable = monkey_patched_createTable
 # ----------------------------------------------------------------
 if not getattr(connector.PostGisDBConnector, 'accept_original', None):
     DlgImportVector.accept_original = DlgImportVector.accept
+
 
 def new_accept(self):
     showMetadataDialogue(table=self.cboTable.currentText(),
@@ -95,8 +119,13 @@ DlgImportVector.accept = new_accept
 if not getattr(connector.PostGisDBConnector, '_execute_monkeypatch_original', None):
     connector.PostGisDBConnector._execute_monkeypatch_original = connector.PostGisDBConnector._execute
 
+
 def monkey_patched_execute(self, cursor, sql):
-    return connector.PostGisDBConnector._execute_monkeypatch_original(self, cursor, sql)
+    return connector.PostGisDBConnector._execute_monkeypatch_original(
+        self,
+        cursor,
+        sql
+    )
 
 connector.PostGisDBConnector._execute = monkey_patched_execute
 
@@ -138,6 +167,7 @@ def newContextMenuEvent(self, ev):
 
     menu.deleteLater()
 
+
 def fireMetaManDlg(self):
     item = self.currentItem()
     showMetadataDialogue(table=item.name, uri=item.uri())
@@ -149,7 +179,7 @@ DBTree.fireMetamanDlg = fireMetaManDlg
 DBTree.contextMenuEvent = newContextMenuEvent
 
 
-class MetadataFunctionality:
+class MetadataFunctionality(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -205,7 +235,6 @@ class MetadataFunctionality:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('MetadataFunctionality', message)
 
-
     def add_action(
         self,
         icon_path,
@@ -216,7 +245,8 @@ class MetadataFunctionality:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None
+    ):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -292,11 +322,11 @@ class MetadataFunctionality:
         icon_path2 = ':/plugins/MetadataFunctionality/icon.png'
         self.add_action(
             icon_path2,
-            add_to_toolbar = False,
+            add_to_toolbar=False,
             text=self.tr(u'MetaMan Settings'),
             callback=self.settings_run,
-            parent=self.iface.mainWindow())
-
+            parent=self.iface.mainWindow()
+        )
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -307,7 +337,6 @@ class MetadataFunctionality:
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
-
 
     def run(self):
         """Run method that performs all the real work"""

@@ -319,11 +319,12 @@
      <x>29</x>
      <y>350</y>
      <width>151</width>
-     <height>16</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>Beskrivelse af filens indhold:</string>
+    <string>Beskrivelse
+af filens indhold:</string>
    </property>
   </widget>
   <widget class="QLabel" name="navnLabel_2">

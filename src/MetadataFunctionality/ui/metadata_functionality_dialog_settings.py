@@ -1,20 +1,24 @@
 import os
 
 from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QMessageBox, QTreeView
+from PyQt4.QtGui import QMessageBox
 
-from db_manager.db_plugins.postgis.plugin import PGVectorTable, PGTable
+from db_manager.db_plugins.postgis.plugin import PGTable
 
 from .. import MetadataFunctionalitySettings
 from ..core import MetaManDBTool
 from ..qgissettingmanager.settingdialog import SettingDialog
-from ..ui.metadata_functionality_dialog_settings_db_def import \
-    MetadataFunctionalitySettingsDBDefDialog
+from ..ui.metadata_functionality_dialog_settings_db_def import MetadataFunctionalitySettingsDBDefDialog
 
-SETTINGS_FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'metadata_functionality_dialog_settings.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(
+        os.path.dirname(__file__),
+        'metadata_functionality_dialog_settings.ui'
+    )
+)
 
-class MetadataFunctionalitySettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
+
+class MetadataFunctionalitySettingsDialog(QtGui.QDialog, FORM_CLASS, SettingDialog):
 
     def __init__(self, parent=None):
         """Constructor."""

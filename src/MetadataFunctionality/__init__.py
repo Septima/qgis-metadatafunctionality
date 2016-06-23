@@ -22,7 +22,8 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-from qgissettingmanager import SettingManager
+from .qgissettingmanager import SettingManager
+
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
@@ -35,6 +36,7 @@ def classFactory(iface):  # pylint: disable=invalid-name
     return MetadataFunctionality(iface)
 
 pluginName = "MetaMan"
+
 
 class MetadataFunctionalitySettings(SettingManager):
 
