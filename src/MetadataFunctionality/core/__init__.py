@@ -1,6 +1,27 @@
-from .. import MetadataDbLinkerSettings
-from qgis.core import QgsVectorLayer, QgsDataSourceURI
+# -*- coding: utf-8 -*-
+"""
+/***************************************************************************
+        begin                : 2016-04-04
+        copyright            : (C) 2016 by Septima P/S
+        email                : bernhard@septima.dk
+        git sha              : $Format:%H$
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+"""
+
 from PyQt4 import QtSql
+from qgis.core import QgsDataSourceURI
+from .. import MetadataDbLinkerSettings
+from .qgislogger import QgisLogger
+from .pluginmetadata import plugin_metadata
+
 
 class MetadataDbLinkerTool(object):
     """
@@ -12,44 +33,65 @@ class MetadataDbLinkerTool(object):
 
     field_def = {
         'guid': {
-            'type': 'varchar'},
-        'name':
-            { 'type': 'varchar',
-              'label': 'Name'},
-        'description':
-            {'type': 'varchar',
-             'label': 'Description'},
+            'type': 'varchar'
+        },
+        'name': {
+            'type': 'varchar',
+            'label': 'Name'
+        },
+        'description': {
+            'type': 'varchar',
+            'label': 'Description'
+        },
         'kle_no': {
             'label': 'KLE-numbering',
-            'type': 'varchar'},
+            'type': 'varchar'
+        },
         'responsible': {
-            'label':'Responsible Center or Employee',
-            'type': 'varchar'},
+            'label': 'Responsible Center or Employee',
+            'type': 'varchar'
+        },
         'project': {
             'label': 'Project',
-            'type': 'varchar'},
-        'host':
-            {'type': 'varchar'},
-        'db':
-            { 'type': 'varchar'},
-        'port':
-            {'type': 'int'},
-        'schema':{
-            'type': 'varchar'},
+            'type': 'varchar'
+        },
+        'host': {
+            'type': 'varchar'
+        },
+        'db': {
+            'type': 'varchar'
+        },
+        'port': {
+            'type': 'int'
+        },
+        'schema': {
+            'type': 'varchar'
+        },
         'sourcetable': {
-            'type': 'varchar'},
+            'type': 'varchar'
+        },
         'ts_timezone': {
             'label': 'Date',
-            'type': 'varchar'},
+            'type': 'varchar'
+        },
     }
 
-    field_order = ['name', 'description', 'kle_no', 'ts_timezone', 'responsible', 'project']
+    field_order = [
+        'name',
+        'description',
+        'kle_no',
+        'ts_timezone',
+        'responsible',
+        'project'
+    ]
 
     def __init__(self):
         """
         Constructor.
         Connects to the QGIS settings.
         """
+        self.plugin_metadata = plugin_metadata()
+        self.logger = QgisLogger(self.plugin_metadata['name'])
         self.settings = MetadataDbLinkerSettings()
 
     def get_field_def(self):
@@ -68,7 +110,11 @@ class MetadataDbLinkerTool(object):
         """
 
         b = [self._quote(f) + ' ' + self.field_def.get(f).get('type') for f in list(self.field_def)]
-        return 'CREATE TABLE "%s"."%s" (%s)' % (self.get_schema(), self.get_table(), ",".join(b))
+        return 'CREATE TABLE "%s"."%s" (%s)' % (
+            self.get_schema(),
+            self.get_table(),
+            ",".join(b)
+        )
 
     def get_db(self):
         """
@@ -76,7 +122,6 @@ class MetadataDbLinkerTool(object):
         :return:
         """
 
-        uri = QgsDataSourceURI()
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
         db.setHostName(self.settings.value("host"))
         db.setPort(int(self.settings.value("port")))
@@ -87,7 +132,7 @@ class MetadataDbLinkerTool(object):
         return db
 
     def get_table(self):
-        return self.settings.value("table")
+        return self.settings.value("sourcetable")
 
     def get_schema(self):
         return self.settings.value("schema")
@@ -134,12 +179,21 @@ class MetadataDbLinkerTool(object):
 
             if self.field_def.get(k).get("type") in ['varchar']:
                 # vls.append(self._quote(str(data.get(k))))
-                vls.append(self._single_quote(str(data.get(k)).replace('"', '\\"').replace("'", "''")))
+                vls.append(
+                    self._single_quote(
+                        str(data.get(k)).replace('"', '\\"').replace("'", "''")
+                    )
+                )
 
             else:
                 vls.append(str(data.get(k)))
 
-        s = 'INSERT INTO "%s"."%s" (%s) VALUES (%s)' % (self.get_schema(), self.get_table(), ','.join(flds), ','.join(vls))
+        s = 'INSERT INTO "%s"."%s" (%s) VALUES (%s)' % (
+            self.get_schema(),
+            self.get_table(),
+            ','.join(flds),
+            ','.join(vls)
+        )
 
         db.open()
 
@@ -168,18 +222,22 @@ class MetadataDbLinkerTool(object):
             flds.append(self._quote(k))
 
             if self.field_def.get(k).get("type") in ['varchar']:
-                vls.append(self._single_quote(str(data.get(k)).replace('"', '\\"').replace("'", "''")))
+                vls.append(
+                    self._single_quote(
+                        str(data.get(k)).replace('"', '\\"').replace("'", "''")
+                    )
+                )
 
             else:
                 vls.append(str(data.get(k)))
 
-        s = 'UPDATE "%s"."%s" SET (%s) = (%s) WHERE guid=%s' % (self.get_schema(),
-                                                                self.get_table(),
-                                                                ','.join(flds),
-                                                                ','.join(vls),
-                                                                self._single_quote(data.get('guid'))
-                                                                )
-        print(s)
+        s = 'UPDATE "%s"."%s" SET (%s) = (%s) WHERE guid=%s' % (
+            self.get_schema(),
+            self.get_table(),
+            ','.join(flds),
+            ','.join(vls),
+            self._single_quote(data.get('guid'))
+        )
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
@@ -191,7 +249,8 @@ class MetadataDbLinkerTool(object):
 
     def select(self, d, order_by={}):
         """
-        Returns records as a list of dicts: [{<field1>: <value1>, <field2>: value2,..}, {...}, ...]
+        Returns records as a list of dicts:
+            [{<field1>: <value1>, <field2>: value2,..}, {...}, ...]
         :param d:
         :return:
         """
@@ -201,15 +260,27 @@ class MetadataDbLinkerTool(object):
 
         for k in list(d):
             if self.field_def.get(k).get("type") in ['varchar']:
-                c.append("%s=%s" % (self._quote(k), self._single_quote((d.get(k)).replace('"', '\\"').replace("'", "''"))))
+                c.append(
+                    "%s=%s" % (
+                        self._quote(k),
+                        self._single_quote(
+                            (d.get(k)).replace('"', '\\"').replace("'", "''"))
+                    )
+                )
 
         flds = [self._quote(f) for f in list(self.field_def)]
-        s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (','.join(flds), self.get_schema(), self.get_table(), ' AND '.join(c))
+        s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (
+            ','.join(flds),
+            self.get_schema(),
+            self.get_table(),
+            ' AND '.join(c)
+        )
 
         if order_by != {}:
-            s += ' ORDER BY %s %s' % (order_by.get('field'), order_by.get('direction'))
-
-        print(s)
+            s += ' ORDER BY %s %s' % (
+                order_by.get('field'),
+                order_by.get('direction')
+            )
 
         db = self.get_db()
         db.open()
@@ -243,16 +314,28 @@ class MetadataDbLinkerTool(object):
         for k in list(d):
             if self.field_def.get(k).get("type") in ['varchar']:
                 c.append(
-                    "%s=%s" % (self._quote(k), self._single_quote((d.get(k)).replace('"', '\\"').replace("'", "''"))))
+                    "%s=%s" % (
+                        self._quote(k),
+                        self._single_quote(
+                            (d.get(k)).replace('"', '\\"').replace("'", "''")
+                        )
+                    )
+                )
 
-        flds = [self._quote(f) for f in list(self.field_def)]
+        # TODO: Figure out what the jebus this is
+        flds = [
+            self._quote(f) for f in list(self.field_def)
+        ]
 
-        s = 'DELETE FROM "%s"."%s" WHERE %s' % (self.get_schema(), self.get_table(), ' AND '.join(c))
+        s = 'DELETE FROM "%s"."%s" WHERE %s' % (
+            self.get_schema(),
+            self.get_table(),
+            ' AND '.join(c)
+        )
 
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
-        result = query.exec_(s)
         if not query.exec_(s):
             raise RuntimeError('Failed to delete data.')
         db.commit()
@@ -268,26 +351,29 @@ class MetadataDbLinkerTool(object):
         fld_names = list(self.field_def)
         db = self.get_db()
 
-        # print(str(db))
-        # print(str(db.uri()))
+        s = """
+            SELECT
+              column_name
+            FROM
+              information_schema.columns
+            WHERE
+              table_name = '%s'
+            AND
+              table_schema='%s';
+            """ % (
+                self.get_table(),
+                self.get_schema()
+        )
 
-        s = """SELECT column_name FROM information_schema.columns WHERE table_name = '%s' and table_schema='%s'""" % (
-            self.get_table(), self.get_schema())
-
-        db.open()
-
-        # TODO: throw exception
-
-        #if db.isOpenError()):
-        #    print(str(db.lastError().driverText()) + str(db.lastError().databaseText()))
+        success = db.open()
+        if not success:
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
 
         query = QtSql.QSqlQuery(db)
-        result = query.exec_(s)
 
-        if not result:
-            # print("NO RESULTS")
-            return False
-        else:
+        if query.exec_(s):
             while query.next():
                 f = query.value(0)
                 try:
@@ -295,7 +381,6 @@ class MetadataDbLinkerTool(object):
                 except:
                     pass
 
-            # print("Remaining fields: " + str(fld_names))
             return len(fld_names) == 0
 
-        return True
+        return False
