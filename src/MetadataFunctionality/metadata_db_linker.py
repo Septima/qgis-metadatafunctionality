@@ -34,7 +34,8 @@ from PyQt4.QtGui import (
     QIcon,
     QMenu,
     QCursor,
-    QApplication
+    QApplication,
+    QMessageBox
 )
 
 from db_manager.db_plugins.plugin import (
@@ -49,9 +50,11 @@ from db_manager.db_tree import DBTree
 # Initialize Qt resources from file resources.py
 import resources
 
+from .core.pluginmetadata import plugin_metadata
 # Import the code for the dialog
 from .ui.dialog_metadata import MetadataDialog
 from .ui.dialog_settings import SettingsDialog
+from . import MetadataDbLinkerSettings
 
 
 # Import and override postgis create table
@@ -105,9 +108,11 @@ if not getattr(connector.PostGisDBConnector, 'accept_original', None):
 
 
 def new_accept(self):
-    showMetadataDialogue(table=self.cboTable.currentText(),
-                         uri=self.db.uri(),
-                         schema=self.cboSchema.currentText())
+    showMetadataDialogue(
+        table=self.cboTable.currentText(),
+        uri=self.db.uri(),
+        schema=self.cboSchema.currentText()
+    )
     result = DlgImportVector.accept_original(self)
     return result
 
@@ -195,12 +200,15 @@ class MetadataDbLinker(object):
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+
+        self.plugin_metadata = plugin_metadata()
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'MetadataFunctionality_{}.qm'.format(locale))
+            'MetadataFunctionality_{}.qm'.format(locale)
+        )
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -209,13 +217,15 @@ class MetadataDbLinker(object):
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
+        self.settings = MetadataDbLinkerSettings()
+
         # Create the dialog (after translation) and keep reference
         self.dlg = MetadataDialog()
         self.settings_dlg = SettingsDialog()
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Metadata-DB-linker')
+        self.menu = self.tr(u'&{}'.format(self.plugin_metadata['name']))
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -230,7 +240,10 @@ class MetadataDbLinker(object):
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('Metadata-DB-linker', message)
+        return QCoreApplication.translate(
+            '{}'.format(self.plugin_metadata['name']),
+            message
+        )
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
@@ -244,6 +257,7 @@ class MetadataDbLinker(object):
         self.editmetadata_action.setEnabled(True)
         self.iface.addPluginToMenu(self.menu, self.editmetadata_action)
         self.iface.addToolBarIcon(self.editmetadata_action)
+        self.actions.append(self.editmetadata_action)
 
         self.settings_action = QAction(
             QIcon(':/plugins/MetadataFunctionality/resources/settings.png'),
@@ -253,19 +267,30 @@ class MetadataDbLinker(object):
         self.settings_action.triggered.connect(self.settings_run)
         self.settings_action.setEnabled(True)
         self.iface.addPluginToMenu(self.menu, self.settings_action)
+        self.actions.append(self.settings_action)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&Metadata-DB-linker'),
-                action)
+                self.tr(u'&{}'.format(self.plugin_metadata['name'])),
+                action
+            )
             self.iface.removeToolBarIcon(action)
-        # remove the toolbar
-        del self.toolbar
 
     def run(self):
         """Run method that performs all the real work"""
+
+        errors = self.settings.verify_settings_set()
+
+        if errors:
+            QMessageBox.critical(
+                None,
+                u'Missing settings.',
+                u'{}'.format(errors)
+            )
+            return None
+
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
