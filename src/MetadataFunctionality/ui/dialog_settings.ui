@@ -286,16 +286,16 @@
   <connection>
    <sender>testConnectionButton</sender>
    <signal>clicked()</signal>
-   <receiver>MetadataFunctionalityDialogBase</receiver>
-   <slot>accept()</slot>
+   <receiver>testConnectionButton</receiver>
+   <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>225</x>
      <y>235</y>
     </hint>
     <hint type="destinationlabel">
-     <x>234</x>
-     <y>128</y>
+     <x>225</x>
+     <y>235</y>
     </hint>
    </hints>
   </connection>
