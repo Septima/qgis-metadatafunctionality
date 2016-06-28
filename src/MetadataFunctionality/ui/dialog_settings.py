@@ -23,21 +23,28 @@
 
 import os
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QMessageBox, QTreeView
+from PyQt4 import uic
+from PyQt4.QtGui import (
+    QMessageBox,
+    QDialog
+)
 
-from db_manager.db_plugins.postgis.plugin import PGVectorTable, PGTable
+from db_manager.db_plugins.postgis.plugin import PGTable
 
 from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
 from ..qgissettingmanager.settingdialog import SettingDialog
-from ..ui.dialog_settings_db_def import \
-    SettingsDbDefDialog
+from ..ui.dialog_settings_db_def import SettingsDbDefDialog
 
-SETTINGS_FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'dialog_settings.ui'))
+SETTINGS_FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(
+        os.path.dirname(__file__),
+        'dialog_settings.ui'
+    )
+)
 
-class SettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
+
+class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
 
     def __init__(self, parent=None):
         """Constructor."""
@@ -87,7 +94,10 @@ class SettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         self.current_item = item
         if type(item) in [PGTable]:
             db = self.tree.currentDatabase().publicUri().connectionInfo()
-            self.table_structure_ok = self.db_tool.validate_structure(db, item.name)
+            self.table_structure_ok = self.db_tool.validate_structure(
+                db,
+                item.name
+            )
             self.activate_test_button()
 
     def all_fields_filled(self):
@@ -121,4 +131,8 @@ class SettingsDialog(QtGui.QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         self.settings.setValue('password', self.password.text())
         mmt = MetadataDbLinkerTool()
         if mmt.validate_structure():
-            QMessageBox.information(self, self.tr("Please!"), self.tr("DB structure and connection OK."))
+            QMessageBox.information(
+                self,
+                self.tr("Please!"),
+                self.tr("DB structure and connection OK.")
+            )

@@ -25,20 +25,37 @@ import os
 import uuid
 from datetime import datetime
 
-from PyQt4 import QtGui, uic
-from PyQt4.QtGui import QMessageBox, QTreeView
-from PyQt4.QtCore import QSettings, QAbstractTableModel, Qt, SIGNAL, QObject, pyqtSlot
-
-# TODO: Remove QgsMessageLog after debug phase.
-from qgis.core import QgsMessageLog, QgsProject, QgsBrowserModel, QgsLayerItem, QgsDataSourceURI
-
+from PyQt4 import uic
+from PyQt4.QtGui import (
+    QDialog,
+    QMessageBox
+)
+from PyQt4.QtCore import (
+    QAbstractTableModel,
+    Qt,
+    SIGNAL,
+    QObject,
+    pyqtSlot
+)
+from qgis.core import (
+    QgsMessageLog,
+    QgsBrowserModel,
+    QgsLayerItem,
+    QgsDataSourceURI
+)
 from qgis.gui import QgsBrowserTreeView
 
+from ..core.taxonclassifier import TaxonClassifier
 from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'dialog_metadata.ui'))
+FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(
+        os.path.dirname(__file__),
+        'dialog_metadata.ui'
+    )
+)
+
 
 class MetaTableModel(QAbstractTableModel):
     """
@@ -70,6 +87,7 @@ class MetaTableModel(QAbstractTableModel):
     def setData(self, d):
         self.mylist = d
 
+
 class SelectedItemProxy(object):
 
     def __init__(self, table, uri):
@@ -83,7 +101,7 @@ class SelectedItemProxy(object):
         return self._uri
 
 
-class MetadataDialog(QtGui.QDialog, FORM_CLASS):
+class MetadataDialog(QDialog, FORM_CLASS):
 
     field_def = []
     data_list = []
@@ -107,25 +125,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
         self.setupUi(self)
 
-        # root = QgsProject.instance().layerTreeRoot()
-        # root = None
-        # QgsMessageLog.logMessage(str(dir(root)))
-
         self.model = QgsBrowserModel()
-
-        # if True is False:
-        #     index = self.model.index(5, 0)
-        #     print("....")
-        #
-        #     idx2 = index.child(1, 0)
-        #
-        #     print(self.model.data(idx2))
-        #     print(self.model.dataItem(idx2).paramWidget())
-        #
-        #     idx3 = idx2.child(0, 0)
-        #
-        #     print(":" + str(self.model.dataItem(idx3)))
-
         self.model.reload()
 
         # self.tree = QTreeView()
@@ -140,12 +140,17 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
         # self.buttonBox.accepted.connect(self.save_record)
 
-        QObject.connect(self.tree.selectionModel(), SIGNAL("selectionChanged(QItemSelection, QItemSelection)"), self.selection_changed)
+        QObject.connect(
+            self.tree.selectionModel(),
+            SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
+            self.selection_changed
+        )
 
         self.saveRecordButton.clicked.connect(self.save_record)
         self.deleteRecordButton.clicked.connect(self.delete_record)
 
-        # self.addRecordButton.clicked.connect(self.add_record)
+        self.kleNoLookupBtn.clicked.connect(self.lookup_kle_number)
+        self.kleSuggestions.setReadOnly(True)
 
         self.selected_item = None
         self.guids = []
@@ -158,6 +163,37 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             self.tableView.selectRow(0)
             self.activate_fields()
 
+    def lookup_kle_number(self):
+        # TODO: get url and taxonomy from settings instead
+        taxon = TaxonClassifier(
+            'http://www.ishoj.dk/taxon/web-service/taxon-ws.php',
+            '/var/www/ishoj.dk/public_html/taxon/system/taxonomies/main_lookup.json'
+        )
+        taxon_results = taxon.get(
+            self.descriptionEdit.toPlainText()
+        )
+        if taxon_results:
+            presentation_str = ''
+            kle_nrs = []
+            for elem in taxon_results:
+                tmp_presentation = u'{} {}\n'.format(
+                    elem['kle'],
+                    elem['title']
+                )
+                presentation_str += tmp_presentation
+                kle_nrs.append(elem['kle'])
+            # Set text in presentaion box
+            self.kleSuggestions.setText(presentation_str)
+            # set text in kle input box
+            self.kleNoEdit.setText(', '.join(kle_nrs))
+        else:
+            self.kleSuggestions.setText('No results from Taxon Classifier.')
+            QgsMessageLog.logMessage(
+                u'No results from taxon service',
+                u'Metadata',
+                QgsMessageLog.INFO
+            )
+
     def exec_(self):
 
         self.model.reload()
@@ -167,8 +203,11 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             super(MetadataDialog, self).exec_()
             # self.dateEdit.setDateTime(datetime.now())
         else:
-            QMessageBox.information(self, self.tr("Please!"),
-                                    self.tr("Table with metadata does not exist or wrong access rights."))
+            QMessageBox.information(
+                self,
+                self.tr("Please!"),
+                self.tr("Either database is unavailable, table with metadata does not exist or wrong access rights.")
+            )
 
     def get_selected_uri(self):
         """
@@ -239,7 +278,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
                 if 'ts_timezone' in list(results):
                     d = results.get('ts_timezone')
-                    da = datetime.strptime(d,'%d/%m-%Y %H:%M')
+                    da = datetime.strptime(d, '%d/%m-%Y %H:%M')
                     self.dateEdit.setDate(da)
 
                 if 'kle_no' in list(results):
@@ -340,7 +379,6 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
         :return:
         """
         self.nameEdit.setText('')
-        ##self.nameEdit.setText('')
         self.descriptionEdit.setText('')
         self.responsibleEdit.setText('')
         self.kleNoEdit.setText('')
@@ -366,12 +404,16 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                 'port': port,
                 'schema': schema,
                 'sourcetable': table,
-            }, order_by={'field':'ts', 'direction':'DESC'})
+            },
+            order_by={'field': 'ts_timezone', 'direction': 'DESC'}
+        )
 
         if len(results) > 0:
 
-            labels = [self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
-                      'label' in self.db_tool.get_field_def().get(f)]
+            labels = [
+                self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
+                'label' in self.db_tool.get_field_def().get(f)
+            ]
 
             fields = self.db_tool.field_order
 
@@ -386,7 +428,11 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
 
             table_model = MetaTableModel(self, rws, labels)
 
-            xx = table_model.data(table_model.createIndex(0, 0), Qt.DisplayRole)
+            # TODO: Figure out if this is needed
+            xx = table_model.data(
+                table_model.createIndex(0, 0),
+                Qt.DisplayRole
+            )
 
             # if self.currentlySelectedLine:
             #     for irow in xrange(table_model.rowCount()):
@@ -396,7 +442,9 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             #             row.append(cell)
 
             self.tableView.setModel(table_model)
-            self.tableView.selectionModel().selectionChanged.connect(self.table_row_selected)
+            self.tableView.selectionModel().selectionChanged.connect(
+                self.table_row_selected
+            )
             self.has_table_data = True
             # self.deleteRecordButton.setEnabled(True)
         else:
@@ -464,7 +512,7 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
                     'schema': schema,
                     'host': host,
                     'sourcetable': table,
-                    'name': self.navnEdit.text(),
+                    'name': self.nameEdit.text(),
                     'description': self.descriptionEdit.toPlainText(),
                     'ts_timezone': self.dateEdit.text(),
                     'kle_no': self.kleNoEdit.text(),
@@ -476,4 +524,8 @@ class MetadataDialog(QtGui.QDialog, FORM_CLASS):
             self.update_grid()
             self.tableView.selectRow(0)
         else:
-            QMessageBox.information(self, self.tr("Please!"), self.tr("Remember to select a table."))
+            QMessageBox.information(
+                self,
+                self.tr("Please!"),
+                self.tr("Remember to select a table.")
+            )

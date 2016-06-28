@@ -329,14 +329,17 @@
     <cstring>nameEdit</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="kleSuggestions">
+  <widget class="QTextEdit" name="kleSuggestions">
    <property name="geometry">
     <rect>
-     <x>197</x>
+     <x>196</x>
      <y>460</y>
      <width>561</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
