@@ -264,7 +264,7 @@
     <rect>
      <x>24</x>
      <y>22</y>
-     <width>341</width>
+     <width>351</width>
      <height>16</height>
     </rect>
    </property>
@@ -275,7 +275,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Vælg filen som skal have tilføjet/ændret metadata</string>
+    <string>Choose the file to which you want to add or modify metadata:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">
@@ -294,7 +294,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Metadatainformations</string>
+    <string>Metadatainformation</string>
    </property>
   </widget>
   <widget class="QLabel" name="description_label">
@@ -337,6 +337,9 @@
      <width>561</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Suggested KLE-numbers</string>
    </property>
    <property name="readOnly">
     <bool>true</bool>
