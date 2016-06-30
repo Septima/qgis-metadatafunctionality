@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+from __future__ import unicode_literals
 from PyQt4 import QtSql
 from qgis.core import QgsDataSourceURI
 from .. import MetadataDbLinkerSettings
@@ -109,7 +109,9 @@ class MetadataDbLinkerTool(object):
         :return:
         """
 
-        b = [self._quote(f) + ' ' + self.field_def.get(f).get('type') for f in list(self.field_def)]
+        b = [
+            self._quote(f) + ' ' + self.field_def.get(f).get('type') for f in list(self.field_def)
+        ]
         return 'CREATE TABLE "%s"."%s" (%s)' % (
             self.get_schema(),
             self.get_table(),
@@ -152,11 +154,15 @@ class MetadataDbLinkerTool(object):
         db.setPassword(uri.password())
         query = QtSql.QSqlQuery(db)
 
-        db.open()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
 
         s = self._create_db_creation_statement()
 
         if not query.exec_(s):
+            self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to create database')
 
         db.commit()
@@ -178,15 +184,14 @@ class MetadataDbLinkerTool(object):
             flds.append(self._quote(k))
 
             if self.field_def.get(k).get("type") in ['varchar']:
-                # vls.append(self._quote(str(data.get(k))))
                 vls.append(
                     self._single_quote(
-                        str(data.get(k)).replace('"', '\\"').replace("'", "''")
+                        data.get(k)
                     )
                 )
 
             else:
-                vls.append(str(data.get(k)))
+                vls.append(data.get(k))
 
         s = 'INSERT INTO "%s"."%s" (%s) VALUES (%s)' % (
             self.get_schema(),
@@ -200,6 +205,7 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
 
         if not query.exec_(s):
+            self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to insert data.')
 
         db.commit()
@@ -224,12 +230,12 @@ class MetadataDbLinkerTool(object):
             if self.field_def.get(k).get("type") in ['varchar']:
                 vls.append(
                     self._single_quote(
-                        str(data.get(k)).replace('"', '\\"').replace("'", "''")
+                        data.get(k)
                     )
                 )
 
             else:
-                vls.append(str(data.get(k)))
+                vls.append(data.get(k))
 
         s = 'UPDATE "%s"."%s" SET (%s) = (%s) WHERE guid=%s' % (
             self.get_schema(),
@@ -241,8 +247,8 @@ class MetadataDbLinkerTool(object):
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
-        result = query.exec_(s)
-        if not result:
+        if not query.exec_(s):
+            self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to update data.')
         db.commit()
         db.close()
@@ -263,8 +269,7 @@ class MetadataDbLinkerTool(object):
                 c.append(
                     "%s=%s" % (
                         self._quote(k),
-                        self._single_quote(
-                            (d.get(k)).replace('"', '\\"').replace("'", "''"))
+                        self._single_quote((d.get(k)))
                     )
                 )
 
@@ -285,8 +290,8 @@ class MetadataDbLinkerTool(object):
         db = self.get_db()
         db.open()
         query = QtSql.QSqlQuery(db)
-        result = query.exec_(s)
-        if not result:
+        if not query.exec_(s):
+            self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to select data.')
         else:
             while query.next():
@@ -316,16 +321,14 @@ class MetadataDbLinkerTool(object):
                 c.append(
                     "%s=%s" % (
                         self._quote(k),
-                        self._single_quote(
-                            (d.get(k)).replace('"', '\\"').replace("'", "''")
-                        )
+                        self._single_quote((d.get(k)))
                     )
                 )
 
         # TODO: Figure out what the jebus this is
-        flds = [
-            self._quote(f) for f in list(self.field_def)
-        ]
+        # flds = [
+            # self._quote(f) for f in list(self.field_def)
+        # ]
 
         s = 'DELETE FROM "%s"."%s" WHERE %s' % (
             self.get_schema(),
@@ -337,6 +340,7 @@ class MetadataDbLinkerTool(object):
         db.open()
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
+            self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to delete data.')
         db.commit()
         db.close()
