@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>680</width>
-    <height>1000</height>
+    <height>1059</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -71,7 +71,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Choose the file to which you want to add or modify metadata:</string>
+          <string>The file to which you want to add or modify metadata:</string>
          </property>
         </widget>
        </item>
