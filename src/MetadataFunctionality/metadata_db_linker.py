@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import unicode_literals
 import os.path
 from qgis.core import QgsMessageLog
 from PyQt4.QtCore import (
