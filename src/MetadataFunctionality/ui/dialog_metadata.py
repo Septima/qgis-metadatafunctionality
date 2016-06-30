@@ -21,6 +21,7 @@
  ***************************************************************************/
 """
 
+from __future__ import unicode_literals
 import os
 import uuid
 from datetime import datetime
@@ -38,7 +39,6 @@ from PyQt4.QtCore import (
     pyqtSlot
 )
 from qgis.core import (
-    QgsMessageLog,
     QgsBrowserModel,
     QgsLayerItem,
     QgsDataSourceURI
@@ -46,6 +46,7 @@ from qgis.core import (
 from qgis.gui import QgsBrowserTreeView
 
 from ..core.taxonclassifier import TaxonClassifier
+from ..core.qgislogger import QgisLogger
 from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
 
@@ -122,6 +123,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         self.settings = MetadataDbLinkerSettings()
         self.db_tool = MetadataDbLinkerTool()
+        self.logger = QgisLogger('Metadata-DB-Linker')
 
         self.setupUi(self)
 
@@ -131,7 +133,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # self.tree = QTreeView()
         self.tree = QgsBrowserTreeView()
         self.tree.setModel(self.model)
-
         # self.tree.removeRow(index.row())
 
         self.treeDock.setWidget(self.tree)
@@ -166,14 +167,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
     def lookup_kle_number(self):
         taxon_url = self.settings.value('taxonUrl')
         taxon_taxonomy = self.settings.value('taxonTaxonomy')
-        print('taxon url:', taxon_url)
-        print('taxon taxonomy:', taxon_taxonomy)
         if not taxon_url or not taxon_taxonomy:
-            QgsMessageLog.logMessage(
-                u'No taxon url and/or taxonomy',
-                u'Metadata',
-                QgsMessageLog.CRITICAL
-            )
+            self.logger.critical('No taxon url and/or taxonomy')
             QMessageBox.warning(
                 self,
                 self.tr("No taxon url and/or taxonomy"),
@@ -200,21 +195,28 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 kle_nrs.append(elem['kle'])
             # Set text in presentaion box
             self.kleSuggestions.setText(presentation_str)
+
+            current_klr = self.kleNoEdit.text()
+            str_klr_nrs = '{}'.format(', '.join(kle_nrs))
+
             # set text in kle input box
-            self.kleNoEdit.setText(', '.join(kle_nrs))
+            if current_klr != str_klr_nrs:
+                if not current_klr == '':
+                    self.kleNoEdit.setText(
+                        '{}, {}'.format(
+                            self.kleNoEdit.text(),
+                            ', '.join(kle_nrs)
+                        )
+                    )
+                else:
+                    self.kleNoEdit.setText(
+                        '{}'.format(', '.join(kle_nrs))
+                    )
         else:
             self.kleSuggestions.setText('No results from Taxon Classifier.')
-            QgsMessageLog.logMessage(
-                u'No results from taxon service',
-                u'Metadata',
-                QgsMessageLog.INFO
-            )
+            self.logger.info('No results from taxon service')
 
     def exec_(self):
-
-        self.model.reload()
-        # self.tree.refresh()
-
         if self.db_tool.validate_structure():
             super(MetadataDialog, self).exec_()
             # self.dateEdit.setDateTime(datetime.now())
@@ -229,7 +231,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
         """
         :return:
         """
-        QgsMessageLog.logMessage(self.selected_item.uri())
         return self.selected_item.uri()
 
     def get_selected_db(self):
@@ -277,7 +278,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
             guid = self.guids[v[0]]
             self.currentlySelectedLine = guid
 
-            results = self.db_tool.select({'guid': guid})
+            try:
+                results = self.db_tool.select({'guid': guid})
+            except RuntimeError:
+                QMessageBox.critical(
+                    self,
+                    self.tr('Error selecting data.'),
+                    self.tr('See log for error details.')
+                )
 
             if len(results) == 1:
                 results = results[0]
@@ -317,7 +325,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
         selected_rows = self.tableView.selectionModel().selectedRows()
         for row in selected_rows:
             guid = self.guids[row.row()]
-            self.db_tool.delete({'guid': guid})
+            try:
+                self.db_tool.delete({'guid': guid})
+            except RuntimeError:
+                QMessageBox.critical(
+                    self,
+                    self.tr('Error deliting data.'),
+                    self.tr('See log for error details.')
+                )
             self.update_grid()
             if self.has_table_data:
                 self.tableView.selectRow(0)
@@ -414,15 +429,22 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         # print("-> " + schema)
 
-        results = self.db_tool.select(
-            {
-                'db': db,
-                'port': port,
-                'schema': schema,
-                'sourcetable': table,
-            },
-            order_by={'field': 'ts_timezone', 'direction': 'DESC'}
-        )
+        try:
+            results = self.db_tool.select(
+                {
+                    'db': db,
+                    'port': port,
+                    'schema': schema,
+                    'sourcetable': table,
+                },
+                order_by={'field': 'ts_timezone', 'direction': 'DESC'}
+            )
+        except RuntimeError:
+            QMessageBox.critical(
+                self,
+                self.tr('Error updating data.'),
+                self.tr('See log for error details.')
+            )
 
         if len(results) > 0:
 
@@ -444,8 +466,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
             table_model = MetaTableModel(self, rws, labels)
 
-            # TODO: Figure out if this is needed
-            xx = table_model.data(
+            table_model.data(
                 table_model.createIndex(0, 0),
                 Qt.DisplayRole
             )
@@ -487,22 +508,30 @@ class MetadataDialog(QDialog, FORM_CLASS):
         table = self.get_selected_table()
         host = self.get_selected_host()
 
-        self.db_tool.update(
-            {
-                'db': db,
-                'port': port,
-                'host': host,
-                'schema': schema,
-                'sourcetable': table,
-                'guid': self.currentlySelectedLine,
-                'name': self.nameEdit.text(),
-                'description': self.descriptionEdit.toPlainText(),
-                'ts_timezone': self.dateEdit.text(),
-                'kle_no': self.kleNoEdit.text(),
-                'responsible': self.responsibleEdit.text(),
-                'project': self.projectEdit.text()
-            }
-        )
+        try:
+            self.db_tool.update(
+                {
+                    'db': db,
+                    'port': port,
+                    'host': host,
+                    'schema': schema,
+                    'sourcetable': table,
+                    'guid': self.currentlySelectedLine,
+                    'name': self.nameEdit.text(),
+                    'description': self.descriptionEdit.toPlainText(),
+                    'ts_timezone': self.dateEdit.text(),
+                    'kle_no': self.kleNoEdit.text(),
+                    'responsible': self.responsibleEdit.text(),
+                    'project': self.projectEdit.text()
+                }
+            )
+        except RuntimeError:
+            QMessageBox.critical(
+                self,
+                self.tr('Error updating data.'),
+                self.tr('See log for error details.')
+            )
+
         self.update_grid()
 
     def add_record(self):
@@ -520,22 +549,29 @@ class MetadataDialog(QDialog, FORM_CLASS):
         host = self.get_selected_host()
 
         if table:
-            self.db_tool.insert(
-                {
-                    'guid': guid,
-                    'db': db,
-                    'port': port,
-                    'schema': schema,
-                    'host': host,
-                    'sourcetable': table,
-                    'name': self.nameEdit.text(),
-                    'description': self.descriptionEdit.toPlainText(),
-                    'ts_timezone': self.dateEdit.text(),
-                    'kle_no': self.kleNoEdit.text(),
-                    'responsible': self.responsibleEdit.text(),
-                    'project': self.projectEdit.text()
-                }
-            )
+            try:
+                self.db_tool.insert(
+                    {
+                        'guid': guid,
+                        'db': db,
+                        'port': port,
+                        'schema': schema,
+                        'host': host,
+                        'sourcetable': table,
+                        'name': self.nameEdit.text(),
+                        'description': self.descriptionEdit.toPlainText(),
+                        'ts_timezone': self.dateEdit.text(),
+                        'kle_no': self.kleNoEdit.text(),
+                        'responsible': self.responsibleEdit.text(),
+                        'project': self.projectEdit.text()
+                    }
+                )
+            except RuntimeError:
+                QMessageBox.critical(
+                    self,
+                    self.tr('Error inserting data.'),
+                    self.tr('See log for error details.')
+                )
             self.currentlySelectedLine = guid
             self.update_grid()
             self.tableView.selectRow(0)
