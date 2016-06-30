@@ -164,10 +164,26 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.activate_fields()
 
     def lookup_kle_number(self):
-        # TODO: get url and taxonomy from settings instead
+        taxon_url = self.settings.value('taxonUrl')
+        taxon_taxonomy = self.settings.value('taxonTaxonomy')
+        print('taxon url:', taxon_url)
+        print('taxon taxonomy:', taxon_taxonomy)
+        if not taxon_url or not taxon_taxonomy:
+            QgsMessageLog.logMessage(
+                u'No taxon url and/or taxonomy',
+                u'Metadata',
+                QgsMessageLog.CRITICAL
+            )
+            QMessageBox.warning(
+                self,
+                self.tr("No taxon url and/or taxonomy"),
+                self.tr("Please enter a url and taxonomy for Taxon service in settings.")
+            )
+            return False
+
         taxon = TaxonClassifier(
-            'http://www.ishoj.dk/taxon/web-service/taxon-ws.php',
-            '/var/www/ishoj.dk/public_html/taxon/system/taxonomies/main_lookup.json'
+            taxon_url,
+            taxon_taxonomy
         )
         taxon_results = taxon.get(
             self.descriptionEdit.toPlainText()

@@ -47,6 +47,8 @@ class MetadataDbLinkerSettings(SettingManager):
         self.addSetting("sourcetable", "string", "global", "metadata")
         self.addSetting("username", "string", "global", "")
         self.addSetting("password", "string", "global", "")
+        self.addSetting("taxonUrl", "string", "global", "")
+        self.addSetting("taxonTaxonomy", "string", "global", "")
 
     def verify_settings_set(self):
         errors = ''
