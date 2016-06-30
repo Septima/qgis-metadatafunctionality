@@ -365,8 +365,7 @@ class MetadataDbLinkerTool(object):
                 self.get_schema()
         )
 
-        success = db.open()
-        if not success:
+        if not db.open():
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
             return False
