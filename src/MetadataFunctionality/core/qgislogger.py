@@ -16,6 +16,8 @@
  ***************************************************************************/
 """
 
+from __future__ import unicode_literals
+import codecs
 from qgis.core import QgsMessageLog
 
 
@@ -39,3 +41,7 @@ class QgisLogger(object):
 
     def critical(self, message):
         self.log(message, level=QgsMessageLog.CRITICAL)
+
+    def log_to_file(self, message):
+        with codecs.open("/tmp/metadatadblinker.log", "w", "utf-8") as log:
+            log.write(message)
