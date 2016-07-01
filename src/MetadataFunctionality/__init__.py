@@ -24,6 +24,12 @@
 
 from .qgissettingmanager import SettingManager
 
+# HOW WE CAN DEBUG
+#import sys
+#sys.path.append('/Applications/PyCharm.app/Contents/debug-eggs/pycharm-debug.egg')
+#import pydevd
+#pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
