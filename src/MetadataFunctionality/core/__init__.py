@@ -168,6 +168,15 @@ class MetadataDbLinkerTool(object):
         db.commit()
         db.close()
 
+    def format_fields_to_lists(self, data, formatting='bind'):
+        fields_bind = []
+        fields = []
+        for field in list(data):
+                fields_bind.append(':{}'.format(field))
+                fields.append("{}".format(field))
+
+        return fields_bind, fields
+
     def insert(self, data={}):
         """
         :param data:
@@ -176,35 +185,34 @@ class MetadataDbLinkerTool(object):
 
         db = self.get_db()
 
-        flds = []
-        vls = []
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
 
-        for k in list(data):
-
-            flds.append(self._quote(k))
-
-            if self.field_def.get(k).get("type") in ['varchar']:
-                vls.append(
-                    self._single_quote(
-                        data.get(k)
-                    )
-                )
-
-            else:
-                vls.append(data.get(k))
-
-        s = 'INSERT INTO "%s"."%s" (%s) VALUES (%s)' % (
-            self.get_schema(),
-            self.get_table(),
-            ','.join(flds),
-            ','.join(vls)
+        # prepare query
+        query = QtSql.QSqlQuery(db)
+        bind_fields, quoted_fields = self.format_fields_to_lists(data)
+        query.prepare(
+            """
+            INSERT INTO "{schema}"."{table}" ({fields}) VALUES ({binds})
+            """.format(
+                schema=self.get_schema(),
+                table=self.get_table(),
+                fields=','.join(quoted_fields),
+                binds=','.join(bind_fields)
+            )
         )
 
-        db.open()
+        for k in list(data):
+            query.bindValue(
+                ':{}'.format(k),
+                data.get(k)
+            )
 
-        query = QtSql.QSqlQuery(db)
+        self.logger.info(query.boundValues())
 
-        if not query.exec_(s):
+        if not query.exec_():
             self.logger.critical(query.lastError().text())
             raise RuntimeError('Failed to insert data.')
 
@@ -245,7 +253,11 @@ class MetadataDbLinkerTool(object):
             self._single_quote(data.get('guid'))
         )
         db = self.get_db()
-        db.open()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
@@ -288,7 +300,11 @@ class MetadataDbLinkerTool(object):
             )
 
         db = self.get_db()
-        db.open()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
@@ -337,7 +353,11 @@ class MetadataDbLinkerTool(object):
         )
 
         db = self.get_db()
-        db.open()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
