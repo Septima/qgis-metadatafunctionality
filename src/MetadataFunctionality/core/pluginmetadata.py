@@ -17,6 +17,7 @@
  ***************************************************************************/
 """
 
+from __future__ import unicode_literals
 import ConfigParser
 import codecs
 import os

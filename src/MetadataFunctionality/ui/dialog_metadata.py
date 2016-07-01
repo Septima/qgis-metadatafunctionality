@@ -217,9 +217,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.logger.info('No results from taxon service')
 
     def exec_(self):
+        # TODO: Maybe try below or something like it
+        # self.model.refresh()
+        # self.model.reload()
         if self.db_tool.validate_structure():
             super(MetadataDialog, self).exec_()
-            # self.dateEdit.setDateTime(datetime.now())
         else:
             QMessageBox.information(
                 self,

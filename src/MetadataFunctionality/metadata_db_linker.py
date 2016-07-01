@@ -75,11 +75,8 @@ def showMetadataDialogue(table=None, uri=None, schema=None):
     # Now show table metadata editor for the newly created table
 
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
-
     dialog = MetadataDialog(table=table, uri=uri, schema=schema)
-
     dialog.exec_()
-
     QApplication.restoreOverrideCursor()
 
 
@@ -179,10 +176,8 @@ def fireMetadataDlg(self):
     item = self.currentItem()
     showMetadataDialogue(table=item.name, uri=item.uri())
 
-# ---
 # menu
-
-DBTree.fireMetamanDlg = fireMetadataDlg
+DBTree.fireMetadataDlg = fireMetadataDlg
 DBTree.contextMenuEvent = newContextMenuEvent
 
 
