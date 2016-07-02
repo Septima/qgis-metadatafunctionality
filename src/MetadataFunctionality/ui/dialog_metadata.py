@@ -107,6 +107,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
     field_def = []
     data_list = []
 
+    # TODO: make sure we reload the model when called from db-manager
     def __init__(self, parent=None, table=None, uri=None, schema=None):
         """Constructor."""
         super(MetadataDialog, self).__init__(parent)
@@ -220,6 +221,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # TODO: Maybe try below or something like it
         # self.model.refresh()
         # self.model.reload()
+
         if self.db_tool.validate_structure():
             super(MetadataDialog, self).exec_()
         else:
@@ -293,8 +295,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 results = results[0]
 
                 self.schema = results.get('schema')
-
-                # print(self.schema)
 
                 if 'name' in list(results):
                     self.nameEdit.setText(results.get('name'))
@@ -429,8 +429,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
         schema = self.get_selected_schema()
         table = self.get_selected_table()
 
-        # print("-> " + schema)
-
         try:
             results = self.db_tool.select(
                 {
@@ -444,7 +442,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         except RuntimeError:
             QMessageBox.critical(
                 self,
-                self.tr('Error updating data.'),
+                self.tr('Error selecting data.'),
                 self.tr('See log for error details.')
             )
 
