@@ -73,7 +73,6 @@ from . import MetadataDbLinkerSettings
 
 def showMetadataDialogue(table=None, uri=None, schema=None):
     # Now show table metadata editor for the newly created table
-
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
     dialog = MetadataDialog(table=table, uri=uri, schema=schema)
     dialog.exec_()
@@ -173,8 +172,9 @@ def newContextMenuEvent(self, ev):
 
 
 def fireMetadataDlg(self):
+    # TODO: We need to tell it the schema to open
     item = self.currentItem()
-    showMetadataDialogue(table=item.name, uri=item.uri())
+    showMetadataDialogue(table=item.name, uri=item.uri(), schema=item.uri().schema())
 
 # menu
 DBTree.fireMetadataDlg = fireMetadataDlg
