@@ -2,5 +2,6 @@
     <qresource prefix="/plugins/MetadataFunctionality" >
         <file>resources/icon.png</file>
         <file>resources/metadata.png</file>
+        <file>resources/settings.png</file>
     </qresource>
 </RCC>
