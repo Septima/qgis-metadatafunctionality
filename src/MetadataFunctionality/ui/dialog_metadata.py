@@ -103,11 +103,6 @@ class SelectedItemProxy(object):
 
 
 class MetadataDialog(QDialog, FORM_CLASS):
-
-    field_def = []
-    data_list = []
-
-    # TODO: make sure we reload the model when called from db-manager
     def __init__(self, parent=None, table=None, uri=None, schema=None, close_dialog=False):
         """Constructor."""
         super(MetadataDialog, self).__init__(parent)
@@ -116,6 +111,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+        self.field_def = []
+        self.data_list = []
 
         if type(table) == tuple:
             table = table[1]
