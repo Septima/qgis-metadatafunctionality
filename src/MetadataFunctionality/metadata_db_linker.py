@@ -71,10 +71,15 @@ from . import MetadataDbLinkerSettings
 # ----------------------------------------------------------------
 # create backup of old _execute first time
 
-def showMetadataDialogue(table=None, uri=None, schema=None):
+def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
     # Now show table metadata editor for the newly created table
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
-    dialog = MetadataDialog(table=table, uri=uri, schema=schema)
+    dialog = MetadataDialog(
+        table=table,
+        uri=uri,
+        schema=schema,
+        close_dialog=close_dialog
+    )
     dialog.exec_()
     QApplication.restoreOverrideCursor()
 
@@ -86,8 +91,7 @@ if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original',
 
 def monkey_patched_createTable(self, table, field_defs, pkey):
     QgsMessageLog.logMessage("Monkey patched createTable called")
-    # TODO: USE OR REMOVE variable
-    result = connector.PostGisDBConnector.createTable_monkeypatch_original(
+    connector.PostGisDBConnector.createTable_monkeypatch_original(
         self,
         table,
         field_defs,
@@ -172,9 +176,13 @@ def newContextMenuEvent(self, ev):
 
 
 def fireMetadataDlg(self):
-    # TODO: We need to tell it the schema to open
     item = self.currentItem()
-    showMetadataDialogue(table=item.name, uri=item.uri(), schema=item.uri().schema())
+    showMetadataDialogue(
+        table=item.name,
+        uri=item.uri(),
+        schema=item.uri().schema(),
+        close_dialog=True
+    )
 
 # menu
 DBTree.fireMetadataDlg = fireMetadataDlg

@@ -108,7 +108,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
     data_list = []
 
     # TODO: make sure we reload the model when called from db-manager
-    def __init__(self, parent=None, table=None, uri=None, schema=None):
+    def __init__(self, parent=None, table=None, uri=None, schema=None, close_dialog=False):
         """Constructor."""
         super(MetadataDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -121,7 +121,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             table = table[1]
 
         self.schema = schema
-
+        self.close_dialog = close_dialog
         self.settings = MetadataDbLinkerSettings()
         self.db_tool = MetadataDbLinkerTool()
         self.logger = QgisLogger('Metadata-DB-Linker')
@@ -129,18 +129,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.setupUi(self)
 
         self.model = QgsBrowserModel()
-        self.model.reload()
 
-        # self.tree = QTreeView()
         self.tree = QgsBrowserTreeView()
         self.tree.setModel(self.model)
-        # self.tree.removeRow(index.row())
 
         self.treeDock.setWidget(self.tree)
 
         self.dateEdit.setDateTime(datetime.now())
-
-        # self.buttonBox.accepted.connect(self.save_record)
 
         QObject.connect(
             self.tree.selectionModel(),
@@ -157,6 +152,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.selected_item = None
         self.guids = []
         self.currentlySelectedLine = None
+
+        if self.close_dialog:
+            self.saveRecordButton.setText('Save metadata && close')
 
         if table:
             self.treeDock.setEnabled(False)
@@ -218,10 +216,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.logger.info('No results from taxon service')
 
     def exec_(self):
-        # TODO: Maybe try below or something like it
-        # self.model.refresh()
-        # self.model.reload()
-
         if self.db_tool.validate_structure():
             super(MetadataDialog, self).exec_()
         else:
@@ -266,7 +260,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.add_record()
         else:
             self.update_record()
-        # self.close()
+
+        if self.close_dialog:
+            self.close()
 
     def table_row_selected(self, a, b):
 
@@ -332,7 +328,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             except RuntimeError:
                 QMessageBox.critical(
                     self,
-                    self.tr('Error deliting data.'),
+                    self.tr('Error deleting data.'),
                     self.tr('See log for error details.')
                 )
             self.update_grid()
@@ -381,7 +377,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
         :param oldSelection:
         :return:
         """
-
         self.empty_fields()
         selected = newSelection.indexes()
 
@@ -471,13 +466,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 Qt.DisplayRole
             )
 
-            # if self.currentlySelectedLine:
-            #     for irow in xrange(table_model.rowCount()):
-            #         row = []
-            #         for icol in xrange(table_model.columnCount()):
-            #             cell = table_model.data(table_model.createIndex(irow, icol))
-            #             row.append(cell)
-
             self.tableView.setModel(table_model)
             self.tableView.selectionModel().selectionChanged.connect(
                 self.table_row_selected
@@ -491,9 +479,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
             # self.deleteRecordButton.setEnabled(False)
 
     def show(self):
-        # self.model.reload()
-        # self.tree.update()
-        # print("tree refreshed show()")
         super(MetadataDialog, self).show()
 
     def update_record(self):
