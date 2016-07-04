@@ -130,8 +130,9 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         self.settings.setValue('database', self.database.text())
         self.settings.setValue('username', self.username.text())
         self.settings.setValue('password', self.password.text())
-        mmt = MetadataDbLinkerTool()
-        if mmt.validate_structure():
+        # mmt = MetadataDbLinkerTool()
+        # if mmt.validate_structure():
+        if self.db_tool.validate_structure():
             QMessageBox.information(
                 self,
                 self.tr("Please!"),
