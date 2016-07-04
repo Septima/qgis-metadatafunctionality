@@ -381,12 +381,12 @@ class MetadataDbLinkerTool(object):
             FROM
               information_schema.columns
             WHERE
-              table_name = '%s'
+              table_name = '{table}'
             AND
-              table_schema='%s';
-            """ % (
-                self.get_table(),
-                self.get_schema()
+              table_schema='{schema}';
+            """.format(
+                table=self.get_table(),
+                schema=self.get_schema()
         )
 
         if not db.open():
