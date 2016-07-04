@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
-    <height>334</height>
+    <width>528</width>
+    <height>456</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -345,22 +345,6 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>testConnectionButton</sender>
-   <signal>clicked()</signal>
-   <receiver>testConnectionButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>225</x>
-     <y>235</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>225</x>
-     <y>235</y>
     </hint>
    </hints>
   </connection>

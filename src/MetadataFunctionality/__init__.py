@@ -22,7 +22,11 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-from .qgissettingmanager import SettingManager
+from .qgissettingmanager import (
+    SettingManager,
+    String,
+    Scope
+)
 
 # HOW WE CAN DEBUG
 import sys
@@ -46,15 +50,15 @@ class MetadataDbLinkerSettings(SettingManager):
 
     def __init__(self):
         SettingManager.__init__(self, 'Metadata-DB-Linker')
-        self.addSetting("host", "string", "global", "")
-        self.addSetting("database", "string", "global", "")
-        self.addSetting("port", "string", "global", "")
-        self.addSetting("schema", "string", "global", "public")
-        self.addSetting("sourcetable", "string", "global", "metadata")
-        self.addSetting("username", "string", "global", "")
-        self.addSetting("password", "string", "global", "")
-        self.addSetting("taxonUrl", "string", "global", "")
-        self.addSetting("taxonTaxonomy", "string", "global", "")
+        self.add_setting(String('host', Scope.Global, ''))
+        self.add_setting(String('database', Scope.Global, ''))
+        self.add_setting(String('port', Scope.Global, ''))
+        self.add_setting(String('schema', Scope.Global, 'public'))
+        self.add_setting(String('sourcetable', Scope.Global, ''))
+        self.add_setting(String('username', Scope.Global, ''))
+        self.add_setting(String('password', Scope.Global, ''))
+        self.add_setting(String('taxonUrl', Scope.Global, ''))
+        self.add_setting(String('taxonTaxonomy', Scope.Global, ''))
 
     def verify_settings_set(self):
         errors = ''

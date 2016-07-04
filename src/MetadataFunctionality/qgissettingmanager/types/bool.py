@@ -26,41 +26,55 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QCheckBox
 from qgis.core import QgsProject
-
 from ..setting import Setting
+from ..setting_widget import SettingWidget
 
 
 class Bool(Setting):
 
-    def __init__(self, pluginName, name, scope, defaultValue, options={}):
-
-        setGlobal = lambda(value): QSettings().setValue(pluginName + "/" + name, value)
-        setProject = lambda(value): QgsProject.instance().writeEntryBool(pluginName, name, value)
-        getGlobal = lambda: QSettings().value(pluginName + "/" + name, defaultValue, type=bool)
-        getProject = lambda: QgsProject.instance().readBoolEntry(pluginName, name, defaultValue)[0]
-
-        if scope == 'global':
-            v = QSettings().value(pluginName + "/" + name)
-            if v is None:
-                QSettings().setValue(pluginName + "/" + name, defaultValue)
-
-        Setting.__init__(self, pluginName, name, scope, defaultValue, options,
-                         setGlobal, setProject, getGlobal, getProject)
+    def __init__(self, name, scope, default_value, options={}):
+        Setting.__init__(self, name, scope, default_value, bool, QgsProject.instance().readBoolEntry, QgsProject.instance().writeEntryBool, options)
 
     def check(self, value):
         if type(value) != bool:
             raise NameError("Setting %s must be a boolean." % self.name)
-
-    def setWidget(self, widget):
-        if type(widget) == QCheckBox or (hasattr(widget, "isCheckable") and widget.isCheckable()):
-            self.signal = "clicked"
-            self.widgetSetMethod = widget.setChecked
-            self.widgetGetMethod = widget.isChecked
+        
+    def config_widget(self, widget):
+        if type(widget) == QCheckBox:
+            return CheckBoxBoolWidget(self, widget, self.options)
+        elif hasattr(widget, "isCheckable") and widget.isCheckable():
+            return CheckableBoolWidget(self, widget, self.options)
         else:
             print type(widget)
-            raise NameError("SettingManager does not handle %s widgets for booleans for the moment (setting: %s)" %
+            raise NameError("SettingManager does not handle %s widgets for booleans at the moment (setting: %s)" %
                             (type(widget), self.name))
-        self.widget = widget
+
+
+class CheckBoxBoolWidget(SettingWidget):
+    def __init__(self, setting, widget, options):
+        signal = widget.stateChanged
+        SettingWidget.__init__(self, setting, widget, options, signal)
+
+    def set_widget_value(self, value):
+        self.widget.setChecked(value)
+
+    def widget_value(self):
+        return self.widget.isChecked()
+
+
+class CheckableBoolWidget(SettingWidget):
+    def __init__(self, setting, widget, options):
+        signal = widget.clicked
+        SettingWidget.__init__(self, setting, widget, options, signal)
+
+    def set_widget_value(self, value):
+        self.widget.setChecked(value)
+
+    def widget_value(self):
+        return self.widget.isChecked()
+
+    def widget_test(self, value):
+        print('cannot test checkable groupbox at the moment')
+        return False
