@@ -112,7 +112,8 @@ def new_accept(self):
     showMetadataDialogue(
         table=self.cboTable.currentText(),
         uri=self.db.uri(),
-        schema=self.cboSchema.currentText()
+        schema=self.cboSchema.currentText(),
+        close_dialog=True
     )
     result = DlgImportVector.accept_original(self)
     return result
