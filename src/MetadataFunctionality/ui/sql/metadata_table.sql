@@ -11,7 +11,7 @@ CREATE TABLE schema.metadata (
     sourcetable varchar,
     guid varchar,
     ts_timezone varchar,
-    ts_notimezone timestamp without time zone default (now() at time zone 'utc')
+    CONSTRAINT pk_metadata PRIMARY KEY (guid)
 )
 WITH (OIDS=FALSE);
 ALTER TABLE schema.metadata OWNER TO owner;
