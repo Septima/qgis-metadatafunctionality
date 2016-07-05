@@ -14,20 +14,18 @@ version=0.1.1
 author=Septima P/S
 email=kontakt@septima.dk
 about=
-    <p>This plugin is made to allow entering metadata for new and existing tables stored in a postgresdatabase.</p>
-    <p>A QGIS plugin to ease handling of metadatainformation for new and existing tables in Postgresdatabase.
+    <p>This plugin allows entering metadata to new and existing tables stored in a postgresdatabase.</p>
     <p>Adding metadata to a new file:
     The dialogbox to enter metadata is automatically launched when a new file is added to a postgresdatabase
     with the import function in DB Manager or created as a new file with DB Manager.</p>
-    <p>Adding metadata to an existing file:</p>
-    <p>Metadata to existing tables can be added with the dialogue from either the Plugin-menu or the plugin-button.
+    <p>Adding metadata to an existing file:
+    Metadata to existing tables can be added with the dialogue from either the Plugin-menu or the plugin-button.
     In the dialogue, navigate to the file to which you want to add metadata and enter the metadata in the fields.</p>
-    <p>Changing metadata of an existing file:</p>
-    <p>Metadata to existing tables can be changed with the dialogue from either the Plugin-menu or with the plugin-button.
+    <p>Changing metadata of an existing file:
+    Metadata to existing tables can be changed with the dialogue from either the Plugin-menu or with the plugin-button.
     In the dialogue, navigate to the file that you want to edit metadata. Change the metadata and save.</p>
-    <p></p>
-    <p>To get started - the first time:</p>
-    <p>Create the postgresdatabase-table in which you want to store metadata.
+    <p>To get started - the first time:
+    Create the postgresdatabase-table in which you want to store metadata.
     The table needs to follow a specific structure. Therefore, use the sql found under 'Database definition' in the
     Settings-dialogue.
     Specify the databaseconnection (host, port, username) in which the metadata is stored.
