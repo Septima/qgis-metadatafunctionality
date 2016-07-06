@@ -25,7 +25,6 @@
 
 #Add iso code for any locales you want to support here (space separated)
 # default is no locales
-# LOCALES = af
 LOCALES = da
 
 # If locales are enabled, set the name of the lrelease binary on your system. If
@@ -39,20 +38,23 @@ LRELEASE = lrelease
 SOURCES = \
 	__init__.py \
 	metadata_db_linker.py \
-	dialog_metadata.py 
+	ui/dialog_metadata.py \
+	ui/dialog_settings.py \
+	ui/dialog_settings_db_def.py
 
 PLUGINNAME = Metadata-DB-Linker
 
 PY_FILES = \
 	__init__.py \
 	metadata_db_linker.py \
-	dialog_metadata.py
+	ui/dialog_metadata.py \
+	ui/dialog_settings.py \
+	ui/dialog_settings_db_def.py
 
 UI_FILES = \
-	dialog_metadata.ui \
-	dialog_settings.ui \
-	dialog_settings_db_def.ui
-	
+	ui/dialog_metadata.ui \
+	ui/dialog_settings.ui \
+	ui/dialog_settings_db_def.ui
 
 EXTRAS = metadata.txt icon.png
 
