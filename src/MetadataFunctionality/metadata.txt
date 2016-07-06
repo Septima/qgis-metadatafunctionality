@@ -34,7 +34,8 @@ repository=https://github.com/Septima/qgis-metadatafunctionality
 
 # Uncomment the following line and add your changelog:
 changelog=
-    2016-0?-?? First release, version 0.1
+    2016-07-06: Pre-release, version 0.1.2
+    2016-07-01: Pre-release, version 0.1.1
 
 # Tags are comma separated with spaces allowed
 tags=metadata, enter metadata, edit metadata, DBmanager
