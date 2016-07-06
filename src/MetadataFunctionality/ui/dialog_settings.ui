@@ -275,7 +275,7 @@
       <string>Only required the first time you use the plugin</string>
      </property>
      <property name="text">
-      <string>Metadata table</string>
+      <string>Metadata table (sql)</string>
      </property>
     </widget>
    </item>

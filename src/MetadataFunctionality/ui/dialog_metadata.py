@@ -151,7 +151,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.currentlySelectedLine = None
 
         if self.close_dialog:
-            self.saveRecordButton.setText('Save metadata && close')
+            self.saveRecordButton.setText('Save metadata and close')
 
         if table:
             self.treeDock.setEnabled(False)
@@ -168,7 +168,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             QMessageBox.warning(
                 self,
                 self.tr("No taxon url and/or taxonomy"),
-                self.tr("Please enter a url and taxonomy for Taxon service in settings.")
+                self.tr("Please enter an url and taxonomy for Taxon service in settings.")
             )
             return False
 
