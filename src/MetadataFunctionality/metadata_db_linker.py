@@ -212,7 +212,7 @@ class MetadataDbLinker(object):
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'MetadataFunctionality_{}.qm'.format(locale)
+            '{}.qm'.format(locale)
         )
 
         if os.path.exists(locale_path):
