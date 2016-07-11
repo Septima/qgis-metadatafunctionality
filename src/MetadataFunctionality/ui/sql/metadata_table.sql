@@ -1,7 +1,8 @@
 -- These statements create a table and a function
--- Please replace ALL occurrences [schema].[metadata]
+-- 1: Replace ALL occurrences of [schema].[table]
+-- 2: Execute these statements
 
-CREATE TABLE [schema].[metadata] (
+CREATE TABLE [schema].[table] (
     name varchar,
     description varchar,
     kle_no varchar,
@@ -17,9 +18,9 @@ CREATE TABLE [schema].[metadata] (
     CONSTRAINT pk_metadata PRIMARY KEY (guid)
 )
 WITH (OIDS=FALSE);
-ALTER TABLE [schema].[metadata] OWNER TO owner;
+ALTER TABLE [schema].[table] OWNER TO owner;
 
-create or replace function [schema]._getMetaDataMatches(varchar, int)
+create or replace function [schema]._getMetaDataMatches(varchar, int default 1000)
 returns table (name varchar, description varchar, host varchar, db varchar, port integer, schema varchar, sourcetable varchar)
     as $$
     WITH QUERY AS (
@@ -37,7 +38,7 @@ returns table (name varchar, description varchar, host varchar, db varchar, port
               port,
               schema,
               sourcetable
-            FROM [schema].[metadata] m1
+            FROM [schema].[table] m1
             WHERE NOT EXISTS
             (
                 SELECT *
@@ -45,7 +46,7 @@ returns table (name varchar, description varchar, host varchar, db varchar, port
                 WHERE NOT EXISTS
                 (
                     SELECT 1
-                    FROM [schema].[metadata] m2
+                    FROM [schema].[table] m2
                     WHERE
                     (
                         m2.responsible ILIKE search_token
