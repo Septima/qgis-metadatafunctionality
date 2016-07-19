@@ -1,6 +1,7 @@
 -- These statements create a table and a function
--- 1: Replace ALL occurrences of [schema].[table]
--- 2: Execute these statements
+-- 1: Replace ALL occurrences of [schema].[table] to the schema and name of the metadatatable
+-- 2: Replace [owner] to the owner of the metadatatabel
+-- 3: Execute these statements in the postgresdatabase
 
 CREATE TABLE [schema].[table] (
     name varchar,
@@ -18,7 +19,7 @@ CREATE TABLE [schema].[table] (
     CONSTRAINT pk_metadata PRIMARY KEY (guid)
 )
 WITH (OIDS=FALSE);
-ALTER TABLE [schema].[table] OWNER TO owner;
+ALTER TABLE [schema].[table] OWNER TO [owner];
 
 create or replace function [schema]._getMetaDataMatches(varchar, int default 1000)
 returns table (name varchar, description varchar, host varchar, db varchar, port integer, schema varchar, sourcetable varchar)
