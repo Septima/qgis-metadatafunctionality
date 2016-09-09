@@ -97,7 +97,12 @@ def monkey_patched_createTable(self, table, field_defs, pkey):
         field_defs,
         pkey
     )
-    showMetadataDialogue(table=table, uri=self.uri(), schema=table[0])
+    showMetadataDialogue(
+        table=table,
+        uri=self.uri(),
+        schema=table[0],
+        close_dialog=True
+    )
 
 connector.PostGisDBConnector.createTable = monkey_patched_createTable
 
