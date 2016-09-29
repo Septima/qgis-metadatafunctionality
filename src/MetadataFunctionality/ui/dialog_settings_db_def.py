@@ -23,10 +23,18 @@
 
 import os
 
-from PyQt4 import QtGui, uic
+from PyQt4 import (
+    QtGui,
+    uic
+)
 
-SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'dialog_settings_db_def.ui'))
+SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(
+    os.path.join(
+        os.path.dirname(__file__),
+        'dialog_settings_db_def.ui'
+    )
+)
+
 
 class SettingsDbDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_CLASS):
 
@@ -37,10 +45,12 @@ class SettingsDbDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_CLASS):
         self.load_db_def()
 
     def load_db_def(self):
-        """
-        :return:
-        """
-
-        nf = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'sql','metadata_table.sql')
+        nf = os.path.join(
+            os.path.dirname(
+                os.path.realpath(__file__)
+            ),
+            'sql',
+            'metadata_table.sql'
+        )
         with open(nf, 'r') as myfile:
             self.textEdit.setText(myfile.read())
