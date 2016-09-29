@@ -57,8 +57,6 @@ from .ui.dialog_metadata import MetadataDialog
 from .ui.dialog_settings import SettingsDialog
 from . import MetadataDbLinkerSettings
 
-# TODO: Check that db_manager version is as expected (We are in potential trouble when db_manager gets updated)
-
 
 def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
     # Now show table metadata editor for the newly created table
@@ -74,7 +72,6 @@ def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
 
 
 def patched_createTable(self):
-    QgsMessageLog.logMessage("Monkey patched createTable called")
     table = self.editName.text()
     self.original_createTable()
     showMetadataDialogue(
@@ -202,7 +199,6 @@ class MetadataDbLinker(object):
         DBTree.fireMetadataDlg = fireMetadataDlg
         DBTree.contextMenuEvent = newContextMenuEvent
 
-
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -257,7 +253,9 @@ class MetadataDbLinker(object):
     def run(self):
         """Run method that performs all the real work"""
 
-        if self.settings.verify_settings_set():
+        errors = self.settings.verify_settings_set()
+
+        if errors:
             QMessageBox.critical(
                 None,
                 u'Missing settings.',
