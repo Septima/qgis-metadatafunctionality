@@ -29,10 +29,10 @@ from .qgissettingmanager import (
 )
 
 # HOW WE CAN DEBUG
-# import sys
-# sys.path.append('/Applications/PyCharm.app/Contents/debug-eggs/pycharm-debug.egg')
-# import pydevd
-# pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
+import sys
+sys.path.append('/Applications/PyCharm.app/Contents/debug-eggs/pycharm-debug.egg')
+import pydevd
+pydevd.settrace('localhost', port=53100, stdoutToServer=True, stderrToServer=True)
 
 
 # noinspection PyPep8Naming

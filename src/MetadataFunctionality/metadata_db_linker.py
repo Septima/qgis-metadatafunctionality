@@ -38,13 +38,13 @@ from PyQt4.QtGui import (
     QApplication,
     QMessageBox
 )
-
 from db_manager.db_plugins.plugin import (
     DBPlugin,
     Schema,
     Table
 )
 from db_manager.db_plugins.postgis import connector
+from db_manager.dlg_create_table import DlgCreateTable
 from db_manager.dlg_import_vector import DlgImportVector
 from db_manager.db_tree import DBTree
 
@@ -57,19 +57,8 @@ from .ui.dialog_metadata import MetadataDialog
 from .ui.dialog_settings import SettingsDialog
 from . import MetadataDbLinkerSettings
 
-
-# Import and override postgis create table
-# import inspect
-
-# import monkey_patcher
-
-# https://github.com/Oslandia/qgis-menu-builder/blob/master/menu_builder.py
-
 # TODO: Check that db_manager version is as expected (We are in potential trouble when db_manager gets updated)
-# ----------------------------------------------------------------
-#   Monkey patch PostGisDBConnector._execute
-# ----------------------------------------------------------------
-# create backup of old _execute first time
+
 
 def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
     # Now show table metadata editor for the newly created table
@@ -84,33 +73,16 @@ def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
     QApplication.restoreOverrideCursor()
 
 
-if not getattr(connector.PostGisDBConnector, 'createTable_monkeypatch_original', None):
-    connector.PostGisDBConnector.createTable_monkeypatch_original = connector.PostGisDBConnector.createTable
-    QgsMessageLog.logMessage("Adding the createTable patch.")
-
-
-def monkey_patched_createTable(self, table, field_defs, pkey):
+def patched_createTable(self):
     QgsMessageLog.logMessage("Monkey patched createTable called")
-    connector.PostGisDBConnector.createTable_monkeypatch_original(
-        self,
-        table,
-        field_defs,
-        pkey
-    )
+    table = self.editName.text()
+    self.original_createTable()
     showMetadataDialogue(
         table=table,
-        uri=self.uri(),
-        schema=table[0],
+        uri=self.db.connector._uri,
+        schema=self.item.name,
         close_dialog=True
     )
-
-connector.PostGisDBConnector.createTable = monkey_patched_createTable
-
-# ----------------------------------------------------------------
-#   Monkey patch the import button of the DBManager
-# ----------------------------------------------------------------
-if not getattr(connector.PostGisDBConnector, 'accept_original', None):
-    DlgImportVector.accept_original = DlgImportVector.accept
 
 
 def new_accept(self):
@@ -122,25 +94,6 @@ def new_accept(self):
     )
     result = DlgImportVector.accept_original(self)
     return result
-
-DlgImportVector.accept = new_accept
-
-# ----------------------------------------------------------------
-#   Monkey patch PostGisDBConnector.createTable
-# ----------------------------------------------------------------
-# create backup of old _execute first time
-if not getattr(connector.PostGisDBConnector, '_execute_monkeypatch_original', None):
-    connector.PostGisDBConnector._execute_monkeypatch_original = connector.PostGisDBConnector._execute
-
-
-def monkey_patched_execute(self, cursor, sql):
-    return connector.PostGisDBConnector._execute_monkeypatch_original(
-        self,
-        cursor,
-        sql
-    )
-
-connector.PostGisDBConnector._execute = monkey_patched_execute
 
 
 def newContextMenuEvent(self, ev):
@@ -190,10 +143,6 @@ def fireMetadataDlg(self):
         close_dialog=True
     )
 
-# menu
-DBTree.fireMetadataDlg = fireMetadataDlg
-DBTree.contextMenuEvent = newContextMenuEvent
-
 
 class MetadataDbLinker(object):
     """QGIS Plugin Implementation."""
@@ -236,6 +185,23 @@ class MetadataDbLinker(object):
         # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&{}'.format(self.plugin_metadata['name']))
+
+        # Initialize the fixes to DlgCreateTable class
+        if not getattr(DlgCreateTable, 'original_createTable', None):
+            DlgCreateTable.original_createTable = DlgCreateTable.createTable
+            QgsMessageLog.logMessage("Adding the createTable patch.")
+
+        DlgCreateTable.createTable = patched_createTable
+
+        if not getattr(connector.PostGisDBConnector, 'accept_original', None):
+            DlgImportVector.accept_original = DlgImportVector.accept
+
+        DlgImportVector.accept = new_accept
+
+        # menu
+        DBTree.fireMetadataDlg = fireMetadataDlg
+        DBTree.contextMenuEvent = newContextMenuEvent
+
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -291,9 +257,7 @@ class MetadataDbLinker(object):
     def run(self):
         """Run method that performs all the real work"""
 
-        errors = self.settings.verify_settings_set()
-
-        if errors:
+        if self.settings.verify_settings_set():
             QMessageBox.critical(
                 None,
                 u'Missing settings.',

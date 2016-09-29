@@ -421,6 +421,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
         schema = self.get_selected_schema()
         table = self.get_selected_table()
 
+        results = []
+
         try:
             results = self.db_tool.select(
                 {
