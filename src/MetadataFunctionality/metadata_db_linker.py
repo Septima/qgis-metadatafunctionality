@@ -72,14 +72,15 @@ def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
 
 
 def patched_createTable(self):
-    table = self.editName.text()
-    self.original_createTable()
-    showMetadataDialogue(
-        table=table,
-        uri=self.db.connector._uri,
-        schema=self.item.name,
-        close_dialog=True
-    )
+    if isinstance(self.db.connector, connector.PostGisDBConnector):
+        table = self.editName.text()
+        self.original_createTable()
+        showMetadataDialogue(
+            table=table,
+            uri=self.db.connector._uri,
+            schema=self.item.name,
+            close_dialog=True
+        )
 
 
 def new_accept(self):
