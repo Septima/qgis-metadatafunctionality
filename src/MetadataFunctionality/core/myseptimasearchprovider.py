@@ -39,7 +39,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             SELECT COUNT(1) FROM {schema}._getMetaDataMatches('{query}');
         '''.format(
             schema=self.db_tool.get_schema(),
-            query=query
+            query=query.encode('utf-8')
         )
 
         q = QtSql.QSqlQuery(db)
@@ -58,7 +58,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             SELECT * FROM {schema}._getMetaDataMatches('{query}', {limit});
         '''.format(
             schema=self.db_tool.get_schema(),
-            query=query,
+            query=query.encode('utf-8'),
             limit=limit
         )
 
