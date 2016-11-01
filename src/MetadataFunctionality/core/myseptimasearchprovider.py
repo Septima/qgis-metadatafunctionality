@@ -1,30 +1,25 @@
-# This is an example of how to make your plugin searchable through septima search
-# Your plugin MUST have an attribute 'SeptimaSearchProvider' with this signature
-# Example: self.SeptimaSearchProvider = MySeptimaSearchProvider()
-
 from PyQt4 import (
     QtCore,
     QtSql
 )
-from qgis.core import (
-    QgsMessageLog,
-    QgsDataSourceURI
-)
+from qgis.core import QgsDataSourceURI
+from .qgislogger import QgisLogger
 
 import json
 from ..core import MetadataDbLinkerTool
 
+
 class MySeptimaSearchProvider(QtCore.QObject):
-    
+
     def __init__(self, iface):
         # Mandatory because your search provider MUST extend QtCore.QObject
         QtCore.QObject.__init__(self)
         # Do other initialization here
         self.db_tool = MetadataDbLinkerTool()
         self.iface = iface
+        self.logger = QgisLogger('Metadata-DB-Linker')
 
-
-    # Mandatory slot        
+    # Mandatory slot
     @QtCore.pyqtSlot(str, int, result=str)
     def query(self, query, limit):
         db = self.db_tool.get_db()
@@ -92,36 +87,25 @@ class MySeptimaSearchProvider(QtCore.QObject):
         result['results'] = search_results
 
         return json.dumps(result)
-    # Mandatory        
+
+    # Mandatory
     def definition(self):
         # Return basic information about your self
         # iconURI is any valid URI, including a data URL:
-        # eg.: {'singular': 'school', 'plural': 'school' [, 'iconURI': iconurl]} 
-        return    {
+        # eg.: {'singular': 'school', 'plural': 'school' [, 'iconURI': iconurl]}
+        return {
             'singular': 'Tabel',
             'plural': 'Tabeller',
             'iconURI': "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQsM0gyMEEyLDIgMCAwLDEgMjIsNVYyMEEyLDIgMCAwLDEgMjAsMjJINEEyLDIgMCAwLDEgMiwyMFY1QTIsMiAwIDAsMSA0LDNNNCw3VjEwSDhWN0g0TTEwLDdWMTBIMTRWN0gxME0yMCwxMFY3SDE2VjEwSDIwTTQsMTJWMTVIOFYxMkg0TTQsMjBIOFYxN0g0VjIwTTEwLDEyVjE1SDE0VjEySDEwTTEwLDIwSDE0VjE3SDEwVjIwTTIwLDIwVjE3SDE2VjIwSDIwTTIwLDEySDE2VjE1SDIwVjEyWiIgLz48L3N2Zz4="
         }
-    
-    # Mandatory        
+
+    # Mandatory
     def on_select(self, result):
         # The selected result is returned to you
         # Do your thing
         self.add_vector_layer_from_metadata(self.iface, result)
-        
+
     def add_vector_layer_from_metadata(self, iface, result):
-        #result = result['data']
-        metaDataHost = self.db_tool.settings.value("host")
-    
-        if result['host'] != metaDataHost:
-            QMessageBox.information(
-                iface.mainWindow(),
-                "Error in hosts",
-                'Host in result from postgres isnt equal to the host in the '
-                'metadata plugin settings'
-            )
-            return
-    
         geometry_columns = self.get_geometry_columns(
             result['host'],
             result['port'],
@@ -129,7 +113,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             result['schema'],
             result['table']
         )
-    
+
         uri = QgsDataSourceURI()
         # set host, port, database name, username and password
         uri.setConnection(
@@ -151,22 +135,21 @@ class MySeptimaSearchProvider(QtCore.QObject):
             'postgres'
         )
         return layer
-    
-    
+
     def get_geometry_columns(self, host, port, database, schema, table):
-    
+
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
         db.setHostName(host)
         db.setPort(int(port))
         db.setDatabaseName(database)
         db.setUserName(self.db_tool.settings.value("username"))
         db.setPassword(self.db_tool.settings.value("password"))
-    
+
         if not db.open():
             return None
-    
+
         q = QtSql.QSqlQuery(db)
-    
+
         sql = '''
             SELECT
               f_geometry_column
@@ -181,14 +164,13 @@ class MySeptimaSearchProvider(QtCore.QObject):
             schema=schema,
             table=table
         )
-    
+
         columns = []
-    
+
         if not q.exec_(sql):
             return None
         else:
             while q.next():
                 columns.append(q.value(0))
-    
-        return columns
 
+        return columns

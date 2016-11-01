@@ -201,8 +201,8 @@ class MetadataDbLinker(object):
         # menu
         DBTree.fireMetadataDlg = fireMetadataDlg
         DBTree.contextMenuEvent = newContextMenuEvent
-        self.SeptimaSearchProvider = MySeptimaSearchProvider( iface )
 
+        self.septimasearchprovider = MySeptimaSearchProvider(iface)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
