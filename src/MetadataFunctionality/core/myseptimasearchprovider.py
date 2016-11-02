@@ -30,12 +30,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             self.logger.critical(db.lastError().text())
             return
 
-        sql_count = '''
-            SELECT COUNT(1) FROM {schema}._getMetaDataMatches('{query}');
-        '''.format(
-            schema=self.db_tool.get_schema(),
-            query=query.encode('utf-8')
-        )
+        sql_count = '''select count(1) from (''' + self.get_from_clause(query) + ''') xxx'''
 
         q = QtSql.QSqlQuery(db)
 
@@ -49,19 +44,14 @@ class MySeptimaSearchProvider(QtCore.QObject):
             while q.next():
                 metadata_count = q.value(0)
 
-        sql = '''
-            SELECT * FROM {schema}._getMetaDataMatches('{query}', {limit});
-        '''.format(
-            schema=self.db_tool.get_schema(),
-            query=query.encode('utf-8'),
-            limit=limit
-        )
+        sql = '''select xxx.* from (''' + self.get_from_clause(query) + ''') xxx limit {limit}'''.format(limit=str(limit))
 
         search_results = []
 
         if not q.exec_(sql):
             self.logger.critical('Failed to select data.')
-            self.logger.critical(q.lastError().text())
+            sql_error = q.lastError().text()
+            self.logger.critical(sql_error)
             return
         else:
             while q.next():
@@ -88,6 +78,49 @@ class MySeptimaSearchProvider(QtCore.QObject):
 
         return json.dumps(result)
 
+    def get_from_clause(self, query):
+        return'''
+        WITH QUERY AS (
+                    SELECT '{query}'::text AS VALUE
+                ),
+                st AS (
+                    SELECT REGEXP_SPLIT_TO_TABLE(value, E'\\s+') search_token
+                    FROM QUERY
+                )
+                SELECT
+                  name,
+                  description,
+                  host,
+                  db,
+                  port,
+                  schema,
+                  sourcetable
+                FROM {schema}.{table} m1
+                WHERE NOT EXISTS
+                (
+                    SELECT *
+                    FROM st
+                    WHERE NOT EXISTS
+                    (
+                        SELECT 1
+                        FROM {schema}.{table} m2
+                        WHERE
+                        (
+                            m2.responsible ILIKE search_token
+                            OR m2.description ILIKE '%' || search_token || '%'
+                            OR m2.name ILIKE search_token || '%'
+                            OR m2.db ILIKE search_token
+                            OR m2.sourcetable ILIKE search_token || '%'
+                            OR m2.project ILIKE '%' || search_token || '%'
+                        )
+                    AND m1.guid = m2.guid
+                    )
+                )
+        '''.format(
+            schema=self.db_tool.get_schema(),
+            table=self.db_tool.get_table(),
+            query=query.encode('utf-8')
+        )
     # Mandatory
     def definition(self):
         # Return basic information about your self
