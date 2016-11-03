@@ -56,6 +56,7 @@ from .core.pluginmetadata import plugin_metadata
 from .ui.dialog_metadata import MetadataDialog
 from .ui.dialog_settings import SettingsDialog
 from . import MetadataDbLinkerSettings
+from .core.myseptimasearchprovider import MySeptimaSearchProvider
 
 
 def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
@@ -200,6 +201,8 @@ class MetadataDbLinker(object):
         # menu
         DBTree.fireMetadataDlg = fireMetadataDlg
         DBTree.contextMenuEvent = newContextMenuEvent
+
+        self.septimasearchprovider = MySeptimaSearchProvider(iface)
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
