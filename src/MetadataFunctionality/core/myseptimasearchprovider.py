@@ -30,7 +30,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             self.logger.critical(db.lastError().text())
             return
 
-        sql_count = '''select count(1) from (''' + self.get_from_clause(query) + ''') xxx'''
+        sql_count = 'select count(1) from ({from_clause}) xxx'.format(from_clause= self.get_from_clause(query))
 
         q = QtSql.QSqlQuery(db)
 
@@ -44,7 +44,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             while q.next():
                 metadata_count = q.value(0)
 
-        sql = '''select xxx.* from (''' + self.get_from_clause(query) + ''') xxx limit {limit}'''.format(limit=str(limit))
+        sql = 'select xxx.* from ({from_clause}) xxx limit {limit}'.format(limit=str(limit), from_clause= self.get_from_clause(query))
 
         search_results = []
 
