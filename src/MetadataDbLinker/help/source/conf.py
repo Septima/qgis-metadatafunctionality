@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# MetadataFunctionality documentation build configuration file, created by
+# MetadataDbLinker documentation build configuration file, created by
 # sphinx-quickstart on Sun Feb 12 17:11:03 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'MetadataFunctionality'
-copyright = u'2013, Bernhard Snizek (Septima P/S)'
+project = u'MetadataDbLinker'
+copyright = u'2016, Septima P/S'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +178,8 @@ htmlhelp_basename = 'TemplateClassdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'MetadataFunctionality.tex', u'MetadataFunctionality Documentation',
-   u'Bernhard Snizek (Septima P/S)', 'manual'),
+  ('index', 'MetadataDbLinker.tex', u'MetadataDbLinker Documentation',
+   u'Septima P/S', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -211,6 +211,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'TemplateClass', u'MetadataFunctionality Documentation',
-     [u'Bernhard Snizek (Septima P/S)'], 1)
+    ('index', 'TemplateClass', u'MetadataDbLinker Documentation',
+     [u'Septima P/S'], 1)
 ]

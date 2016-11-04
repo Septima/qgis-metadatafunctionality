@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- MetadataFunctionality
+ MetadataDbLinker
                                  A QGIS plugin
- MetadataFunctionality
+ MetadataDbLinker
                               -------------------
         begin                : 2016-04-04
         git sha              : $Format:%H$
@@ -226,7 +226,7 @@ class MetadataDbLinker(object):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         self.editmetadata_action = QAction(
-            QIcon(':/plugins/MetadataFunctionality/resources/metadata.png'),
+            QIcon(':/plugins/MetadataDbLinker/resources/metadata.png'),
             self.tr(u'Enter or edit metadata'),
             self.iface.mainWindow()
         )
@@ -237,7 +237,7 @@ class MetadataDbLinker(object):
         self.actions.append(self.editmetadata_action)
 
         self.settings_action = QAction(
-            QIcon(':/plugins/MetadataFunctionality/resources/settings.png'),
+            QIcon(':/plugins/MetadataDbLinker/resources/settings.png'),
             self.tr(u'Settings'),
             self.iface.mainWindow()
         )
