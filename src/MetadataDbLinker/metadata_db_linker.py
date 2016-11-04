@@ -215,9 +215,11 @@ class MetadataDbLinker(object):
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate(
-            '{}'.format(self.plugin_metadata['name']),
+            'MetadataDbLinker',
             message
         )
+
+
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
