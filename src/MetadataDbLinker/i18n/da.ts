@@ -54,12 +54,12 @@
         <translation>&amp;{}</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="227"/>
+        <location filename="metadata_db_linker.py" line="225"/>
         <source>Enter or edit metadata</source>
         <translation>Indtast eller redigér metadata</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="238"/>
+        <location filename="metadata_db_linker.py" line="236"/>
         <source>Settings</source>
         <translation>Indstillinger</translation>
     </message>
