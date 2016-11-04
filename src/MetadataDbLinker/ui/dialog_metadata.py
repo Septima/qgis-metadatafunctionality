@@ -151,7 +151,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.currentlySelectedLine = None
 
         if self.close_dialog:
-            self.saveRecordButton.setText('Save metadata and close')
+            self.saveRecordButton.setText(self.tr('Save metadata and close'))
 
         if table:
             self.treeDock.setEnabled(False)
