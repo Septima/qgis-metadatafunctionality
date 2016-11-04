@@ -3,37 +3,37 @@
 <context>
     <name></name>
     <message>
-        <location filename="metadata_db_linker.py" line="154"/>
+        <location filename="metadata_db_linker.py" line="111"/>
         <source>Rename</source>
         <translation>Omdøb</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="155"/>
+        <location filename="metadata_db_linker.py" line="112"/>
         <source>Delete</source>
         <translation>Slet</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="159"/>
+        <location filename="metadata_db_linker.py" line="116"/>
         <source>Add to canvas</source>
         <translation>Føj til kanvas</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="163"/>
+        <location filename="metadata_db_linker.py" line="120"/>
         <source>Re-connect</source>
         <translation>Re-connect</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="164"/>
+        <location filename="metadata_db_linker.py" line="121"/>
         <source>Remove</source>
         <translation>Fjern</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="167"/>
+        <location filename="metadata_db_linker.py" line="124"/>
         <source>New Connection...</source>
         <translation>Ny Forbindelse...</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="171"/>
+        <location filename="metadata_db_linker.py" line="128"/>
         <source>Metadata...</source>
         <translation>Metadata...</translation>
     </message>
@@ -49,17 +49,17 @@
 <context>
     <name>MetadataDbLinker</name>
     <message>
-        <location filename="metadata_db_linker.py" line="280"/>
+        <location filename="metadata_db_linker.py" line="249"/>
         <source>&amp;{}</source>
         <translation>&amp;{}</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="256"/>
+        <location filename="metadata_db_linker.py" line="225"/>
         <source>Enter or edit metadata</source>
         <translation>Indtast eller redigér metadata</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="238"/>
+        <location filename="metadata_db_linker.py" line="236"/>
         <source>Settings</source>
         <translation>Indstillinger</translation>
     </message>
@@ -72,42 +72,42 @@
         <translation>Ingen taxon-url og/eller taxonomi</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="561"/>
+        <location filename="dialog_metadata.py" line="564"/>
         <source>Please!</source>
         <translation>Hovsa!</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="219"/>
+        <location filename="dialog_metadata.py" line="220"/>
         <source>Either database is unavailable, table with metadata does not exist or wrong access rights.</source>
         <translation>Database er enten utilgængelig, metadatatabellen eksisterer ikke eller der er forkert indtastede adgangsrettigheder til databasen </translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="435"/>
+        <location filename="dialog_metadata.py" line="438"/>
         <source>Error selecting data.</source>
         <translation>Fejl opstod ved udvælgelse af data</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="552"/>
+        <location filename="dialog_metadata.py" line="555"/>
         <source>See log for error details.</source>
         <translation>Se log for detaljer om fejlen</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="326"/>
+        <location filename="dialog_metadata.py" line="327"/>
         <source>Error deleting data.</source>
         <translation>Der opstod en fejl ved sletning af data</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="511"/>
+        <location filename="dialog_metadata.py" line="514"/>
         <source>Error updating data.</source>
         <translation>Der opstod en fejl ved opdatering af data</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="552"/>
+        <location filename="dialog_metadata.py" line="555"/>
         <source>Error inserting data.</source>
         <translation>Der opstod en fejl ved indsættelse af data</translation>
     </message>
     <message>
-        <location filename="dialog_metadata.py" line="561"/>
+        <location filename="dialog_metadata.py" line="564"/>
         <source>Remember to select a table.</source>
         <translation>Husk at udvælge en tabel</translation>
     </message>
@@ -326,22 +326,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SettingsDialog</name>
     <message>
-        <location filename="dialog_settings.py" line="128"/>
+        <location filename="dialog_settings.py" line="129"/>
         <source>Information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="dialog_settings.py" line="128"/>
+        <location filename="dialog_settings.py" line="129"/>
         <source>DB structure and connection OK.</source>
         <translation>DB-struktur og forbindelse OK</translation>
     </message>
     <message>
-        <location filename="dialog_settings.py" line="134"/>
+        <location filename="dialog_settings.py" line="135"/>
         <source>Warning</source>
         <translation>Advarsel</translation>
     </message>
     <message>
-        <location filename="dialog_settings.py" line="134"/>
+        <location filename="dialog_settings.py" line="135"/>
         <source>Either structure of database or connection is broken</source>
         <translation>Der er fejl med databasestruktur eller forbindelse</translation>
     </message>
