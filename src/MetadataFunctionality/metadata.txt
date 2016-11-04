@@ -43,7 +43,7 @@ tags=metadata, enter metadata, edit metadata, DBmanager
 
 homepage=https://github.com/Septima/qgis-metadatafunctionality
 category=Plugins
-icon=resources/icon.png
+icon=resources/metadata.png
 # experimental flag
 experimental=True
 
