@@ -54,12 +54,12 @@
         <translation>&amp;{}</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="225"/>
+        <location filename="metadata_db_linker.py" line="227"/>
         <source>Enter or edit metadata</source>
         <translation>Indtast eller redigér metadata</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="236"/>
+        <location filename="metadata_db_linker.py" line="238"/>
         <source>Settings</source>
         <translation>Indstillinger</translation>
     </message>
@@ -115,6 +115,11 @@
         <location filename="dialog_metadata.py" line="168"/>
         <source>Please enter an url and taxonomy for Taxon service in settings.</source>
         <translation>Indtast en url og taxonomi til Taxon service i indstillingsdialogen</translation>
+    </message>
+    <message>
+        <location filename="dialog_metadata.py" line="154"/>
+        <source>Save metadata and close</source>
+        <translation>Gem metadata og luk</translation>
     </message>
 </context>
 <context>
@@ -320,7 +325,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Adding or changing metadata to an existing table:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Metadata to existing tables can be added or changed with the dialog from either the Plugin-menu or the plugin-button. In the dialog, navigate to the table to which you want to add or change metadata. Enter metadata in the fields and save.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Med Metadata-DB-linker kan du fra QGIS indtaste metadata for nye og eksisterende tabeller gemt i Postgresdatabase.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Den første gang du skal bruge pluginet:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;1. Opret tabellen hvor metadata skal gemmes. Se sql-definition af tabellen under Indstillings-dialogen. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;2. I indstillings-dialogen: Specificér host, port, schema, tabelnavn, brugernavn og password til databasen hvor metadatatabellen er gemt. Hvis du ønsker automatisk at tildele kle-journalnummer, specificér taxonurl og taxon taxonomi.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Sådan bruges pluginet:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Tilføj metadata til en ny tabel med DB Manager:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Dialogen hvor metadata skal indtastes vises automatisk når en ny tabel tilføjes til postgresdatabasen med importfunktionen i DB Manager eller oprettes som ny tabel med DB Manager. Indtast metadata i felterne og gem.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Tilføjelse eller ændring af metadata til en eksisterende tabel:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Metadata til eksisterende tabeller kan blive tilføjet eller ændret med dialogen fra plugin-menuen eller metadata-db-linker-knappen. I dialogen, navigér til tabellen som du ønsker at tilføje/ændre metadata. Indtast metadata i felterne og gem.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
