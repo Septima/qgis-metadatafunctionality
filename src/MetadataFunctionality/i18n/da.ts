@@ -59,7 +59,7 @@
         <translation>Indtast eller redigér metadata</translation>
     </message>
     <message>
-        <location filename="metadata_db_linker.py" line="267"/>
+        <location filename="metadata_db_linker.py" line="238"/>
         <source>Settings</source>
         <translation>Indstillinger</translation>
     </message>
@@ -74,7 +74,7 @@
     <message>
         <location filename="dialog_metadata.py" line="561"/>
         <source>Please!</source>
-        <translation>Vær venlig!</translation>
+        <translation>Hovsa!</translation>
     </message>
     <message>
         <location filename="dialog_metadata.py" line="219"/>
@@ -190,7 +190,7 @@
     <message>
         <location filename="dialog_metadata.ui" line="268"/>
         <source>Suggested KLE-numbers</source>
-        <translation>KLe-forslag</translation>
+        <translation>Kle-forslag</translation>
     </message>
     <message>
         <location filename="dialog_metadata.ui" line="284"/>
