@@ -1,7 +1,8 @@
 <RCC>
-    <qresource prefix="/plugins/MetadataFunctionality" >
+    <qresource prefix="/plugins/MetadataDbLinker" >
         <file>resources/icon.png</file>
         <file>resources/metadata.png</file>
         <file>resources/settings.png</file>
+        <file>resources/about.png</file>
     </qresource>
 </RCC>
