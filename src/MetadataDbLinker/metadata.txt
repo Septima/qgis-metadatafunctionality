@@ -11,7 +11,7 @@ name=Metadata-DB-Linker
 qgisMinimumVersion=2.14
 description=A plugin to enter and edit metadata stored in a postgres-database table.
 version=0.1.7
-author=Septima P/S
+author=Septima
 email=kontakt@septima.dk
 about=
     With Metadata-DB-linker you can use QGIS to enter metadata to new and existing tables stored in a Postgresdatabase. If you create a table or import data to a table in a Postgresdatabase with DB Manager, the Metadata-DB-link is automatically launched
