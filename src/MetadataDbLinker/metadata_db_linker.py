@@ -52,9 +52,15 @@ from db_manager.db_tree import DBTree
 import resources
 
 from .core.pluginmetadata import plugin_metadata
+from .core.metadatadatabasetool import (
+    MetadataDatabaseTool,
+    DatabaseConnectionError,
+    DatabaseInconsistencyError
+)
 # Import the code for the dialog
-from .ui.dialog_metadata import MetadataDialog
-from .ui.dialog_settings import SettingsDialog
+from .ui import MetadataDialog
+from .ui import SettingsDialog
+from .ui import CreateMetadataTableDialog
 from . import MetadataDbLinkerSettings
 from .core.myseptimasearchprovider import MySeptimaSearchProvider
 
@@ -92,7 +98,7 @@ def new_accept(self):
         schema=self.cboSchema.currentText(),
         close_dialog=True
     )
-    result = DlgImportVector.accept_original(self)
+    result = DlgImportVector.original_accept(self)
     return result
 
 
@@ -186,21 +192,23 @@ class MetadataDbLinker(object):
         self.actions = []
         self.menu = self.tr(u'&{}'.format(self.plugin_metadata['name']))
 
-        # Initialize the fixes to DlgCreateTable class
+        # Overwrite the methods from dbmanager
         if not getattr(DlgCreateTable, 'original_createTable', None):
             DlgCreateTable.original_createTable = DlgCreateTable.createTable
             QgsMessageLog.logMessage("Adding the createTable patch.")
 
         DlgCreateTable.createTable = patched_createTable
 
-        if not getattr(connector.PostGisDBConnector, 'accept_original', None):
-            DlgImportVector.accept_original = DlgImportVector.accept
+        if not getattr(connector.PostGisDBConnector, 'original_accept', None):
+            DlgImportVector.original_accept = DlgImportVector.accept
 
         DlgImportVector.accept = new_accept
 
-        # menu
-        DBTree.fireMetadataDlg = fireMetadataDlg
+        if not getattr(DBTree, 'original_contextMenuEvent', None):
+            DBTree.original_contextMenuEvent = DBTree.contextMenuEvent
+
         DBTree.contextMenuEvent = newContextMenuEvent
+        DBTree.fireMetadataDlg = fireMetadataDlg
 
         self.septimasearchprovider = MySeptimaSearchProvider(iface)
 
@@ -221,8 +229,6 @@ class MetadataDbLinker(object):
             'MetadataDbLinker',
             message
         )
-
-
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
@@ -257,37 +263,48 @@ class MetadataDbLinker(object):
             )
             self.iface.removeToolBarIcon(action)
 
+        # revert to the original implementations
+        DlgCreateTable.createTable = DlgCreateTable.original_createTable
+        DlgCreateTable.original_createTable = None
+        DlgImportVector.accept = DlgImportVector.original_accept
+        DlgImportVector.original_accept = None
+        DBTree.contextMenuEvent = DBTree.original_contextMenuEvent
+        DBTree.original_contextMenuEvent = None
+        DBTree.fireMetadataDlg = None
+
     def run(self):
         """Run method that performs all the real work"""
 
         errors = self.settings.verify_settings_set()
-
         if errors:
             QMessageBox.critical(
                 None,
-                u'Missing settings.',
-                u'{}'.format(errors)
+                'Missing settings.',
+                '{}'.format(errors)
             )
             return None
 
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        try:
+            self.dlg.db_tool.validate_structure()
+            # Run the dialog event loop
+            self.dlg.show()
+            self.dlg.exec_()
+        except DatabaseInconsistencyError:
+            self.create_table_dialog = CreateMetadataTableDialog(
+                create_func=MetadataDatabaseTool().create_metadata_table
+            )
+            self.create_table_dialog.show()
+            self.create_table_dialog.exec_()
+        except DatabaseConnectionError as e:
+            QMessageBox.critical(
+                None,
+                'Error connection to database',
+                '{}'.format(e)
+            )
 
     def settings_run(self):
         """Run method that performs all the real work"""
         # show the dialog
         self.settings_dlg.show()
         # Run the dialog event loop
-        result = self.settings_dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        self.settings_dlg.exec_()

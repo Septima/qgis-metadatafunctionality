@@ -48,7 +48,7 @@ from qgis.gui import QgsBrowserTreeView
 from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
 from .. import MetadataDbLinkerSettings
-from ..core import MetadataDbLinkerTool
+from ..core import MetadataDatabaseTool
 
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
@@ -120,7 +120,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.schema = schema
         self.close_dialog = close_dialog
         self.settings = MetadataDbLinkerSettings()
-        self.db_tool = MetadataDbLinkerTool()
+        self.db_tool = MetadataDatabaseTool()
         self.logger = QgisLogger('Metadata-DB-Linker')
 
         self.setupUi(self)
@@ -212,16 +212,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.kleSuggestions.setText('No results from Taxon Classifier.')
             self.logger.info('No results from taxon service')
 
-    def exec_(self):
-        if self.db_tool.validate_structure():
-            super(MetadataDialog, self).exec_()
-        else:
-            QMessageBox.information(
-                self,
-                self.tr("Please!"),
-                self.tr("Either database is unavailable, table with metadata does not exist or wrong access rights.")
-            )
-
     def get_selected_uri(self):
         """
         :return:
@@ -277,11 +267,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
             try:
                 results = self.db_tool.select({'guid': guid})
-            except RuntimeError:
+            except RuntimeError as e:
                 QMessageBox.critical(
-                    self,
+                    None,
                     self.tr('Error selecting data.'),
-                    self.tr('See log for error details.')
+                    self.tr('Error: {}'.format(e))
                 )
 
             if len(results) == 1:
@@ -322,11 +312,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
             guid = self.guids[row.row()]
             try:
                 self.db_tool.delete({'guid': guid})
-            except RuntimeError:
+            except RuntimeError as e:
                 QMessageBox.critical(
                     self,
                     self.tr('Error deleting data.'),
-                    self.tr('See log for error details.')
+                    self.tr('Error: {}'.format(e))
                 )
             self.update_grid()
             if self.has_table_data:
@@ -433,11 +423,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 },
                 order_by={'field': 'ts_timezone', 'direction': 'DESC'}
             )
-        except RuntimeError:
+        except RuntimeError as e:
             QMessageBox.critical(
-                self,
+                None,
                 self.tr('Error selecting data.'),
-                self.tr('See log for error details.')
+                self.tr('Error: {}'.format(e))
             )
 
         if len(results) > 0:
@@ -477,9 +467,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.tableView.selectionModel().selectionChanged.disconnect()
             # self.deleteRecordButton.setEnabled(False)
 
-    def show(self):
-        super(MetadataDialog, self).show()
-
     def update_record(self):
         """
             Adds a record to the table.
@@ -509,11 +496,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     'project': self.projectEdit.text()
                 }
             )
-        except RuntimeError:
+        except RuntimeError as e:
             QMessageBox.critical(
-                self,
+                None,
                 self.tr('Error updating data.'),
-                self.tr('See log for error details.')
+                self.tr('Error: {}'.format(e))
             )
 
         self.update_grid()
@@ -550,11 +537,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
                         'project': self.projectEdit.text()
                     }
                 )
-            except RuntimeError:
+            except RuntimeError as e:
                 QMessageBox.critical(
-                    self,
+                    None,
                     self.tr('Error inserting data.'),
-                    self.tr('See log for error details.')
+                    self.tr('Error: {}'.format(e))
                 )
             self.currentlySelectedLine = guid
             self.update_grid()

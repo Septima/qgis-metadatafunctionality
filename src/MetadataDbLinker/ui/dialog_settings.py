@@ -30,10 +30,8 @@ from PyQt4.QtGui import (
     QDialog
 )
 
-from db_manager.db_plugins.postgis.plugin import PGTable
-
 from .. import MetadataDbLinkerSettings
-from ..core import MetadataDbLinkerTool
+from ..core import MetadataDatabaseTool
 from ..qgissettingmanager import SettingDialog
 from ..ui.dialog_settings_db_def import SettingsDbDefDialog
 
@@ -50,7 +48,7 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
     def __init__(self, parent=None):
         """Constructor."""
         super(QDialog, self).__init__(parent)
-        self.db_tool = MetadataDbLinkerTool()
+        self.db_tool = MetadataDatabaseTool()
 
         self.setupUi(self)
 
@@ -85,16 +83,6 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         """
         self.db_def_dlg.exec_()
 
-    def item_changed(self, item):
-        self.current_item = item
-        if type(item) in [PGTable]:
-            db = self.tree.currentDatabase().publicUri().connectionInfo()
-            self.table_structure_ok = self.db_tool.validate_structure(
-                db,
-                item.name
-            )
-            self.activate_test_button()
-
     def all_fields_filled(self):
 
         host = self.host.text()
@@ -105,7 +93,15 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         username = self.username.text()
         password = self.password.text()
 
-        return host != '' and database != '' and port != '' and schema != '' and sourcetable != '' and username != '' and password != ''
+        return (
+            host != '' and
+            database != '' and
+            port != '' and
+            schema != '' and
+            sourcetable != '' and
+            username != '' and
+            password != ''
+        )
 
     def activate_test_button(self):
         """
@@ -124,15 +120,16 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         self.settings.setValue('database', self.database.text())
         self.settings.setValue('username', self.username.text())
         self.settings.setValue('password', self.password.text())
-        if self.db_tool.validate_structure():
+        try:
+            self.db_tool.validate_structure()
             QMessageBox.information(
                 self,
                 self.tr("Information"),
                 self.tr("DB structure and connection OK.")
             )
-        else:
+        except RuntimeError as e:
             QMessageBox.warning(
-                self,
+                None,
                 self.tr("Warning"),
-                self.tr("Either structure of database or connection is broken")
+                self.tr("Either structure of database or connection is broken.\n{error}".format(e))
             )

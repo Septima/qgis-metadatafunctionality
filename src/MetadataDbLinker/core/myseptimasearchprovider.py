@@ -6,7 +6,7 @@ from qgis.core import QgsDataSourceURI
 from .qgislogger import QgisLogger
 
 import json
-from ..core import MetadataDbLinkerTool
+from ..core import MetadataDatabaseTool
 
 
 class MySeptimaSearchProvider(QtCore.QObject):
@@ -15,7 +15,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
         # Mandatory because your search provider MUST extend QtCore.QObject
         QtCore.QObject.__init__(self)
         # Do other initialization here
-        self.db_tool = MetadataDbLinkerTool()
+        self.db_tool = MetadataDatabaseTool()
         self.iface = iface
         self.logger = QgisLogger('Metadata-DB-Linker')
 
