@@ -30,7 +30,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             self.logger.critical(db.lastError().text())
             return
 
-        sql_count = 'select count(1) from ({from_clause}) xxx'.format(from_clause= self.get_from_clause(query))
+        sql_count = u'select count(1) from ({from_clause}) xxx'.format(from_clause= self.get_from_clause(query))
 
         q = QtSql.QSqlQuery(db)
 
@@ -44,7 +44,7 @@ class MySeptimaSearchProvider(QtCore.QObject):
             while q.next():
                 metadata_count = q.value(0)
 
-        sql = 'select xxx.* from ({from_clause}) xxx limit {limit}'.format(limit=str(limit), from_clause= self.get_from_clause(query))
+        sql = u'select xxx.* from ({from_clause}) xxx limit {limit}'.format(limit=str(limit), from_clause= self.get_from_clause(query))
 
         search_results = []
 
@@ -79,47 +79,48 @@ class MySeptimaSearchProvider(QtCore.QObject):
         return json.dumps(result)
 
     def get_from_clause(self, query):
-        return'''
-        WITH QUERY AS (
-                    SELECT '{query}'::text AS VALUE
-                ),
-                st AS (
-                    SELECT REGEXP_SPLIT_TO_TABLE(value, E'\\s+') search_token
-                    FROM QUERY
-                )
-                SELECT
-                  name,
-                  description,
-                  host,
-                  db,
-                  port,
-                  schema,
-                  sourcetable
-                FROM {schema}.{table} m1
-                WHERE NOT EXISTS
-                (
-                    SELECT *
-                    FROM st
-                    WHERE NOT EXISTS
-                    (
-                        SELECT 1
-                        FROM {schema}.{table} m2
-                        WHERE
-                        (
-                            m2.responsible ILIKE search_token
-                            OR m2.description ILIKE '%' || search_token || '%'
-                            OR m2.name ILIKE search_token || '%'
-                            OR m2.db ILIKE search_token
-                            OR m2.sourcetable ILIKE search_token || '%'
-                            OR m2.project ILIKE '%' || search_token || '%'
-                        )
-                    AND m1.guid = m2.guid
-                    )
-                )
+        return u'''
+WITH QUERY AS (
+        SELECT '{query}'::text AS VALUE
+    ),
+    st AS (
+        SELECT REGEXP_SPLIT_TO_TABLE(value, ' ') search_token
+        FROM QUERY
+    )
+    SELECT
+      name,
+      description,
+      host,
+      db,
+      port,
+      schema,
+      sourcetable
+    FROM {schema}.{table} m1
+    WHERE NOT EXISTS
+    (
+        SELECT *
+        FROM st
+        WHERE NOT EXISTS
+        (
+            SELECT 1
+            FROM {schema}.{table} m2
+            WHERE
+            (
+                m2.responsible ILIKE search_token
+                OR m2.description ILIKE search_token || '%'
+                OR m2.description ILIKE '% ' || search_token || '%'
+                OR m2.name ILIKE search_token || '%'
+                OR m2.db ILIKE search_token
+                OR m2.sourcetable ILIKE search_token || '%'
+                OR m2.project ILIKE search_token || '%'
+            )
+        AND m1.guid = m2.guid
+        )
+    )
         '''.format(
             schema=self.db_tool.get_schema(),
             table=self.db_tool.get_table(),
-            query=query.encode('utf-8')
+            query=query
         )
     # Mandatory
     def definition(self):
