@@ -184,7 +184,7 @@ WITH QUERY AS (
 
         q = QtSql.QSqlQuery(db)
 
-        sql = '''
+        sql = u'''
             SELECT
               f_geometry_column
             FROM
