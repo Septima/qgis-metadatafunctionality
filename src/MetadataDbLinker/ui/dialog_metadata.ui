@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>794</height>
+    <width>886</width>
+    <height>865</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -70,7 +70,6 @@
          <property name="features">
           <set>QDockWidget::NoDockWidgetFeatures</set>
          </property>
-         <widget class="QWidget" name="dockWidgetContents_2"/>
         </widget>
        </item>
        <item row="5" column="0">
@@ -178,7 +177,7 @@
         </widget>
        </item>
        <item row="12" column="0">
-        <widget class="QLineEdit" name="projectEdit">
+        <widget class="QTextEdit" name="projectEdit">
          <property name="enabled">
           <bool>false</bool>
          </property>
