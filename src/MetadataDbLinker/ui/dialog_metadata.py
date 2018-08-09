@@ -307,7 +307,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     self.responsibleEdit.setText(results.get('responsible'))
 
                 if 'project' in list(results):
-                    self.projectEdit.setText(results.get('project'))
+                    self.projectEdit.setPlainText(results.get('project'))
 
         else:
             self.currentlySelectedLine = None
@@ -407,7 +407,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.descriptionEdit.setText('')
         self.responsibleEdit.setText('')
         self.kleNoEdit.setText('')
-        self.projectEdit.setText('')
+        self.projectEdit.setPlainText('')
         self.kleSuggestions.setText('')
 
     def update_grid(self):
@@ -506,7 +506,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     'ts_timezone': self.dateEdit.text(),
                     'kle_no': self.kleNoEdit.text(),
                     'responsible': self.responsibleEdit.text(),
-                    'project': self.projectEdit.text()
+                    'project': self.projectEdit.toPlainText()
                 }
             )
         except RuntimeError:
@@ -547,7 +547,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                         'ts_timezone': self.dateEdit.text(),
                         'kle_no': self.kleNoEdit.text(),
                         'responsible': self.responsibleEdit.text(),
-                        'project': self.projectEdit.text()
+                        'project': self.projectEdit.toPlainText()
                     }
                 )
             except RuntimeError:
