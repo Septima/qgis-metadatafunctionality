@@ -32,9 +32,10 @@
 # alpha: use or not alpha channel
 
 
-from PyQt4.QtGui import QColor, QColorDialog
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QColorDialog
 from qgis.core import QgsProject
-from qgis.gui import QgsColorButton, QgsColorButtonV2
+from qgis.gui import QgsColorButton
 
 from ..setting import Setting
 from ..setting_widget import SettingWidget
@@ -67,7 +68,7 @@ class Color(Setting):
             raise NameError("Color setting %s must be a QColor." % self.name)
 
     def config_widget(self, widget):
-        if type(widget) in (QgsColorButton, QgsColorButtonV2):
+        if type(widget) == QgsColorButton:
             return QgisColorWidget(self, widget, self.options)
         else:
             return StandardColorWidget(self, widget, self.options)
@@ -93,7 +94,7 @@ class QgisColorWidget(SettingWidget):
 class StandardColorWidget(SettingWidget):
     def __init__(self, setting, widget, options):
         txt = options.get("dialogTitle", "")
-        color_widget = QgsColorButtonV2(widget, txt)
+        color_widget = QgsColorButton(widget, txt)
         signal = color_widget.colorChanged
 
         SettingWidget.__init__(self, setting, color_widget, options, signal)

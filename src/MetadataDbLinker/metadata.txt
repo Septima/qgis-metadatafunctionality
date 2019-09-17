@@ -8,7 +8,7 @@
 
 [general]
 name=Metadata-DB-Linker
-qgisMinimumVersion=2.14
+qgisMinimumVersion=3.0
 description=A plugin to enter and edit metadata stored in a postgres-database table.
 version=0.1.8
 author=Septima

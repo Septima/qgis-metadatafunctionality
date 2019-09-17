@@ -26,7 +26,7 @@
 #
 #---------------------------------------------------------------------
 
-from setting import Scope
+from .setting import Scope
 
 # to print debug info
 Debug = False
@@ -34,9 +34,11 @@ Debug = False
 # TODO remove this import used in deprecated method
 from types import *
 
+from PyQt5.QtCore import QObject
 
-class SettingManager():
+class SettingManager(QObject):
     def __init__(self, plugin_name):
+        QObject.__init__(self)
         self.plugin_name = plugin_name
         self.__settings = {}
 

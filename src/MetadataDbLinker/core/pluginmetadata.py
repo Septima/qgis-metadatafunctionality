@@ -18,7 +18,7 @@
 """
 
 from __future__ import unicode_literals
-import ConfigParser
+import configparser
 import codecs
 import os
 
@@ -28,7 +28,7 @@ metadata = None
 def plugin_metadata():
     global metadata
     if metadata is None:
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.readfp(
             codecs.open(
                 os.path.join(

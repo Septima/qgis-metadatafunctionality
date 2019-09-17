@@ -17,8 +17,7 @@
  ***************************************************************************/
 """
 
-import urllib
-import urllib2
+import urllib3
 import json
 
 
@@ -36,15 +35,15 @@ class TaxonClassifier(object):
         )
 
     def get(self, text):
-        data = urllib.urlencode(
+        data = urllib3.urlencode(
             {
                 'taxonomy': self.taxonomy,
                 'text': text
             },
             'utf-8'
         )
-        response = urllib2.urlopen(
-            urllib2.Request(self.url, data)
+        response = urllib3.urlopen(
+            urllib3.Request(self.url, data)
         ).read()
 
         if response.strip() == 'No result':

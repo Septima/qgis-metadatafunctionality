@@ -1,4 +1,4 @@
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 #
 # QGIS setting manager is a python module to easily manage read/write
 # settings and set/get corresponding widgets.
@@ -6,7 +6,7 @@
 # Copyright    : (C) 2013 Denis Rouzaud
 # Email        : denis.rouzaud@gmail.com
 #
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 #
 # licensed under the terms of GNU GPL 2
 #
@@ -24,11 +24,10 @@
 # with this progsram; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-#---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
-from PyQt4.QtGui import QDialog, QWidget, QButtonGroup
-
-from setting_manager import Debug
+from PyQt5.QtWidgets import QDialog, QWidget, QButtonGroup
+from .setting_manager import Debug
 
 
 # TODO python3 use enum instead
@@ -39,52 +38,40 @@ class UpdateMode(object):
 
 
 class SettingDialog:
-    # TODO Python 3 remove deprecated constructor (i.e. last argument)
-    def __init__(self, setting_manager, mode=UpdateMode.DialogAccept, set_value_on_widget_update=False ):
+    def __init__(self, setting_manager=None, mode=UpdateMode.DialogAccept):
+        
+        if setting_manager is not None:
 
-        # backward compatibility for old api
-        if isinstance(mode, bool):
-            set_values_on_dialog_accepted = mode
-            if not set_values_on_dialog_accepted and not set_value_on_widget_update:
-                mode = UpdateMode.NoUpdate
-            elif set_values_on_dialog_accepted:
-                mode = UpdateMode.DialogAccept
-            elif set_value_on_widget_update:
-                mode = UpdateMode.WidgetUpdate
-            else:
-                raise NameError('Setting dialog cannot set values both on dialog accept and widget update. '
-                                'Choose one or another.')
-
-        if isinstance(self, QDialog) and mode == UpdateMode.DialogAccept:
-            self.accepted.connect(self.accept_dialog)
-
-        self.setting_manager = setting_manager
-
-        self.__settings = {}
-
-        for setting_name in self.setting_manager.settings_list():
-            for objectClass in (QWidget, QButtonGroup):
-                widget = self.findChild(objectClass, setting_name)
-                if widget is not None:
-                    if Debug:
-                        print "Widget found: {}".format(setting_name)
-
-                    # configure the widget
-                    setting_widget = self.setting_manager.setting(setting_name).config_widget(widget)
-                    if setting_widget is None:
-                        raise NameError('Widget could not be set for setting {}'.format(setting_name))
-
-                    # TODO
-                    # setting_widget.widgetDestroyed.connect(self.widgetDestroyed)
-
-                    if mode == UpdateMode.WidgetUpdate:
-                        setting_widget.connect_widget_auto_update()
-
-                    self.__settings[setting_name] = setting_widget
-                    break
-
-        # in case the widget has no showEvent
-        self.set_widgets_from_values()
+            if isinstance(self, QDialog) and mode == UpdateMode.DialogAccept:
+                self.accepted.connect(self.accept_dialog)
+    
+            self.setting_manager = setting_manager
+    
+            self.__settings = {}
+    
+            for setting_name in self.setting_manager.settings_list():
+                for objectClass in (QWidget, QButtonGroup):
+                    widget = self.findChild(objectClass, setting_name)
+                    if widget is not None:
+                        if Debug:
+                            print("Widget found: {}".format(setting_name))
+    
+                        # configure the widget
+                        setting_widget = self.setting_manager.setting(setting_name).config_widget(widget)
+                        if setting_widget is None:
+                            raise NameError('Widget could not be set for setting {}'.format(setting_name))
+    
+                        # TODO
+                        # setting_widget.widgetDestroyed.connect(self.widgetDestroyed)
+    
+                        if mode == UpdateMode.WidgetUpdate:
+                            setting_widget.connect_widget_auto_update()
+    
+                        self.__settings[setting_name] = setting_widget
+                        break
+    
+            # in case the widget has no showEvent
+            self.set_widgets_from_values()
 
     def showEvent(self, e):
         self.set_widgets_from_values()
@@ -118,7 +105,3 @@ class SettingDialog:
         for setting_widget in self.__settings.values():
             setting_widget.set_widget_from_value()
 
-    # deprecated
-    # TODO python 3 remove deprecated method
-    def onBeforeAcceptDialog(self):
-        return self.before_accept_dialog()

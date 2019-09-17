@@ -26,10 +26,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtGui import QCheckBox
+from PyQt5.QtWidgets import QCheckBox
 from qgis.core import QgsProject
 from ..setting import Setting
 from ..setting_widget import SettingWidget
+from ..setting_manager import Debug
 
 
 class Bool(Setting):
@@ -47,7 +48,7 @@ class Bool(Setting):
         elif hasattr(widget, "isCheckable") and widget.isCheckable():
             return CheckableBoolWidget(self, widget, self.options)
         else:
-            print type(widget)
+            print(type(widget))
             raise NameError("SettingManager does not handle %s widgets for booleans at the moment (setting: %s)" %
                             (type(widget), self.name))
 
@@ -58,6 +59,8 @@ class CheckBoxBoolWidget(SettingWidget):
         SettingWidget.__init__(self, setting, widget, options, signal)
 
     def set_widget_value(self, value):
+        if Debug:
+            print("Bool: set_widget_value: {0}{1}".format(value, self.setting.name))
         self.widget.setChecked(value)
 
     def widget_value(self):

@@ -23,11 +23,12 @@
 
 import os
 
-from PyQt4 import (
-    QtGui,
+from PyQt5 import (
     uic
 )
-
+from PyQt5.QtWidgets import (
+    QDialog
+)
 SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
         os.path.dirname(__file__),
@@ -36,7 +37,7 @@ SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(
 )
 
 
-class SettingsDbDefDialog(QtGui.QDialog, SETTINGS_DB_FORM_CLASS):
+class SettingsDbDefDialog(QDialog, SETTINGS_DB_FORM_CLASS):
 
     def __init__(self, parent=None):
         """Constructor."""

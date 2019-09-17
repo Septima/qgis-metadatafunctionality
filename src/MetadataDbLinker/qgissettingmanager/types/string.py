@@ -30,8 +30,8 @@
 # options:
 # comboMode: can be data or text. It defines if setting is found directly in combobox text or rather in the userData.
 
-from PyQt4.QtGui import QLineEdit, QButtonGroup, QComboBox
-from qgis.core import QgsProject, QgsMapLayerRegistry
+from PyQt5.QtWidgets import QLineEdit, QButtonGroup, QComboBox
+from qgis.core import QgsProject, QgsProject
 from qgis.gui import QgsMapLayerComboBox, QgsFieldComboBox
 
 from ..setting import Setting
@@ -43,7 +43,7 @@ class String(Setting):
         Setting.__init__(self, name, scope, default_value, str, QgsProject.instance().readEntry, QgsProject.instance().writeEntry, options)
 
     def check(self, value):
-        if type(value) != str and type(value) != unicode:
+        if type(value) != str:
             print(type(value))
             raise NameError('{}:: Invalid value for setting {}: {}. It must be a string.'.format(self.plugin_name, self.name, value))
 
@@ -125,7 +125,7 @@ class MapLayerComboStringWidget(SettingWidget):
         SettingWidget.__init__(self, setting, widget, options, signal)
 
     def set_widget_value(self, value):
-        self.widget.setLayer(QgsMapLayerRegistry.instance().mapLayer(value))
+        self.widget.setLayer(QgsProject.instance().mapLayer(value))
 
     def widget_value(self):
         layer = self.widget.currentLayer()

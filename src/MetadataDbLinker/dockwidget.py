@@ -22,20 +22,19 @@
 """
 
 import os
-from PyQt4 import QtGui, uic
-from PyQt4.QtCore import QFileInfo, QDir, pyqtSignal, pyqtSlot, Qt, QTimer, QSettings
-from qgis._gui import QgsMessageBar
+from PyQt5 import QtGui, uic #TODO Change this import #2-3
+from qgis.PyQt.QtWidgets import QDockWidget, QFileIconProvider
+from qgis.PyQt.QtCore import QFileInfo, QDir, pyqtSignal, pyqtSlot, Qt, QTimer, QSettings
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'dockwidget.ui'))
 
-class DockWidget(QtGui.QDockWidget, FORM_CLASS):
+class DockWidget(QDockWidget, FORM_CLASS):
     """The DockWidget class for the Qlr Panel.
     """
-    iconProvider = QtGui.QFileIconProvider()
+    iconProvider = QFileIconProvider()
 
     closingPlugin = pyqtSignal()
-
     itemStateChanged = pyqtSignal(object, bool)
 
     def __init__(self, iface=None):

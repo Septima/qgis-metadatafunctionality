@@ -23,21 +23,20 @@
 from __future__ import unicode_literals
 import os.path
 from qgis.core import QgsMessageLog
-from PyQt4.QtCore import (
+from PyQt5.QtCore import (
     QSettings,
     QTranslator,
     qVersion,
     QCoreApplication,
     Qt
 )
-from PyQt4.QtGui import (
+from qgis.PyQt.QtWidgets import (
     QAction,
-    QIcon,
     QMenu,
-    QCursor,
     QApplication,
     QMessageBox
 )
+from PyQt5.QtGui import QIcon, QCursor
 from db_manager.db_plugins.plugin import (
     DBPlugin,
     Schema,
@@ -49,7 +48,7 @@ from db_manager.dlg_import_vector import DlgImportVector
 from db_manager.db_tree import DBTree
 
 # Initialize Qt resources from file resources.py
-import resources
+#import resources
 
 from .core.pluginmetadata import plugin_metadata
 # Import the code for the dialog

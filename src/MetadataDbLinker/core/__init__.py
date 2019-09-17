@@ -16,8 +16,8 @@
  ***************************************************************************/
 """
 from __future__ import unicode_literals
-from PyQt4 import QtSql
-from qgis.core import QgsDataSourceURI
+from PyQt5 import QtSql
+from qgis.core import QgsDataSourceUri
 from .. import MetadataDbLinkerSettings
 from .qgislogger import QgisLogger
 from .pluginmetadata import plugin_metadata
@@ -145,7 +145,7 @@ class MetadataDbLinkerTool(object):
         :return:
         """
 
-        uri = QgsDataSourceURI(db.publicUri())
+        uri = QgsDataSourceUri(db.publicUri())
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
         db.setHostName(uri.host())
         db.setPort(int(uri.port()))

@@ -26,26 +26,26 @@ import os
 import uuid
 from datetime import datetime
 
-from PyQt4 import uic
-from PyQt4.QtGui import (
+from PyQt5 import uic
+from PyQt5.QtWidgets import (
     QDialog,
     QMessageBox
 )
-from PyQt4.QtCore import (
+from PyQt5.QtCore import (
     QAbstractTableModel,
     Qt,
-    SIGNAL,
+    pyqtSignal,
     QObject,
     pyqtSlot
 )
 from qgis.core import (
     QgsBrowserModel,
     QgsLayerItem,
-    QgsDataSourceURI
+    QgsDataSourceUri
 )
 from qgis.gui import QgsBrowserTreeView
 
-from ..core.taxonclassifier import TaxonClassifier
+#from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
 from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
@@ -134,11 +134,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         self.dateEdit.setDateTime(datetime.now())
 
-        QObject.connect(
-            self.tree.selectionModel(),
-            SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
-            self.selection_changed
-        )
+#        QObject.connect(
+#            self.tree.selectionModel(),
+#            pyqtSignal("selectionChanged(QItemSelection, QItemSelection)"),
+#            self.selection_changed
+#        )
 
         self.saveRecordButton.clicked.connect(self.save_record)
         self.deleteRecordButton.clicked.connect(self.delete_record)
@@ -229,13 +229,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
         return self.selected_item.uri()
 
     def get_selected_db(self):
-        return QgsDataSourceURI(self.selected_item.uri()).database()
+        return QgsDataSourceUri(self.selected_item.uri()).database()
 
     def get_selected_port(self):
-        return QgsDataSourceURI(self.selected_item.uri()).port()
+        return QgsDataSourceUri(self.selected_item.uri()).port()
 
     def get_selected_host(self):
-        return QgsDataSourceURI(self.selected_item.uri()).host()
+        return QgsDataSourceUri(self.selected_item.uri()).host()
 
     def get_selected_schema(self):
         """
@@ -383,7 +383,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
             if type(b) == QgsLayerItem:
 
-                self.schema = QgsDataSourceURI(b.uri()).schema()
+                self.schema = QgsDataSourceUri(b.uri()).schema()
 
                 self.selected_item = b
                 self.update_grid()

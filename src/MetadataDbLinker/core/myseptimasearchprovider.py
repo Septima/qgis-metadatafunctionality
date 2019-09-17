@@ -1,8 +1,8 @@
-from PyQt4 import (
+from PyQt5 import (
     QtCore,
     QtSql
 )
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 from .qgislogger import QgisLogger
 
 import json
@@ -148,7 +148,7 @@ WITH QUERY AS (
             result['table']
         )
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         # set host, port, database name, username and password
         uri.setConnection(
             result['host'],

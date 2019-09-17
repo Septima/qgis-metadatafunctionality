@@ -24,8 +24,8 @@
 from __future__ import unicode_literals
 import os
 
-from PyQt4 import uic
-from PyQt4.QtGui import (
+from PyQt5 import uic
+from PyQt5.QtWidgets import (
     QMessageBox,
     QDialog
 )
