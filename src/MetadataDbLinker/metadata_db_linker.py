@@ -227,7 +227,7 @@ class MetadataDbLinker(object):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         self.editmetadata_action = QAction(
-            QIcon(':/plugins/MetadataDbLinker/resources/metadata.png'),
+            QIcon(os.path.join(os.path.dirname(__file__),'./resources/metadata.png')),
             self.tr(u'Enter or edit metadata'),
             self.iface.mainWindow()
         )
@@ -238,7 +238,7 @@ class MetadataDbLinker(object):
         self.actions.append(self.editmetadata_action)
 
         self.settings_action = QAction(
-            QIcon(':/plugins/MetadataDbLinker/resources/settings.png'),
+            QIcon(os.path.join(os.path.dirname(__file__),'./resources/settings.png')),
             self.tr(u'Settings'),
             self.iface.mainWindow()
         )

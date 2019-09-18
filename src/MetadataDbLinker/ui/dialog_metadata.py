@@ -139,7 +139,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
 #            self.selection_changed
 #        )
 
-        # TODO: Check if this is correct
         self.tree.selectionModel().selectionChanged.connect(self.selection_changed)
 
         self.saveRecordButton.clicked.connect(self.save_record)
@@ -368,7 +367,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.deleteRecordButton.setEnabled(False)
         # self.tableView.setEnabled(False)
 
-    @pyqtSlot("QItemSelection, QItemSelection")
+    @pyqtSlot("QItemSelection")
     def selection_changed(self, newSelection):
         """
         Triggered when the user clicks on a postgresql table in the tree.
