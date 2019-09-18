@@ -45,7 +45,7 @@ from qgis.core import (
 )
 from qgis.gui import QgsBrowserTreeView, QgsActionMenu
 
-#from ..core.taxonclassifier import TaxonClassifier
+from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
 from .. import MetadataDbLinkerSettings
 from ..core import MetadataDbLinkerTool
@@ -126,18 +126,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.setupUi(self)
 
         self.model = QgsBrowserModel()
-        self.model.addRootItems()
+        self.model.initialize() # Qgis 3.x specific
         self.tree = QgsBrowserTreeView()
+        
         self.tree.setModel(self.model)
 
         self.treeDock.setWidget(self.tree)
         self.dateEdit.setDateTime(datetime.now())
-
-#        QObject.connect(
-#            self.tree.selectionModel(),
-#            pyqtSignal("selectionChanged(QItemSelection, QItemSelection)"),
-#            self.selection_changed
-#        )
 
         self.tree.selectionModel().selectionChanged.connect(self.selection_changed)
 
