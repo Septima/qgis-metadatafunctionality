@@ -26,12 +26,12 @@ import os
 import uuid
 from datetime import datetime
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import (
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import (
     QDialog,
     QMessageBox
 )
-from PyQt5.QtCore import (
+from qgis.PyQt.QtCore import (
     QAbstractTableModel,
     Qt,
     pyqtSignal,

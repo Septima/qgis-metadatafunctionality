@@ -24,8 +24,8 @@
 from __future__ import unicode_literals
 import os
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import (
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QDialog
 )
@@ -118,12 +118,12 @@ class SettingsDialog(QDialog, SETTINGS_FORM_CLASS, SettingDialog):
         """
         :return:
         """
-        self.settings.setValue('host', self.host.text())
-        self.settings.setValue('port', self.port.text())
-        self.settings.setValue('schema', self.schema.text())
-        self.settings.setValue('database', self.database.text())
-        self.settings.setValue('username', self.username.text())
-        self.settings.setValue('password', self.password.text())
+        self.settings.set_value('host', self.host.text())
+        self.settings.set_value('port', self.port.text())
+        self.settings.set_value('schema', self.schema.text())
+        self.settings.set_value('database', self.database.text())
+        self.settings.set_value('username', self.username.text())
+        self.settings.set_value('password', self.password.text())
         if self.db_tool.validate_structure():
             QMessageBox.information(
                 self,

@@ -23,10 +23,10 @@
 
 import os
 
-from PyQt5 import (
+from qgis.PyQt import (
     uic
 )
-from PyQt5.QtWidgets import (
+from qgis.PyQt.QtWidgets import (
     QDialog
 )
 SETTINGS_DB_FORM_CLASS, _ = uic.loadUiType(
