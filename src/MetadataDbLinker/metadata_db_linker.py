@@ -23,7 +23,7 @@
 from __future__ import unicode_literals
 import os.path
 from qgis.core import QgsMessageLog
-from PyQt5.QtCore import (
+from qgis.PyQt.QtCore import (
     QSettings,
     QTranslator,
     qVersion,
@@ -36,7 +36,7 @@ from qgis.PyQt.QtWidgets import (
     QApplication,
     QMessageBox
 )
-from PyQt5.QtGui import QIcon, QCursor
+from qgis.PyQt.QtGui import QIcon, QCursor
 from db_manager.db_plugins.plugin import (
     DBPlugin,
     Schema,

@@ -1,4 +1,4 @@
-from PyQt5 import (
+from qgis.PyQt import (
     QtCore,
     QtSql
 )

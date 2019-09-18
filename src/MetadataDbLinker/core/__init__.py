@@ -16,7 +16,7 @@
  ***************************************************************************/
 """
 from __future__ import unicode_literals
-from PyQt5 import QtSql
+from qgis.PyQt import QtSql
 from qgis.core import QgsDataSourceUri
 from .. import MetadataDbLinkerSettings
 from .qgislogger import QgisLogger

@@ -22,7 +22,7 @@
 """
 
 import os
-from PyQt5 import QtGui, uic #TODO Change this import #2-3
+from qgis.PyQt import QtGui, uic 
 from qgis.PyQt.QtWidgets import QDockWidget, QFileIconProvider
 from qgis.PyQt.QtCore import QFileInfo, QDir, pyqtSignal, pyqtSlot, Qt, QTimer, QSettings
 
