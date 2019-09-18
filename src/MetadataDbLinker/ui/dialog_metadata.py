@@ -43,7 +43,7 @@ from qgis.core import (
     QgsLayerItem,
     QgsDataSourceUri
 )
-from qgis.gui import QgsBrowserTreeView
+from qgis.gui import QgsBrowserTreeView, QgsActionMenu
 
 #from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
@@ -126,12 +126,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.setupUi(self)
 
         self.model = QgsBrowserModel()
-
+        self.model.addRootItems()
         self.tree = QgsBrowserTreeView()
         self.tree.setModel(self.model)
 
         self.treeDock.setWidget(self.tree)
-
         self.dateEdit.setDateTime(datetime.now())
 
 #        QObject.connect(
@@ -139,6 +138,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
 #            pyqtSignal("selectionChanged(QItemSelection, QItemSelection)"),
 #            self.selection_changed
 #        )
+
+        # TODO: Check if this is correct
+        self.tree.selectionModel().selectionChanged.connect(self.selection_changed)
 
         self.saveRecordButton.clicked.connect(self.save_record)
         self.deleteRecordButton.clicked.connect(self.delete_record)
@@ -367,7 +369,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # self.tableView.setEnabled(False)
 
     @pyqtSlot("QItemSelection, QItemSelection")
-    def selection_changed(self, newSelection, oldSelection):
+    def selection_changed(self, newSelection):
         """
         Triggered when the user clicks on a postgresql table in the tree.
         :param newSelection:

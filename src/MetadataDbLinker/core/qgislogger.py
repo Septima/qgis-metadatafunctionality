@@ -18,7 +18,7 @@
 
 from __future__ import unicode_literals
 import codecs
-from qgis.core import Qgis
+from qgis.core import (Qgis, QgsMessageLog)
 
 
 class QgisLogger(object):
@@ -27,7 +27,7 @@ class QgisLogger(object):
         self.pluginname = plugin_name
 
     def log(self, message, level=Qgis.Info):
-        Qgis.Info.logMessage(
+        QgsMessageLog.logMessage(
             '{}'.format(message),
             self.pluginname,
             level
