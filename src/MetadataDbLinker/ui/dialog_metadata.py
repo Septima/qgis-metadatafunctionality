@@ -47,8 +47,9 @@ from qgis.gui import QgsBrowserTreeView, QgsActionMenu
 
 from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
-from .. import MetadataDbLinkerSettings
-from ..core import MetadataDbLinkerTool
+from ..config import *
+from ..config import Settings
+from ..core.metadatadblinkertool import MetadataDbLinkerTool
 
 FORM_CLASS, _ = uic.loadUiType(
     os.path.join(
@@ -119,7 +120,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         self.schema = schema
         self.close_dialog = close_dialog
-        self.settings = MetadataDbLinkerSettings()
+        self.settings = Settings()
         self.db_tool = MetadataDbLinkerTool()
         self.logger = QgisLogger('Metadata-DB-Linker')
 

@@ -6,7 +6,7 @@ from qgis.core import QgsDataSourceUri
 from .qgislogger import QgisLogger
 
 import json
-from ..core import MetadataDbLinkerTool
+from ..core.metadatadblinkertool import MetadataDbLinkerTool
 
 
 class MySeptimaSearchProvider(QtCore.QObject):
