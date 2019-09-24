@@ -5,6 +5,7 @@ LOCALES=$*
 
 CHANGED_FILES=0
 PYTHON_FILES=`find . -name "*.py" -o -name "*.ui" -type f`
+echo $PYTHON_FILES
 for PYTHON_FILE in $PYTHON_FILES
 do
   CHANGED=$(stat -c %Y $PYTHON_FILE)
@@ -40,7 +41,6 @@ done
 if [ ${UPDATE} == true ]
 # retrieve all python files
 then
-  #echo ${PYTHON_FILES}
   # update .ts
   echo "Please provide translations by editing the translation files below:"
   for LOCALE in ${LOCALES}
@@ -48,7 +48,7 @@ then
     echo "i18n/"${LOCALE}".ts"
     # Note we don't use pylupdate with qt .pro file approach as it is flakey
     # about what is made available.
-    pylupdate4 -noobsolete ${PYTHON_FILES} -ts i18n/${LOCALE}.ts
+    pylupdate5 -noobsolete ${PYTHON_FILES} -ts i18n/${LOCALE}.ts
   done
 else
   echo "No need to edit any translation files (.ts) because no python files"
