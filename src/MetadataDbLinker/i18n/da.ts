@@ -57,7 +57,7 @@
     <message>
         <location filename="../config/settings_dialog.py" line="119"/>
         <source>DB structure and connection OK.</source>
-        <translation>DB struktur og forbindelse OK</translation>
+        <translation>DB struktur og forbindelse OK.</translation>
     </message>
     <message>
         <location filename="../config/settings_dialog.py" line="125"/>
@@ -252,7 +252,7 @@
     <message>
         <location filename="../ui/dialog_settings.ui" line="20"/>
         <source>Settings</source>
-        <translation></translation>
+        <translation>Indstillinger</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="32"/>
@@ -272,7 +272,7 @@
     <message>
         <location filename="../ui/dialog_settings.ui" line="111"/>
         <source>Database name:</source>
-        <translation></translation>
+        <translation>Database</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="121"/>
@@ -282,17 +282,17 @@
     <message>
         <location filename="../ui/dialog_settings.ui" line="131"/>
         <source>Database user:</source>
-        <translation></translation>
+        <translation>Database bruger:</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="166"/>
         <source>Information about the database where the table with metadata is stored:</source>
-        <translation></translation>
+        <translation>Information vedrørende Metadata Databasen, angiv databaseforbindelse samt tabelnavn:</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="176"/>
         <source>Metadata table:</source>
-        <translation></translation>
+        <translation>Metadatatabel:</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="243"/>
@@ -302,32 +302,32 @@
     <message>
         <location filename="../ui/dialog_settings.ui" line="262"/>
         <source>Additional settings:</source>
-        <translation></translation>
+        <translation>Yderligere indstillinger:</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="275"/>
         <source>Only required the first time you use the plugin</source>
-        <translation></translation>
+        <translation>Kun nødvendigt første gang plugin bruges</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="278"/>
         <source>Metadata table (sql)</source>
-        <translation></translation>
+        <translation>Metadatatabel (SQL)</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="288"/>
         <source>Test connection to the metadata-table</source>
-        <translation></translation>
+        <translation>Test forbindelse til metadata-tabellen</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="291"/>
         <source>Test connection to database</source>
-        <translation></translation>
+        <translation>Test forbindelse til databasen</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="301"/>
         <source>Host:</source>
-        <translation></translation>
+        <translation>Vært:</translation>
     </message>
     <message>
         <location filename="../ui/dialog_settings.ui" line="330"/>
@@ -437,7 +437,23 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Adding or changing metadata to an existing table:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Metadata to existing tables can be added or changed with the dialog from either the Plugin-menu or the plugin-button. In the dialog, navigate to the table to which you want to add or change metadata. Enter metadata in the fields and save.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Med Metadata-DB-linker kan du bruge QGIS til at angive metadata til nye og eksisterende tabeller gemt i en PostgreSQL database.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Første gang pluginnet tages i brug:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;1. Opret en tabel hvor metadata fremover skal gemmes. See sql-definitionen i indstilling dialogen.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;2. I indstillinger angives databaseforbindelsen til metadata-tabellen: vært, port, skema, tabel, brugernavn og password. Ved automatisk angivning af KLE-journalnumre, angives en Taxonomy-URL og en Taxon taxonomy fil.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;Vejledning til brug af plugin:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Tilføj metadata til en ny tabel med DB-Manager (DB-styring):&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Når en ny tabel tilføjes eller importeres med DB-Manager, vises der automatisk en Metadata-DB-linker dialog efterfølgende. Indtast metadata og tryk gem. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Tilføjelse eller ændringer af metadata til en eksisterende tabel.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Metadata til en eksisterende tabel kan tilføjes eller ændres med dialogen, enten fra plugin-menuen eller fra plugin-knappen i værktøjslinjen. I dialogen navigeres der til tabellen hvor metadata skal tilføjes eller ændres. Indtast metadata og tryk gem. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+</translation>
     </message>
 </context>
 <context>

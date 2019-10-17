@@ -62,7 +62,7 @@
              </font>
             </property>
             <property name="title">
-             <string>Database configuration</string>
+             <string>Database konfiguration</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="spacing">
@@ -94,7 +94,7 @@
                   <string extracomment="Enter the name of the database where metadatatable is stored"/>
                  </property>
                  <property name="text">
-                  <string>Database name:</string>
+                  <string>Database navn:</string>
                  </property>
                 </widget>
                </item>
@@ -203,7 +203,7 @@
                   <string extracomment="Enter the table name of the table with metadata"/>
                  </property>
                  <property name="text">
-                  <string>Metadata table:</string>
+                  <string>Metadatatabel:</string>
                  </property>
                 </widget>
                </item>
@@ -213,7 +213,7 @@
                   <string extracomment="Enter the schema of the metadata table"/>
                  </property>
                  <property name="text">
-                  <string>Schema:</string>
+                  <string>Skema:</string>
                  </property>
                 </widget>
                </item>
@@ -223,7 +223,7 @@
                   <string extracomment="Enter the database user of the database with metadata"/>
                  </property>
                  <property name="text">
-                  <string>Database user:</string>
+                  <string>Databasebruger:</string>
                  </property>
                 </widget>
                </item>
@@ -287,7 +287,7 @@
                   <string>Test connection to the metadata-table</string>
                  </property>
                  <property name="text">
-                  <string>Test connection to database</string>
+                  <string>Test forbindelse til database</string>
                  </property>
                 </widget>
                </item>
@@ -300,7 +300,7 @@
                   <string>Only required the first time you use the plugin</string>
                  </property>
                  <property name="text">
-                  <string>Metadata table (sql)</string>
+                  <string>Metadata tabel (sql)</string>
                  </property>
                 </widget>
                </item>
@@ -343,7 +343,7 @@
              </font>
             </property>
             <property name="title">
-             <string>Additional settings</string>
+             <string>Yderligere indstillinger</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <property name="leftMargin">
