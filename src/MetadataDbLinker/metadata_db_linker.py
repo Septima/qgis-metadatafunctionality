@@ -54,8 +54,8 @@ from .core.pluginmetadata import plugin_metadata
 # Import the code for the dialog
 from .ui.dialog_metadata import MetadataDialog
 
-from .core.myseptimasearchprovider import MySeptimaSearchProvider
-
+#from .core.myseptimasearchprovider import MySeptimaSearchProvider
+from .layerlocatorfilter import LayerLocatorFilter
 # Settings and config
 from .config import *
 
@@ -180,6 +180,10 @@ class MetadataDbLinker(object):
             if qVersion() > '4.3.3':
                 QgsApplication.installTranslator(self.translator)
         
+        # Locator
+        self.layer_locator_filter = LayerLocatorFilter(self.iface)
+        self.iface.registerLocatorFilter(self.layer_locator_filter)
+
         # new config method 
         self.settings = Settings()
         self.options_factory = OptionsFactory(self.settings)
@@ -209,7 +213,7 @@ class MetadataDbLinker(object):
         DBTree.fireMetadataDlg = fireMetadataDlg
         DBTree.contextMenuEvent = newContextMenuEvent
 
-        self.septimasearchprovider = MySeptimaSearchProvider(iface)
+        
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -264,7 +268,11 @@ class MetadataDbLinker(object):
                 action
             )
             self.iface.removeToolBarIcon(action)
-        
+        # Remove locator
+        if self.layer_locator_filter:
+            self.iface.deregisterLocatorFilter(self.layer_locator_filter)
+            self.layer_locator_filter = None
+
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
     def run(self):
