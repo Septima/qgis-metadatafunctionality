@@ -73,6 +73,11 @@ class MetadataDbLinkerTool(object):
             'label': 'Date',
             'type': 'varchar'
         },
+        'geodatainfo_uuid': {
+            'label': 'Geodata-info UUID',
+            'type': 'varchar'
+        },
+        
     }
 
     field_order = [
@@ -81,6 +86,7 @@ class MetadataDbLinkerTool(object):
         'kle_no',
         'ts_timezone',
         'responsible',
+        'geodatainfo_uuid',
         'project'
     ]
 

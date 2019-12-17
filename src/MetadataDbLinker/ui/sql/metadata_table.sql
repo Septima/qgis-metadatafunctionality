@@ -15,7 +15,9 @@ CREATE TABLE [schema].[table] (
     schema varchar,
     sourcetable varchar,
     guid varchar,
+    geodatainfo_uuid uuid,
     ts_timezone varchar,
+
     CONSTRAINT pk_metadata PRIMARY KEY (guid)
 )
 WITH (OIDS=FALSE);

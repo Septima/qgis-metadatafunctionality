@@ -25,7 +25,9 @@ from __future__ import unicode_literals
 import os
 import uuid
 from datetime import datetime
-
+import json
+import webbrowser # for opening geodatainfo urls
+from urllib.request import (urlopen)
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
     QDialog,
@@ -140,6 +142,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.saveRecordButton.clicked.connect(self.save_record)
         self.deleteRecordButton.clicked.connect(self.delete_record)
 
+        self.geodatainfoLookupBtn.clicked.connect(self.lookup_geodatainfo_uuid)
+        self.geodatainfoEdit.textEdited.connect(self.lookup_geodatainfo_uuid)
+        #self.geodatainfoResult.setReadOnly(True)
+        #self.geodatainfo_link.linkActivated.connect(webbrowser.open(self.geodatainfo_link))
+
         self.kleNoLookupBtn.clicked.connect(self.lookup_kle_number)
         self.kleSuggestions.setReadOnly(True)
 
@@ -156,6 +163,19 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.update_grid()
             self.tableView.selectRow(0)
             self.activate_fields()
+
+    def lookup_geodatainfo_uuid(self):
+        """Tries to lookup the UUID on geodata-info.dk
+
+
+        """
+        geodatainfo_url = "https://www.geodata-info.dk/srv/dan/catalog.search#/metadata/"
+
+        # get the UUID from the lineedit
+        geodatainfo_uuid = self.geodatainfoEdit.text()
+        link_html = "<a href=%s>%s</a>" % (geodatainfo_url+geodatainfo_uuid,geodatainfo_url+geodatainfo_uuid)
+        self.geodatainfo_link.setText(link_html)
+        self.geodatainfo_link.setOpenExternalLinks(True)
 
     def lookup_kle_number(self):
         taxon_url = self.settings.value('taxonUrl')
@@ -503,7 +523,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     'ts_timezone': self.dateEdit.text(),
                     'kle_no': self.kleNoEdit.text(),
                     'responsible': self.responsibleEdit.text(),
-                    'project': self.projectEdit.toPlainText()
+                    'project': self.projectEdit.toPlainText(),
+                    'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
                 }
             )
         except RuntimeError:
@@ -544,7 +565,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
                         'ts_timezone': self.dateEdit.text(),
                         'kle_no': self.kleNoEdit.text(),
                         'responsible': self.responsibleEdit.text(),
-                        'project': self.projectEdit.toPlainText()
+                        'project': self.projectEdit.toPlainText(),
+                        'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
                     }
                 )
             except RuntimeError:
@@ -562,3 +584,20 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.tr("Please!"),
                 self.tr("Remember to select a table.")
             )
+
+    def validate_uuid(self,_uuid):
+        """
+            validates an uuid and returns it if valid
+        """
+        try:
+            uuid_object = uuid.UUID(_uuid, version=4)
+        except ValueError:
+            self.logger.critical('UUID is not valid')
+            QMessageBox.warning(
+                self,
+                self.tr("Geodata-info UUID is not valid"),
+                self.tr("Please enter a valid Geodata-info UUID")
+            )
+            return False
+
+        return _uuid
