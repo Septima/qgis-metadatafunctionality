@@ -43,7 +43,7 @@ class TaxonClassifier(object):
             },
             'ascii'
         )
-        response = urlopen(self.url +"/"+data).read()
+        response = urlopen(self.url +"?"+data).read()
 
         if response.strip() == 'No result':
             return None

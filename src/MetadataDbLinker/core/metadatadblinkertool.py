@@ -75,7 +75,7 @@ class MetadataDbLinkerTool(object):
         },
         'geodatainfo_uuid': {
             'label': 'Geodata-info UUID',
-            'type': 'varchar'
+            'type': 'uuid'
         },
         
     }
@@ -141,9 +141,15 @@ class MetadataDbLinkerTool(object):
     def get_table(self):
         return self.settings.value("sourcetable")
 
+    def get_gui_table(self):
+        # TODO: implement settings value
+        return "gui_table"
+
     def get_schema(self):
         return self.settings.value("schema")
 
+    # As far as i can tell, this function is never used
+    # TODO: look into creating a button in the settings menu to call this method
     def create_metadata_table(self, db):
         """
         Creates the table to store metadata.
@@ -237,16 +243,28 @@ class MetadataDbLinkerTool(object):
         vls = []
 
         for k in list(data):
-
+            
+            try:                
+                d_type = self.field_def.get(k).get("type")
+            except Exception: # TODO: handle additional_fields
+                continue
+               # d_type = 'varchar'
             flds.append(self._quote(k))
-
-            if self.field_def.get(k).get("type") in ['varchar']:
+            if d_type in ['varchar']:
                 vls.append(
                     self._single_quote(
                         data.get(k)
                     )
                 )
-
+            elif d_type in ['uuid']:
+                if len(data.get(k)) == 0 or data.get(k) == "NULL":
+                    vls.append(data.get(k)) # Dont single quote
+                else:
+                    vls.append(
+                        self._single_quote(
+                            data.get(k)
+                        )
+                    )
             else:
                 vls.append(data.get(k))
 
@@ -290,7 +308,8 @@ class MetadataDbLinkerTool(object):
                     )
                 )
 
-        flds = [self._quote(f) for f in list(self.field_def)]
+        # Add in valid additional fields when selecting
+        flds = (list(self.field_def) + list(self.get_additional_fields().keys()))
         s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (
             ','.join(flds),
             self.get_schema(),
@@ -317,8 +336,8 @@ class MetadataDbLinkerTool(object):
         else:
             while query.next():
                 r = {}
-                for index in range(len(list(self.field_def))):
-                    r[list(self.field_def)[index]] = query.value(index)
+                for index in range(len(flds)):
+                    r[flds[index]] = query.value(index)
                 results.append(r)
 
         db.commit()
@@ -370,11 +389,18 @@ class MetadataDbLinkerTool(object):
         db.commit()
         db.close()
 
+
     def validate_structure(self):
         """
         Returns true if all field names are contained in the table.
-        Does not check the type of the fields. TODO: implement
-        :return:
+        Does not check the type of the fields. 
+
+        For any additional_fields checks the gui_table to see if they are defined there.
+        
+        Runs first metadata dialog is opened
+
+        Returns:
+            bool
         """
 
         fld_names = list(self.field_def)
@@ -408,7 +434,137 @@ class MetadataDbLinkerTool(object):
                     fld_names.remove(f)
                 except:
                     pass
-
+            
             return len(fld_names) == 0
 
         return False
+
+    def validate_gui_table(self):
+        
+        db = self.get_db()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+        # check if the table exists
+        query = QtSql.QSqlQuery(db)
+        s = """
+            SELECT
+              1
+            FROM
+              information_schema.tables
+            WHERE
+              table_name = '{table}'
+            AND
+              table_schema='{schema}';
+            """.format(
+                table=self.get_gui_table(),
+                schema=self.get_schema()
+        )
+        if query.exec_(s):
+            while query.next():
+                f = query.value(0)
+                if f:
+                    return True
+
+        return False
+
+    def get_field_def_properties(self):
+        """
+        Returns:
+            dict (key,bool)
+        """
+        field_def_properties = self.get_field_def()
+        col_names = field_def_properties.keys()
+        db = self.get_db()
+
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+        # check if the table exists
+        query = QtSql.QSqlQuery(db)
+        s = """
+            SELECT
+              metadata_col_name, required, editable, is_shown
+            FROM
+              {schema}.{table}
+            WHERE is_shown
+            """.format(
+                table=self.get_gui_table(),
+                schema=self.get_schema()
+        )
+        if query.exec_(s):
+            while query.next():
+                row = query
+                try:
+                    field_def_properties[row.value(0)]["required"] = row.value(1)
+                    field_def_properties[row.value(0)]["editable"] = row.value(2)
+                    field_def_properties[row.value(0)]["is_shown"] = row.value(3)
+                except:
+                    pass
+        
+
+
+        return field_def_properties
+
+    def get_additional_fields(self):
+        """
+        Returns: list of str
+        """
+        # get all extra fields that are described in gui_table, exists in metadata table and is classified as an extra_field
+        db = self.get_db()
+        if not db.open():
+            self.logger.critical('Unable to open database.')
+            self.logger.critical(db.lastError().text())
+            return False
+
+        # TODO: combine into one query
+
+        # check if the table exists
+        query = QtSql.QSqlQuery(db)
+        s1 = """
+        SELECT * FROM 
+            (SELECT column_name FROM information_schema.columns
+             WHERE table_name = '{metatable}'
+             AND table_schema='{schema}') as t1
+        WHERE EXISTS
+            (SELECT metadata_col_name 
+             FROM {schema}.{guitable} as t2 WHERE t2.metadata_col_name = t1.column_name and t2.extra_field)
+        """.format(
+                metatable=self.get_table(),
+                guitable=self.get_gui_table(),
+                schema=self.get_schema()
+        )
+        extra_fields = []
+        if query.exec_(s1):
+            while query.next():
+                extra_fields.append(query.value(0))
+
+        # Build properties for the extra fields
+        s2 = """
+        SELECT metadata_col_name, required, editable, type, displayname, is_shown
+        FROM {schema}.{guitable}
+        WHERE is_shown
+        """.format(
+                guitable=self.get_gui_table(),
+                schema=self.get_schema()
+        )
+        extra_fields_properties = {}
+
+        if query.exec_(s2):
+            while query.next():
+                if query.value(0) in extra_fields:
+                    extra_fields_properties[query.value(0)] = {
+                        "required": query.value(1),
+                        "editable": query.value(2),
+                        "type": query.value(3),
+                        "displayname": query.value(4),
+                        "is_shown": query.value(5)
+                    }
+
+        return extra_fields_properties
+
+    #### These methods relate to extra_fields not described in field_def
+    def select_extra_fields(self):
+        pass

@@ -55,3 +55,4 @@ class SettingsDbDefDialog(QDialog, SETTINGS_DB_FORM_CLASS):
         )
         with open(nf, 'r') as myfile:
             self.textEdit.setText(myfile.read())
+

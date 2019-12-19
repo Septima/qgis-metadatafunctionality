@@ -6,6 +6,7 @@ from qgis.PyQt import (
     QtCore,
     QtSql
 )
+
 class LayerLocatorFilter(QgsLocatorFilter):
     def __init__(self, iface, data=None):
         super(LayerLocatorFilter, self).__init__()

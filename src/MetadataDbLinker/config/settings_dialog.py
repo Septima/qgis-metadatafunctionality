@@ -13,11 +13,12 @@ from db_manager.db_plugins.postgis.plugin import PGTable
 
 from ..core.metadatadblinkertool import MetadataDbLinkerTool
 from .qgissettingmanager import *
-from .dialog_settings_db_def import SettingsDbDefDialog
+from .dialog_settings_db_def import SettingsDbDefDialog, SettingsGuiTableDialog
 from qgis.gui import (QgsOptionsPageWidget)
 WIDGET, BASE = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), 'settings.ui')
 )
+
 class ConfigOptionsPage(QgsOptionsPageWidget):
 
     def __init__(self, parent, settings):
@@ -49,12 +50,13 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         SettingDialog.__init__(self, self.settings)
 
         self.db_def_dlg = SettingsDbDefDialog()
+        self.gui_table_def = SettingsGuiTableDialog()
         self.table_name = self.settings.value('sourcetable')
 
         self.testConnectionButton.clicked.connect(self.test_connection)
 
         self.databaseDefinitionButton.clicked.connect(self.show_db_def)
-
+        self.databaseGuiDefinitionButton.clicked.connect(self.show_gui_table_def)
         self.table_structure_ok = False
         self.current_item = None
 
@@ -74,6 +76,14 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         :return:
         """
         self.db_def_dlg.exec_()
+
+    def show_gui_table_def(self):
+        """
+        Opens the dialogue that shows the sql code.
+        :return:
+        """
+        self.gui_table_def.exec_()
+
 
     def item_changed(self, item):
         self.current_item = item

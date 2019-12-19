@@ -55,3 +55,22 @@ class SettingsDbDefDialog(QDialog, SETTINGS_DB_FORM_CLASS):
         )
         with open(nf, 'r') as myfile:
             self.textEdit.setText(myfile.read())
+
+class SettingsGuiTableDialog(QDialog, SETTINGS_DB_FORM_CLASS):
+
+    def __init__(self, parent=None):
+        """Constructor."""
+        super(SettingsGuiTableDialog, self).__init__(parent)
+        self.setupUi(self)
+        self.load_db_def()
+
+    def load_db_def(self):
+        nf = os.path.join(
+            os.path.dirname(
+                os.path.realpath(__file__)
+            ),
+            'sql',
+            'gui_table.sql'
+        )
+        with open(nf, 'r') as myfile:
+            self.textEdit.setText(myfile.read())
