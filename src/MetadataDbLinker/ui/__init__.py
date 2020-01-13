@@ -1,3 +1,1 @@
 from .dialog_metadata import MetadataDialog
-from .dialog_settings import SettingsDialog
-from .dialog_settings_db_def import SettingsDbDefDialog

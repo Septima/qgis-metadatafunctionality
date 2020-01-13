@@ -1,12 +1,12 @@
-from PyQt4 import (
+from qgis.PyQt import (
     QtCore,
     QtSql
 )
-from qgis.core import QgsDataSourceURI
+from qgis.core import QgsDataSourceUri
 from .qgislogger import QgisLogger
 
 import json
-from ..core import MetadataDbLinkerTool
+from ..core.metadatadblinkertool import MetadataDbLinkerTool
 
 
 class MySeptimaSearchProvider(QtCore.QObject):
@@ -148,7 +148,7 @@ WITH QUERY AS (
             result['table']
         )
 
-        uri = QgsDataSourceURI()
+        uri = QgsDataSourceUri()
         # set host, port, database name, username and password
         uri.setConnection(
             result['host'],

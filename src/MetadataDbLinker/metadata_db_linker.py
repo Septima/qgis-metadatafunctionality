@@ -22,22 +22,21 @@
 """
 from __future__ import unicode_literals
 import os.path
-from qgis.core import QgsMessageLog
-from PyQt4.QtCore import (
+from qgis.core import QgsMessageLog,QgsApplication
+from qgis.PyQt.QtCore import (
     QSettings,
     QTranslator,
     qVersion,
     QCoreApplication,
-    Qt
+    Qt,
+    QFileInfo
 )
-from PyQt4.QtGui import (
+from qgis.PyQt.QtWidgets import (
     QAction,
-    QIcon,
     QMenu,
-    QCursor,
-    QApplication,
     QMessageBox
 )
+from qgis.PyQt.QtGui import QIcon, QCursor
 from db_manager.db_plugins.plugin import (
     DBPlugin,
     Schema,
@@ -49,19 +48,20 @@ from db_manager.dlg_import_vector import DlgImportVector
 from db_manager.db_tree import DBTree
 
 # Initialize Qt resources from file resources.py
-import resources
+#import resources
 
 from .core.pluginmetadata import plugin_metadata
 # Import the code for the dialog
 from .ui.dialog_metadata import MetadataDialog
-from .ui.dialog_settings import SettingsDialog
-from . import MetadataDbLinkerSettings
-from .core.myseptimasearchprovider import MySeptimaSearchProvider
 
+#from .core.myseptimasearchprovider import MySeptimaSearchProvider
+from .layerlocatorfilter import LayerLocatorFilter
+# Settings and config
+from .config import *
 
 def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
     # Now show table metadata editor for the newly created table
-    QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
+    QgsApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
     dialog = MetadataDialog(
         table=table,
         uri=uri,
@@ -69,7 +69,7 @@ def showMetadataDialogue(table=None, uri=None, schema=None, close_dialog=False):
         close_dialog=close_dialog
     )
     dialog.exec_()
-    QApplication.restoreOverrideCursor()
+    QgsApplication.restoreOverrideCursor()
 
 
 def patched_createTable(self):
@@ -161,26 +161,37 @@ class MetadataDbLinker(object):
         self.plugin_dir = os.path.dirname(__file__)
 
         self.plugin_metadata = plugin_metadata()
-        # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            '{}.qm'.format(locale)
-        )
 
-        if os.path.exists(locale_path):
+        # initialize locale. Default to Danish
+        self.config = QSettings()
+        localePath = ""
+        try:
+            locale = self.config.value("locale/userLocale")[0:2]
+        except:
+            locale = 'da'
+
+        if QFileInfo(self.plugin_dir).exists():
+            localePath = self.plugin_dir + "/i18n/" + locale + ".qm"
+
+        if QFileInfo(localePath).exists():
             self.translator = QTranslator()
-            self.translator.load(locale_path)
+            self.translator.load(localePath)
 
             if qVersion() > '4.3.3':
-                QCoreApplication.installTranslator(self.translator)
+                QgsApplication.installTranslator(self.translator)
+        
+        # Locator
+        self.layer_locator_filter = LayerLocatorFilter(self.iface)
+        self.iface.registerLocatorFilter(self.layer_locator_filter)
 
-        self.settings = MetadataDbLinkerSettings()
+        # new config method 
+        self.settings = Settings()
+        self.options_factory = OptionsFactory(self.settings)
+        self.options_factory.setTitle("MetadataDbLinker") #TODO: Skal det hedde dette?
+        self.iface.registerOptionsWidgetFactory(self.options_factory)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MetadataDialog()
-        self.settings_dlg = SettingsDialog()
+        self.dlg = MetadataDialog(iface)
 
         # Declare instance attributes
         self.actions = []
@@ -202,7 +213,7 @@ class MetadataDbLinker(object):
         DBTree.fireMetadataDlg = fireMetadataDlg
         DBTree.contextMenuEvent = newContextMenuEvent
 
-        self.septimasearchprovider = MySeptimaSearchProvider(iface)
+        
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -228,7 +239,7 @@ class MetadataDbLinker(object):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         self.editmetadata_action = QAction(
-            QIcon(':/plugins/MetadataDbLinker/resources/metadata.png'),
+            QIcon(os.path.join(os.path.dirname(__file__),'./resources/metadata.png')),
             self.tr(u'Enter or edit metadata'),
             self.iface.mainWindow()
         )
@@ -237,16 +248,17 @@ class MetadataDbLinker(object):
         self.iface.addPluginToMenu(self.menu, self.editmetadata_action)
         self.iface.addToolBarIcon(self.editmetadata_action)
         self.actions.append(self.editmetadata_action)
+        # Old way of putting settings
 
-        self.settings_action = QAction(
-            QIcon(':/plugins/MetadataDbLinker/resources/settings.png'),
-            self.tr(u'Settings'),
-            self.iface.mainWindow()
-        )
-        self.settings_action.triggered.connect(self.settings_run)
-        self.settings_action.setEnabled(True)
-        self.iface.addPluginToMenu(self.menu, self.settings_action)
-        self.actions.append(self.settings_action)
+        #self.settings_action = QAction(
+        #    QIcon(os.path.join(os.path.dirname(__file__),'./resources/settings.png')),
+        #    self.tr(u'Settings'),
+        #    self.iface.mainWindow()
+        #)
+        #self.settings_action.triggered.connect(self.settings_run)
+        #self.settings_action.setEnabled(True)
+        #self.iface.addPluginToMenu(self.menu, self.settings_action)
+        #self.actions.append(self.settings_action)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -256,6 +268,12 @@ class MetadataDbLinker(object):
                 action
             )
             self.iface.removeToolBarIcon(action)
+        # Remove locator
+        if self.layer_locator_filter:
+            self.iface.deregisterLocatorFilter(self.layer_locator_filter)
+            self.layer_locator_filter = None
+
+        self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
     def run(self):
         """Run method that performs all the real work"""
@@ -274,18 +292,6 @@ class MetadataDbLinker(object):
         self.dlg.show()
         # Run the dialog event loop
         result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
-
-    def settings_run(self):
-        """Run method that performs all the real work"""
-        # show the dialog
-        self.settings_dlg.show()
-        # Run the dialog event loop
-        result = self.settings_dlg.exec_()
         # See if OK was pressed
         if result:
             # Do something useful here - delete the line containing pass and
