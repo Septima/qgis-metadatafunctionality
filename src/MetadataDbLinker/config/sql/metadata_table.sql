@@ -22,6 +22,7 @@ CREATE TABLE [schema].[table] (
 WITH (OIDS=FALSE);
 ALTER TABLE [schema].[table] OWNER TO [owner];
 
+-- QGIS Locator function
 create or replace function [schema]._getMetaDataMatches(varchar, int default 1000)
 returns table (name varchar, description varchar, host varchar, db varchar, port integer, schema varchar, sourcetable varchar)
     as $$

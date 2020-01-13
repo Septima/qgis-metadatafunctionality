@@ -124,15 +124,19 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         self.settings.set_value('database', self.database.text())
         self.settings.set_value('username', self.username.text())
         self.settings.set_value('password', self.password.text())
-        if self.db_tool.validate_structure():
+
+        
+        
+        try:
+            self.db_tool.validate_structure()
             QMessageBox.information(
                 self,
                 self.tr("Information"),
                 self.tr("DB structure and connection OK.")
             )
-        else:
+        except Exception as e:
             QMessageBox.warning(
                 self,
                 self.tr("Warning"),
-                self.tr("Either structure of database or connection is broken")
+                self.tr(str(e))
             )

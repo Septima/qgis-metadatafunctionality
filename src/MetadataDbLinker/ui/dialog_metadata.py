@@ -36,7 +36,8 @@ from qgis.PyQt.QtWidgets import (
     QTableWidgetItem,
     QLineEdit,
     QTextEdit,
-    QLabel
+    QLabel,
+    QSizePolicy
 )
 from qgis.PyQt.QtCore import (
     QAbstractTableModel,
@@ -50,7 +51,7 @@ from qgis.core import (
     QgsLayerItem,
     QgsDataSourceUri
 )
-from qgis.gui import QgsBrowserTreeView, QgsActionMenu,QgsDateTimeEdit
+from qgis.gui import QgsBrowserTreeView, QgsActionMenu,QgsDateTimeEdit,QgsMessageBar
 
 from ..core.taxonclassifier import TaxonClassifier
 from ..core.qgislogger import QgisLogger
@@ -111,7 +112,7 @@ class SelectedItemProxy(object):
 
 
 class MetadataDialog(QDialog, FORM_CLASS):
-    def __init__(self, parent=None, table=None, uri=None, schema=None, close_dialog=False):
+    def __init__(self,iface, parent=None, table=None, uri=None, schema=None, close_dialog=False):
         """Constructor."""
         super(MetadataDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -121,6 +122,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.field_def = []
         self.data_list = []
+        self.iface = iface
+
 
         if type(table) == tuple:
             table = table[1]
@@ -130,9 +133,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.settings = Settings()
         self.db_tool = MetadataDbLinkerTool()
         self.logger = QgisLogger('Metadata-DB-Linker')
-
         self.setupUi(self)
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy( QSizePolicy.Preferred, QSizePolicy.Fixed )
 
+        self.tab.layout().addWidget(self.bar,0,0)
+        
         self.model = QgsBrowserModel()
         self.model.initialize() # Qgis 3.x specific
         self.tree = QgsBrowserTreeView()
@@ -148,8 +154,10 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         self.deleteRecordButton.clicked.connect(self.delete_record)
 
-        self.geodatainfoLookupBtn.clicked.connect(self.lookup_geodatainfo_uuid)
         self.geodatainfoEdit.textChanged.connect(self.lookup_geodatainfo_uuid)
+
+        # ODENSE SPECIFIC
+        self.metadatabaseodkEdit.textChanged.connect(self.lookup_metadatabaseodk_uuid)
 
         #self.geodatainfoResult.setReadOnly(True)
         #self.geodatainfo_link.linkActivated.connect(webbrowser.open(self.geodatainfo_link))
@@ -162,8 +170,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.currentlySelectedLine = None
 
         # GUI_TABLE: describes fields in GUI using a PG_table
-        self.gui_table_exists = self.db_tool.validate_gui_table()
-        self.field_def_properties = self.db_tool.get_field_def_properties()
+        try:
+            self.gui_table_exists = self.db_tool.validate_gui_table()
+        except:
+            self.gui_table_exists = False
+
+        #self.field_def_properties = self.db_tool.get_field_def_properties()
         self.additional_field_properties = self.db_tool.get_additional_fields()
 
         if self.close_dialog:
@@ -182,20 +194,15 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # Add this back in when additional_fields work
         self.tabWidget.removeTab(1)
 
+
+        
     def add_qtfields_to_field_properties(self):
         """Saves a reference to the QT input field into the field_def_properties object
 
             Used for validation rules. Set up validation signal
         """
-        f = self.field_def_properties
-        f['name']['qt_input'] = self.nameEdit
-        f['description']['qt_input'] = self.descriptionEdit
-        f['kle_no']['qt_input'] = self.kleNoEdit
-        f['responsible']['qt_input'] = self.responsibleEdit
-        f['project']['qt_input'] = self.projectEdit
-        f['geodatainfo_uuid']['qt_input'] = self.geodatainfoEdit
-
-        # conncet the editable fields to validation check
+        
+        # connect the editable fields to validation check
         self.nameEdit.textEdited.connect(self.validate_metadata)
         self.descriptionEdit.textChanged.connect(self.validate_metadata)
         self.kleNoEdit.textEdited.connect(self.validate_metadata)
@@ -203,10 +210,48 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.projectEdit.textChanged.connect(self.validate_metadata)
         self.geodatainfoEdit.textEdited.connect(self.validate_metadata)
 
+        self.metadatabaseodkEdit.textEdited.connect(self.validate_metadata)
+        self.metadatabaseodkEdit.hide()
+        self.metadatabaseodkLabel.hide()
+        self.metadatabaseodk_link.hide()
         # if the gui_table exists we can edit the labels with a "required" tag
         if self.gui_table_exists:
+            try:
+                self.field_def_properties = self.db_tool.get_field_def_properties()
+            except Exception as e:
+                self.logger.critical('Could not get field definition properties')
+                QMessageBox.warning(
+                    self,
+                    self.tr("No field definition properties"),
+                    self.tr("Could not read field definitions from gui_table, permission denied, using defaults")
+                )
             
+
+            f = self.field_def_properties
+            # ODENSE SPECIFIC
+            # Test if the column is in the field_def_properties, if yes, enable the field in the GUI
             rt = " (required)"
+            try:
+                odense_guid = f['metadata_odk_guid']
+                odense_guid['qt_input'] = self.metadatabaseodkEdit
+                self.metadatabaseodkEdit.show()
+                self.metadatabaseodkLabel.show()
+                self.metadatabaseodk_link.show()
+
+                if(odense_guid['required']):
+                    self.metadatabaseodkLabel.setText(self.metadatabaseodkLabel.text() + rt)
+
+            except:
+                pass # no odense column
+                
+            f['name']['qt_input'] = self.nameEdit
+            f['description']['qt_input'] = self.descriptionEdit
+            f['kle_no']['qt_input'] = self.kleNoEdit
+            f['responsible']['qt_input'] = self.responsibleEdit
+            f['project']['qt_input'] = self.projectEdit
+            f['geodatainfo_uuid']['qt_input'] = self.geodatainfoEdit
+    
+            
             if f['name']['required']:
                 self.nameLabel.setText(self.tr(self.nameLabel.text() + rt))
             if f['description']['required']:
@@ -235,6 +280,15 @@ class MetadataDialog(QDialog, FORM_CLASS):
         link_html = "<a href=%s>%s</a>" % (geodatainfo_url+geodatainfo_uuid,geodatainfo_url+geodatainfo_uuid)
         self.geodatainfo_link.setText(link_html)
         self.geodatainfo_link.setOpenExternalLinks(True)
+
+    def lookup_metadatabaseodk_uuid(self):
+        metadatabaseodk_url = "https://www.metadatabase.odknet.dk/theme/"
+
+        # get the UUID from the lineedit
+        metadatabaseodk_uuid = self.metadatabaseodkEdit.text()
+        link_html = "<a href=%s>%s</a>" % (metadatabaseodk_url+metadatabaseodk_uuid,metadatabaseodk_url+metadatabaseodk_uuid)
+        self.metadatabaseodk_link.setText(link_html)
+        self.metadatabaseodk_link.setOpenExternalLinks(True)
 
     def lookup_kle_number(self):
         taxon_url = self.settings.value('taxonUrl')
@@ -288,16 +342,30 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.kleSuggestions.setText('No results from Taxon Classifier.')
             self.logger.info('No results from taxon service')
 
+    #def exec_(self):
+    #    # TODO: improve this by having db_tool throw an exception and catch it out here with the message
+    #    if self.db_tool.validate_structure():
+    #        super(MetadataDialog, self).exec_()
+    #    else:
+    #        QMessageBox.information(
+    #            self,
+    #            self.tr("Please!"),
+    #            self.tr("Either database is unavailable, table with metadata does not exist or wrong access rights.")
+    #        )
     def exec_(self):
-        if self.db_tool.validate_structure():
-            super(MetadataDialog, self).exec_()
-        else:
-            QMessageBox.information(
+        # TODO: improve this by having db_tool throw an exception and catch it out here with the message
+        try:
+            if self.db_tool.validate_structure():
+                super(MetadataDialog, self).exec_()
+        except Exception as e:
+            QMessageBox.warning(
                 self,
                 self.tr("Please!"),
-                self.tr("Either database is unavailable, table with metadata does not exist or wrong access rights.")
+                self.tr(str(e))
             )
-
+            # If there is an exception at this stage, close the dialog
+            super(MetadataDialog, self).close()
+              
     def get_selected_uri(self):
         """
         :return:
@@ -333,6 +401,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.add_record()
         else:
             self.update_record()
+
 
         if self.close_dialog:
             self.close()
@@ -387,6 +456,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
                 if 'geodatainfo_uuid' in list(results):
                     self.geodatainfoEdit.setText(results.get('geodatainfo_uuid') if str(results.get('geodatainfo_uuid')).lower() != "null" else "")
+
+                if 'metadata_odk_guid' in list(results):
+                    self.metadatabaseodkEdit.setText(results.get('metadata_odk_guid') if str(results.get('metadata_odk_guid')).lower() != "null" else "")
                 
 
         else:
@@ -402,12 +474,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
             guid = self.guids[row.row()]
             try:
                 self.db_tool.delete({'guid': guid})
-            except RuntimeError:
-                QMessageBox.critical(
-                    self,
-                    self.tr('Error deleting data.'),
-                    self.tr('See log for error details.')
-                )
+            except RuntimeError as e:
+                #QMessageBox.critical(
+                #    self,
+                #    self.tr('Error deleting data.'),
+                #    self.tr('See log for error details.')
+                #)
+                self.showMessage(self.tr(str(e)),level=1)
+        
             self.update_grid()
             if self.has_table_data:
                 self.tableView.selectRow(0)
@@ -440,6 +514,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
             # If the gui_table exists it means that validation rules should be enforced before button activates
             #self.saveRecordButton.setEnabled(True)
             self.deleteRecordButton.setEnabled(True)
+
+            # ODENSE SPECIFIC
+            try:
+                odense_guid = f['metadata_odk_guid']
+                self.metadatabaseodkEdit.setEnabled(odense_guid['editable'])
+            except:
+                pass # no odense column
 
         else:
             self.nameEdit.setEnabled(True)
@@ -516,6 +597,10 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.geodatainfoEdit.setText('')
         self.geodatainfo_link.setText('')
 
+        # ODENSE SPECIFIC
+        self.metadatabaseodkEdit.setText('')
+        self.metadatabaseodk_link.setText('')
+
     def empty_additional_fields(self):
         if self.gui_table_exists:
             form_layout = self.additional_form
@@ -545,12 +630,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 },
                 order_by={'field': 'ts_timezone', 'direction': 'DESC'}
             )
-        except RuntimeError:
-            QMessageBox.critical(
-                self,
-                self.tr('Error selecting data.'),
-                self.tr('See log for error details.')
-            )
+        except RuntimeError as e:
+            #QMessageBox.critical(
+            #    self,
+            #    self.tr('Error selecting data.'),
+            #    self.tr('See log for error details.')
+            #)
+            self.showMessage(self.tr(str(e)),level=1)
 
         labels = [
             self.db_tool.get_field_def().get(f).get('label') for f in self.db_tool.field_order if
@@ -560,8 +646,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
         fields = self.db_tool.field_order
         
         # Populate extra fields
-        additional_fields = list(self.additional_field_properties.keys())
-        form_layout = self.additional_form
+        if self.add_qtfields_to_field_properties != False:
+            additional_fields = list(self.additional_field_properties.keys())
+            form_layout = self.additional_form
+        else:
+            additional_fields = []
+
 
         # "taste" the current number of fields and do nothing if they are already there
         if not form_layout.rowCount() >= len(additional_fields):
@@ -689,32 +779,37 @@ class MetadataDialog(QDialog, FORM_CLASS):
             'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
         }
         # If the gui_table exists add the additional_fields
-        if self.gui_table_exists:
-            form_layout = self.additional_form
-            for idx,additional_field in enumerate(self.additional_field_properties):
-                
-                field = self.additional_field_properties.get(additional_field)
-                if field["type"] == "text":
-                    field_val = field["qt_input"].text()
-                elif field["type"] == "date":
-                    field_val = field["qt_input"].dateTime().toString("yyyy-MM-dd HH:mm:ss")
-                #line_edit_text = self.additional_form.itemAt(idx,1).widget().text()
-
-                update_object[additional_field] = {
-                    "value": field_val,
-                    "type": field["type"]
-                }
+        #if self.gui_table_exists:
+        #    form_layout = self.additional_form
+        #    for idx,additional_field in enumerate(self.additional_field_properties):
+        #        
+        #        field = self.additional_field_properties.get(additional_field)
+        #        if field["type"] == "text":
+        #            field_val = field["qt_input"].text()
+        #        elif field["type"] == "date":
+        #            field_val = field["qt_input"].dateTime().toString("yyyy-MM-dd HH:mm:ss")
+        #        #line_edit_text = self.additional_form.itemAt(idx,1).widget().text()
+#
+        #        update_object[additional_field] = {
+        #            "value": field_val,
+        #            "type": field["type"]
+        #        }
+        
+        # ODENSE SPECIFIC
+        # ODENSE SPECIFIC
+            # Test if the column is in the field_def_properties, if yes, enable the field in the GUI
+        try:
+            odense_guid = self.field_def_properties['metadata_odk_guid']
+            update_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
+        except:
+            pass # no field
 
         try:
             self.db_tool.update(
                 update_object
-            )
-        except RuntimeError:
-            QMessageBox.critical(
-                self,
-                self.tr('Error updating data.'),
-                self.tr('See log for error details.')
-            )
+                )
+        except RuntimeError as e:
+            self.showMessage('Error updating data: ' + self.tr(str(e)),level=1)
         
         self.update_grid()
 
@@ -734,8 +829,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         if table:
             try:
-                self.db_tool.insert(
-                    {
+                insert_object = {
                         'guid': guid,
                         'db': db,
                         'port': port,
@@ -750,16 +844,24 @@ class MetadataDialog(QDialog, FORM_CLASS):
                         'project': self.projectEdit.toPlainText(),
                         'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
                     }
+                try:
+                    odense_guid = self.field_def_properties['metadata_odk_guid']
+                    insert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
+                except:
+                    pass
+
+                self.db_tool.insert(
+                    insert_object
                 )
-            except RuntimeError:
+                self.currentlySelectedLine = guid
+                self.update_grid()
+                self.tableView.selectRow(0)
+            except Exception:
                 QMessageBox.critical(
                     self,
                     self.tr('Error inserting data.'),
                     self.tr('See log for error details.')
                 )
-            self.currentlySelectedLine = guid
-            self.update_grid()
-            self.tableView.selectRow(0)
         else:
             QMessageBox.information(
                 self,
@@ -782,7 +884,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.tr("Geodata-info UUID is not valid"),
                 self.tr("Please enter a valid Geodata-info UUID")
             )
-            return "NULL"
+            #raise RuntimeError("Geodata-info UUID is not valid")
 
         return _uuid
 
@@ -854,3 +956,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.saveRecordButton.setToolTip(self.tr("All required fields need to be filled!"))
             self.saveRecordButton.setText(self.tr("Save metadata (required fields missing)"))
             self.saveRecordButton.setEnabled(False)
+
+    def showMessage(self, message,level):
+        # TODO: message level
+        self.bar.pushMessage("Error: ", message,level=level)

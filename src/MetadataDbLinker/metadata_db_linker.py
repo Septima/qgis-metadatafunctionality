@@ -171,7 +171,7 @@ class MetadataDbLinker(object):
             locale = 'da'
 
         if QFileInfo(self.plugin_dir).exists():
-            localePath = self.plugin_dir + "/i18n/" + locale + ".qt.qm"
+            localePath = self.plugin_dir + "/i18n/" + locale + ".qm"
 
         if QFileInfo(localePath).exists():
             self.translator = QTranslator()
@@ -191,7 +191,7 @@ class MetadataDbLinker(object):
         self.iface.registerOptionsWidgetFactory(self.options_factory)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MetadataDialog()
+        self.dlg = MetadataDialog(iface)
 
         # Declare instance attributes
         self.actions = []

@@ -11,10 +11,11 @@ class LayerLocatorFilter(QgsLocatorFilter):
     def __init__(self, iface, data=None):
         super(LayerLocatorFilter, self).__init__()
         if data is None:
-            self.data = LayerLocatorFilterData()
+            self.data = LayerLocatorFilterData(iface)
         else:
             self.data = data
         self.iface = iface
+        self.logger = QgisLogger('Metadata-DB-linker')
 
     def clone(self):
         return LayerLocatorFilter(self.iface,data=self.data)
@@ -60,9 +61,10 @@ class LayerLocatorFilter(QgsLocatorFilter):
         )
 
 class LayerLocatorFilterData:
-    def __init__(self):
+    def __init__(self,iface):
         self.db_tool = MetadataDbLinkerTool()
         self.logger = QgisLogger('Metadata-DB-linker')
+        self.iface = iface
 
     # Searches the database with the given query
     def fetch_matching_layers(self,query):
@@ -123,7 +125,7 @@ class LayerLocatorFilterData:
             result['table']
         )
 
-        if geometry_columns is None:
+        if geometry_columns is None or len(geometry_columns) < 1:
             self.logger.critical('Could not get geometry!')
             return None
 
@@ -185,6 +187,7 @@ class LayerLocatorFilterData:
         columns = []
 
         if not q.exec_(sql):
+            self.iface.messageBar().pushMessage("Error", q.lastError().text(), level=2)
             return None
         else:
             while q.next():

@@ -32,50 +32,90 @@ class MetadataDbLinkerTool(object):
 
     field_def = {
         'guid': {
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         'name': {
             'type': 'varchar',
-            'label': 'Name'
+            'label': 'Name',
+            'required': False,
+            'editable': True,
+            'is_shown': True
+            
         },
         'description': {
             'type': 'varchar',
-            'label': 'Description'
+            'label': 'Description',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         'kle_no': {
             'label': 'KLE-numbering',
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         'responsible': {
             'label': 'Responsible Center or Employee',
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         'project': {
             'label': 'Project',
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         'host': {
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'db': {
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'port': {
-            'type': 'int'
+            'type': 'int',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'schema': {
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'sourcetable': {
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'ts_timezone': {
             'label': 'Date',
-            'type': 'varchar'
+            'type': 'varchar',
+            'required': False,
+            'editable': True,
+            'is_shown': False
         },
         'geodatainfo_uuid': {
             'label': 'Geodata-info UUID',
-            'type': 'uuid'
+            'type': 'uuid',
+            'required': False,
+            'editable': True,
+            'is_shown': True
         },
         
     }
@@ -284,7 +324,7 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
-            raise RuntimeError('Failed to update data.')
+            raise RuntimeError(query.lastError().text().split("\n")[0])
         db.commit()
         db.close()
 
@@ -332,7 +372,7 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
-            raise RuntimeError('Failed to select data.')
+            raise RuntimeError('Failed to select data: ' + query.lastError().databaseText().split("\n")[0])
         else:
             while query.next():
                 r = {}
@@ -385,7 +425,7 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
-            raise RuntimeError('Failed to delete data.')
+            raise RuntimeError('Failed to delete data. ' + query.lastError().databaseText().split("\n")[0])
         db.commit()
         db.close()
 
@@ -423,7 +463,7 @@ class MetadataDbLinkerTool(object):
         if not db.open():
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
-            return False
+            raise Exception(db.lastError().text().split("\n")[0])
 
         query = QtSql.QSqlQuery(db)
 
@@ -437,7 +477,7 @@ class MetadataDbLinkerTool(object):
             
             return len(fld_names) == 0
 
-        return False
+        raise Exception('Could not get metadata table or schema information')
 
     def validate_gui_table(self):
         
@@ -445,7 +485,7 @@ class MetadataDbLinkerTool(object):
         if not db.open():
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
-            return False
+            raise Exception(db.lastError().text())
         # check if the table exists
         query = QtSql.QSqlQuery(db)
         s = """
@@ -467,7 +507,7 @@ class MetadataDbLinkerTool(object):
                 if f:
                     return True
 
-        return False
+        raise Exception('Could not find gui table or schema in database')
 
     def get_field_def_properties(self):
         """
@@ -475,13 +515,13 @@ class MetadataDbLinkerTool(object):
             dict (key,bool)
         """
         field_def_properties = self.get_field_def()
-        col_names = field_def_properties.keys()
         db = self.get_db()
 
         if not db.open():
-            self.logger.critical('Unable to open database.')
+            self.logger.critical('Unable to connect to database.')
             self.logger.critical(db.lastError().text())
-            return False
+            raise Exception('Unable to connect to database.')
+
         # check if the table exists
         query = QtSql.QSqlQuery(db)
         s = """
@@ -502,9 +542,15 @@ class MetadataDbLinkerTool(object):
                     field_def_properties[row.value(0)]["editable"] = row.value(2)
                     field_def_properties[row.value(0)]["is_shown"] = row.value(3)
                 except:
-                    pass
-        
-
+                    if row.value(0) == 'metadata_odk_guid': # ODENSE SPECIFIC
+                        field_def_properties[row.value(0)] = {
+                            "required": row.value(1),
+                            "editable": row.value(2),
+                            "is_shown": row.value(3),
+                            "type": "uuid"
+                        }
+                    else: # If extra_field are ever to implemented they should be added here instead of passing
+                        pass
 
         return field_def_properties
 

@@ -15,14 +15,14 @@ CREATE TABLE [schema].[table] (
     schema varchar,
     sourcetable varchar,
     guid varchar,
-    geodatainfo_uuid uuid,
     ts_timezone varchar,
-
+    geodatainfo_uuid uuid,
     CONSTRAINT pk_metadata PRIMARY KEY (guid)
 )
 WITH (OIDS=FALSE);
 ALTER TABLE [schema].[table] OWNER TO [owner];
 
+-- QGIS Locator function
 create or replace function [schema]._getMetaDataMatches(varchar, int default 1000)
 returns table (name varchar, description varchar, host varchar, db varchar, port integer, schema varchar, sourcetable varchar)
     as $$

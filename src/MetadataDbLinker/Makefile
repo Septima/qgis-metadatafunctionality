@@ -38,7 +38,7 @@ LRELEASE = lrelease
 SOURCES = \
 	__init__.py \
 	metadata_db_linker.py \
-	ui/dialog_metadata.py \
+	./ui/dialog_metadata.py \
 	ui/dialog_settings.py \
 	ui/dialog_settings_db_def.py
 
@@ -48,13 +48,14 @@ PY_FILES = \
 	__init__.py \
 	metadata_db_linker.py \
 	ui/dialog_metadata.py \
-	ui/dialog_settings.py \
-	ui/dialog_settings_db_def.py
+	config/dialog_settings_db_def.py \
+	config/settings.py \
+	config/settings_dialog.py
 
 UI_FILES = \
 	ui/dialog_metadata.ui \
-	ui/dialog_settings.ui \
-	ui/dialog_settings_db_def.ui
+	config/dialog_settings.ui \
+	config/dialog_settings_db_def.ui
 
 EXTRAS = metadata.txt icon.png
 
@@ -80,7 +81,7 @@ default: compile
 compile: $(COMPILED_RESOURCE_FILES)
 
 %.py : %.qrc $(RESOURCES_SRC)
-	pyrcc4 -o $*.py  $<
+	pyrcc5 -o $*.py  $<
 
 %.qm : %.ts
 	$(LRELEASE) $<
