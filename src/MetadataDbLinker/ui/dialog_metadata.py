@@ -112,7 +112,7 @@ class SelectedItemProxy(object):
 
 
 class MetadataDialog(QDialog, FORM_CLASS):
-    def __init__(self,iface, parent=None, table=None, uri=None, schema=None, close_dialog=False):
+    def __init__(self, parent=None, table=None, uri=None, schema=None, close_dialog=False):
         """Constructor."""
         super(MetadataDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -122,7 +122,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.field_def = []
         self.data_list = []
-        self.iface = iface
+        #self.iface = iface
 
 
         if type(table) == tuple:
@@ -175,7 +175,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
         except:
             self.gui_table_exists = False
 
-        #self.field_def_properties = self.db_tool.get_field_def_properties()
+
+        self.field_def_properties = self.db_tool.get_field_def_properties()
         self.additional_field_properties = self.db_tool.get_additional_fields()
 
         if self.close_dialog:
@@ -499,28 +500,33 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
             # The gui_table exists extract the editable information about fields. 
             # If this is the first time, it will be a good idea to save configuration
-            f = self.field_def_properties
-
-            # Enable Fields based on whats written in gui_table
-            self.nameEdit.setEnabled(f['name']['editable'])
-            self.descriptionEdit.setEnabled(f['description']['editable'])
-            self.kleNoEdit.setEnabled(f['kle_no']['editable'])
-            self.kleNoLookupBtn.setEnabled(f['name']['editable'])
-            self.responsibleEdit.setEnabled(f['responsible']['editable'])
-            self.projectEdit.setEnabled(f['project']['editable'])
-            self.geodatainfoEdit.setEnabled(f['geodatainfo_uuid']['editable'])
-            self.dateEdit.setEnabled(True)
-
-            # If the gui_table exists it means that validation rules should be enforced before button activates
-            #self.saveRecordButton.setEnabled(True)
-            self.deleteRecordButton.setEnabled(True)
-
-            # ODENSE SPECIFIC
+            breakFlag = False
             try:
-                odense_guid = f['metadata_odk_guid']
-                self.metadatabaseodkEdit.setEnabled(odense_guid['editable'])
-            except:
-                pass # no odense column
+                f = self.field_def_properties
+            except Exception as e:
+                breakFlag = True
+
+            if breakFlag is False:
+                # Enable Fields based on whats written in gui_table
+                self.nameEdit.setEnabled(f['name']['editable'])
+                self.descriptionEdit.setEnabled(f['description']['editable'])
+                self.kleNoEdit.setEnabled(f['kle_no']['editable'])
+                self.kleNoLookupBtn.setEnabled(f['name']['editable'])
+                self.responsibleEdit.setEnabled(f['responsible']['editable'])
+                self.projectEdit.setEnabled(f['project']['editable'])
+                self.geodatainfoEdit.setEnabled(f['geodatainfo_uuid']['editable'])
+                self.dateEdit.setEnabled(True)
+
+                # If the gui_table exists it means that validation rules should be enforced before button activates
+                #self.saveRecordButton.setEnabled(True)
+                self.deleteRecordButton.setEnabled(True)
+
+                # ODENSE SPECIFIC
+                try:
+                    odense_guid = f['metadata_odk_guid']
+                    self.metadatabaseodkEdit.setEnabled(odense_guid['editable'])
+                except:
+                    pass # no odense column
 
         else:
             self.nameEdit.setEnabled(True)
@@ -776,8 +782,10 @@ class MetadataDialog(QDialog, FORM_CLASS):
             'kle_no': self.kleNoEdit.text(),
             'responsible': self.responsibleEdit.text(),
             'project': self.projectEdit.toPlainText(),
-            'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
         }
+        _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+        if _uuid:
+            update_object['geodatainfo_uuid'] = _uuid
         # If the gui_table exists add the additional_fields
         #if self.gui_table_exists:
         #    form_layout = self.additional_form
@@ -842,8 +850,10 @@ class MetadataDialog(QDialog, FORM_CLASS):
                         'kle_no': self.kleNoEdit.text(),
                         'responsible': self.responsibleEdit.text(),
                         'project': self.projectEdit.toPlainText(),
-                        'geodatainfo_uuid': self.validate_uuid(self.geodatainfoEdit.text())
                     }
+                _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+                if _uuid:
+                    insert_object['geodatainfo_uuid'] = _uuid
                 try:
                     odense_guid = self.field_def_properties['metadata_odk_guid']
                     insert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
@@ -874,7 +884,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             validates an uuid and returns it if valid
         """
         if len(_uuid) == 0:
-            return "NULL"
+            return False
         try:
             uuid_object = uuid.UUID(_uuid, version=4)
         except ValueError:

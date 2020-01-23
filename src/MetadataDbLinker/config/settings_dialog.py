@@ -140,3 +140,18 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
                 self.tr("Warning"),
                 self.tr(str(e))
             )
+
+        # move this to own button
+        try:
+            self.db_tool.validate_gui_table()
+            QMessageBox.information(
+                self,
+                self.tr("Information"),
+                self.tr("gui_table structure and connection OK.")
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Warning"),
+                self.tr(str(e))
+            )

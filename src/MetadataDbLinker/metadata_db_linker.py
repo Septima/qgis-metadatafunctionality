@@ -191,7 +191,7 @@ class MetadataDbLinker(object):
         self.iface.registerOptionsWidgetFactory(self.options_factory)
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = MetadataDialog(iface)
+        self.dlg = MetadataDialog()
 
         # Declare instance attributes
         self.actions = []

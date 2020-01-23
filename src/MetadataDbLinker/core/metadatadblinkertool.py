@@ -486,28 +486,28 @@ class MetadataDbLinkerTool(object):
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
             raise Exception(db.lastError().text())
-        # check if the table exists
+        # check if the gui_table exists
         query = QtSql.QSqlQuery(db)
         s = """
             SELECT
-              1
+              id, metadata_col_name, type, required, editable, is_shown
             FROM
-              information_schema.tables
-            WHERE
-              table_name = '{table}'
-            AND
-              table_schema='{schema}';
+              {schema}.{table}
             """.format(
                 table=self.get_gui_table(),
                 schema=self.get_schema()
         )
+
         if query.exec_(s):
             while query.next():
-                f = query.value(0)
-                if f:
-                    return True
+                f = query.value(1)
+                if not f or f is "":
+                    raise Exception('Column "metadata_col_name" was empty, check gui_table configuration')
+        else:
+            raise Exception('Could not access gui_table \n' + str(query.lastError().text()))
 
-        raise Exception('Could not find gui table or schema in database')
+
+        
 
     def get_field_def_properties(self):
         """
