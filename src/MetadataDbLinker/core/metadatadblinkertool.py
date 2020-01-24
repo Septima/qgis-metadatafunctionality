@@ -506,6 +506,7 @@ class MetadataDbLinkerTool(object):
         else:
             raise Exception('Could not access gui_table \n' + str(query.lastError().text()))
 
+        return True
 
         
 
