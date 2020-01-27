@@ -70,6 +70,7 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         self.password.textChanged.connect(self.activate_test_button)
 
         self.testConnectionButton.setEnabled(self.all_fields_filled())
+        self.testConnectionGuiTableButton.setEnabled(self.all_fields_filled())
 
     def show_db_def(self):
         """
@@ -114,6 +115,7 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         :return:
         """
         self.testConnectionButton.setEnabled(self.all_fields_filled())
+        self.testConnectionGuiTableButton.setEnabled(self.all_fields_filled())
 
     def test_connection(self):
         """

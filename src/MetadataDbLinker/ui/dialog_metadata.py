@@ -172,12 +172,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # GUI_TABLE: describes fields in GUI using a PG_table
         try:
             self.gui_table_exists = self.db_tool.validate_gui_table()
+            self.field_def_properties = self.db_tool.get_field_def_properties()
+            self.additional_field_properties = self.db_tool.get_additional_fields()
         except:
             self.gui_table_exists = False
+            self.field_def_properties = None
+            self.additional_field_properties = None
 
-
-        self.field_def_properties = self.db_tool.get_field_def_properties()
-        self.additional_field_properties = self.db_tool.get_additional_fields()
+        
 
         if self.close_dialog:
             self.saveRecordButton.setText(self.tr('Save metadata and close'))
@@ -357,6 +359,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
         # TODO: improve this by having db_tool throw an exception and catch it out here with the message
         try:
             if self.db_tool.validate_structure():
+                try:
+                    if self.db_tool.validate_gui_table():
+                        self.gui_table_exists = self.db_tool.validate_gui_table()
+                        self.field_def_properties = self.db_tool.get_field_def_properties()
+                        self.additional_field_properties = self.db_tool.get_additional_fields()
+                except Exception as e:
+                    self.logger.info('Could not validate gui_table setup, if you wish to use the gui_table please validate the settings')
+
                 super(MetadataDialog, self).exec_()
         except Exception as e:
             QMessageBox.warning(
@@ -652,11 +662,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
         fields = self.db_tool.field_order
         
         # Populate extra fields
-        if self.add_qtfields_to_field_properties != False:
-            additional_fields = list(self.additional_field_properties.keys())
-            form_layout = self.additional_form
-        else:
-            additional_fields = []
+        #if self.add_qtfields_to_field_properties != False:
+        #    additional_fields = list(self.additional_field_properties.keys())
+        #    form_layout = self.additional_form
+        #else:
+        form_layout = self.additional_form
+        additional_fields = []
 
 
         # "taste" the current number of fields and do nothing if they are already there

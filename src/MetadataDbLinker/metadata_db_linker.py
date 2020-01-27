@@ -162,6 +162,7 @@ class MetadataDbLinker(object):
 
         self.plugin_metadata = plugin_metadata()
 
+        
         # initialize locale. Default to Danish
         self.config = QSettings()
         localePath = ""
@@ -204,9 +205,11 @@ class MetadataDbLinker(object):
 
         DlgCreateTable.createTable = patched_createTable
 
-        if not getattr(connector.PostGisDBConnector, 'accept_original', None):
+        # Ensures we don't override the accept_original method with new_accept if init is called twice
+        # Park the orignal accept method to avoid infinite opening of the MetadataDialog
+        if not getattr(connector.PostGisDBConnector, 'accept_original', None) and not getattr(DlgImportVector,'accept_original', None):
             DlgImportVector.accept_original = DlgImportVector.accept
-
+        
         DlgImportVector.accept = new_accept
 
         # menu
@@ -283,7 +286,7 @@ class MetadataDbLinker(object):
         if errors:
             QMessageBox.critical(
                 None,
-                u'Missing settings.',
+                self.tr(u'Missing settings.'),
                 u'{}'.format(errors)
             )
             return None

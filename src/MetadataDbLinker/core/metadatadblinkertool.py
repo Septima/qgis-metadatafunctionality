@@ -168,13 +168,17 @@ class MetadataDbLinkerTool(object):
         Returns a database object from the settings in the config.
         :return:
         """
-
+        
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
-        db.setHostName(self.settings.value("host"))
-        db.setPort(int(self.settings.value("port")))
-        db.setDatabaseName(self.settings.value("database"))
-        db.setUserName(self.settings.value("username"))
-        db.setPassword(self.settings.value("password"))
+        try:
+            db.setHostName(self.settings.value("host"))
+            db.setPort(int(self.settings.value("port")))
+            db.setDatabaseName(self.settings.value("database"))
+            db.setUserName(self.settings.value("username"))
+            db.setPassword(self.settings.value("password"))
+        except ValueError:
+            raise RuntimeWarning("Could not set database connection, missing settings")
+
 
         return db
 
@@ -516,7 +520,11 @@ class MetadataDbLinkerTool(object):
             dict (key,bool)
         """
         field_def_properties = self.get_field_def()
-        db = self.get_db()
+        try:
+            db = self.get_db()
+        except RuntimeWarning as e:
+            self.logger.critical('Unable to connect to database.')
+            raise Exception(str(e))
 
         if not db.open():
             self.logger.critical('Unable to connect to database.')
@@ -561,6 +569,7 @@ class MetadataDbLinkerTool(object):
         """
         # get all extra fields that are described in gui_table, exists in metadata table and is classified as an extra_field
         db = self.get_db()
+        
         if not db.open():
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
