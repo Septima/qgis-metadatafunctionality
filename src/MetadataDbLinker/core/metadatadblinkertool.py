@@ -354,6 +354,10 @@ class MetadataDbLinkerTool(object):
 
         # Add in valid additional fields when selecting
         flds = (list(self.field_def) + list(self.get_additional_fields().keys()))
+
+        if "metadata_odk_guid" in flds:
+            flds.remove("metadata_odk_guid")
+
         s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (
             ','.join(flds),
             self.get_schema(),
@@ -448,6 +452,8 @@ class MetadataDbLinkerTool(object):
         """
 
         fld_names = list(self.field_def)
+        if "metadata_odk_guid" in fld_names:
+            fld_names.remove("metadata_odk_guid")
         db = self.get_db()
 
         s = """

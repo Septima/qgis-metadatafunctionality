@@ -157,7 +157,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.geodatainfoEdit.textChanged.connect(self.lookup_geodatainfo_uuid)
 
         # ODENSE SPECIFIC
-        self.metadatabaseodkEdit.textChanged.connect(self.lookup_metadatabaseodk_uuid)
+        # self.metadatabaseodkEdit.textChanged.connect(self.lookup_metadatabaseodk_uuid)
 
         #self.geodatainfoResult.setReadOnly(True)
         #self.geodatainfo_link.linkActivated.connect(webbrowser.open(self.geodatainfo_link))
@@ -213,8 +213,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.projectEdit.textChanged.connect(self.validate_metadata)
         self.geodatainfoEdit.textEdited.connect(self.validate_metadata)
 
-        self.metadatabaseodkEdit.textEdited.connect(self.validate_metadata)
-        self.metadatabaseodkEdit.hide()
+        #self.metadatabaseodkEdit.textEdited.connect(self.validate_metadata)
+        #self.metadatabaseodkEdit.hide()
         self.metadatabaseodkLabel.hide()
         self.metadatabaseodk_link.hide()
         # if the gui_table exists we can edit the labels with a "required" tag
@@ -236,8 +236,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
             rt = " (required)"
             try:
                 odense_guid = f['metadata_odk_guid']
-                odense_guid['qt_input'] = self.metadatabaseodkEdit
-                self.metadatabaseodkEdit.show()
+                # odense_guid['qt_input'] = self.metadatabaseodkEdit
+                #self.metadatabaseodkEdit.show()
                 self.metadatabaseodkLabel.show()
                 self.metadatabaseodk_link.show()
 
@@ -284,11 +284,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.geodatainfo_link.setText(link_html)
         self.geodatainfo_link.setOpenExternalLinks(True)
 
-    def lookup_metadatabaseodk_uuid(self):
+    def set_metadatabaseodk_uuid(self,guid):
         metadatabaseodk_url = "https://www.metadatabase.odknet.dk/theme/"
-
-        # get the UUID from the lineedit
-        metadatabaseodk_uuid = self.metadatabaseodkEdit.text()
+        metadatabaseodk_uuid = guid
         link_html = "<a href=%s>%s</a>" % (metadatabaseodk_url+metadatabaseodk_uuid,metadatabaseodk_url+metadatabaseodk_uuid)
         self.metadatabaseodk_link.setText(link_html)
         self.metadatabaseodk_link.setOpenExternalLinks(True)
@@ -468,8 +466,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 if 'geodatainfo_uuid' in list(results):
                     self.geodatainfoEdit.setText(results.get('geodatainfo_uuid') if str(results.get('geodatainfo_uuid')).lower() != "null" else "")
 
-                if 'metadata_odk_guid' in list(results):
-                    self.metadatabaseodkEdit.setText(results.get('metadata_odk_guid') if str(results.get('metadata_odk_guid')).lower() != "null" else "")
+                #if 'metadata_odk_guid' in list(results):
+                #    self.metadatabaseodkEdit.setText(results.get('metadata_odk_guid') if str(results.get('metadata_odk_guid')).lower() != "null" else "")
                 
 
         else:
@@ -532,11 +530,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.deleteRecordButton.setEnabled(True)
 
                 # ODENSE SPECIFIC
-                try:
-                    odense_guid = f['metadata_odk_guid']
-                    self.metadatabaseodkEdit.setEnabled(odense_guid['editable'])
-                except:
-                    pass # no odense column
+                #try:
+                #    odense_guid = f['metadata_odk_guid']
+                #    self.metadatabaseodkEdit.setEnabled(odense_guid['editable'])
+                #except:
+                #    pass # no odense column
 
         else:
             self.nameEdit.setEnabled(True)
@@ -614,7 +612,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.geodatainfo_link.setText('')
 
         # ODENSE SPECIFIC
-        self.metadatabaseodkEdit.setText('')
+        #self.metadatabaseodkEdit.setText('')
         self.metadatabaseodk_link.setText('')
 
     def empty_additional_fields(self):
@@ -723,6 +721,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         if len(results) > 0:
             rws = []
             self.guids = []
+            # There is usually only one result here
             for result in results:
                 t = []
                 for k in fields:
@@ -742,9 +741,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
                 rws.append(tuple(t))
                 self.guids.append(result.get('guid'))
+            
 
             table_model = MetaTableModel(self, rws, labels)
-
+            if 'metadata_odk_guid' in self.field_def_properties.keys():
+                self.set_metadatabaseodk_uuid(result['guid'])
+                
             table_model.data(
                 table_model.createIndex(0, 0),
                 Qt.DisplayRole
@@ -866,8 +868,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 if _uuid:
                     insert_object['geodatainfo_uuid'] = _uuid
                 try:
-                    odense_guid = self.field_def_properties['metadata_odk_guid']
-                    insert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
+                    #odense_guid = self.field_def_properties['metadata_odk_guid']
+                    odense_guid = guid
+                    #insert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
                 except:
                     pass
 
