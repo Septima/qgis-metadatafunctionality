@@ -54,6 +54,7 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         self.table_name = self.settings.value('sourcetable')
 
         self.testConnectionButton.clicked.connect(self.test_connection)
+        self.testConnectionGuiTableButton.clicked.connect(self.test_gui_table_connection)
 
         self.databaseDefinitionButton.clicked.connect(self.show_db_def)
         self.databaseGuiDefinitionButton.clicked.connect(self.show_gui_table_def)
@@ -69,6 +70,7 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         self.password.textChanged.connect(self.activate_test_button)
 
         self.testConnectionButton.setEnabled(self.all_fields_filled())
+        self.testConnectionGuiTableButton.setEnabled(self.all_fields_filled())
 
     def show_db_def(self):
         """
@@ -113,6 +115,7 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
         :return:
         """
         self.testConnectionButton.setEnabled(self.all_fields_filled())
+        self.testConnectionGuiTableButton.setEnabled(self.all_fields_filled())
 
     def test_connection(self):
         """
@@ -133,6 +136,29 @@ class ConfigDialog(WIDGET, BASE,SettingDialog):
                 self,
                 self.tr("Information"),
                 self.tr("DB structure and connection OK.")
+            )
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Warning"),
+                self.tr(str(e))
+            )
+
+    def test_gui_table_connection(self):
+
+        self.settings.set_value('host', self.host.text())
+        self.settings.set_value('port', self.port.text())
+        self.settings.set_value('schema', self.schema.text())
+        self.settings.set_value('database', self.database.text())
+        self.settings.set_value('username', self.username.text())
+        self.settings.set_value('password', self.password.text())
+
+        try:
+            self.db_tool.validate_gui_table()
+            QMessageBox.information(
+                self,
+                self.tr("Information"),
+                self.tr("gui_table structure and connection OK.")
             )
         except Exception as e:
             QMessageBox.warning(

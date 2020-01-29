@@ -11,7 +11,7 @@ CREATE TABLE [schema].gui_table
     type character varying,
     required boolean,
     editable boolean,
-    is_shown boolean,
+    is_shown boolean DEFAULT true,
     CONSTRAINT gui_table_pkey PRIMARY KEY (metadata_col_name)
 )
 WITH (

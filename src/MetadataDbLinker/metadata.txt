@@ -10,7 +10,7 @@
 name=Metadata-DB-Linker
 qgisMinimumVersion=3.0
 description=A plugin to enter and edit metadata stored in a postgres-database table.
-version=1.0.0
+version=1.0.1
 author=Septima
 email=kontakt@septima.dk
 about=
@@ -34,6 +34,7 @@ repository=https://github.com/Septima/qgis-metadatafunctionality
 
 # Uncomment the following line and add your changelog:
 changelog=
+    2019-01-29: bugfixes relating to DBmanager, version 1.0.1
     2019-01-13: Major Release, version 1.0.0
     2018-08-07: Allowed for multiline entering of projects in which the layer is used, version 0.1.8
     2016-11-04: Ready for release to QGIS Plugin Repository, version 0.1.7

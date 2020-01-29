@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="da_DK">
+<!DOCTYPE TS><TS version="2.0" language="da_DK" sourcelanguage="">
 <context>
     <name></name>
     <message>
@@ -50,19 +49,24 @@
 <context>
     <name>ConfigDialog</name>
     <message>
-        <location filename="../config/settings_dialog.py" line="133"/>
+        <location filename="../config/settings_dialog.py" line="159"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings_dialog.py" line="133"/>
+        <location filename="../config/settings_dialog.py" line="136"/>
         <source>DB structure and connection OK.</source>
         <translation>Database struktur og forbindelse er OK</translation>
     </message>
     <message>
-        <location filename="../config/settings_dialog.py" line="139"/>
+        <location filename="../config/settings_dialog.py" line="165"/>
         <source>Warning</source>
         <translation>Advarsel</translation>
+    </message>
+    <message>
+        <location filename="../config/settings_dialog.py" line="159"/>
+        <source>gui_table structure and connection OK.</source>
+        <translation type="gui_table struktur og forbindelse er OK"></translation>
     </message>
 </context>
 <context>
@@ -103,70 +107,75 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="183"/>
+        <location filename="../config/settings.ui" line="164"/>
         <source>Port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="193"/>
+        <location filename="../config/settings.ui" line="174"/>
         <source>Databasebruger:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="203"/>
+        <location filename="../config/settings.ui" line="184"/>
         <source>Database navn:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="235"/>
+        <location filename="../config/settings.ui" line="194"/>
         <source>Database password:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="245"/>
+        <location filename="../config/settings.ui" line="204"/>
         <source>Host:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="293"/>
+        <location filename="../config/settings.ui" line="214"/>
         <source>Metadatatabel:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="322"/>
+        <location filename="../config/settings.ui" line="224"/>
         <source>Skema:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="364"/>
+        <location filename="../config/settings.ui" line="247"/>
         <source>Only required the first time you use the plugin</source>
         <translation>Kun nødvendig første gang du bruger pluginnet</translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="354"/>
+        <location filename="../config/settings.ui" line="237"/>
         <source>Gui tabel (sql)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="367"/>
+        <location filename="../config/settings.ui" line="250"/>
         <source>Metadata tabel (sql)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="399"/>
+        <location filename="../config/settings.ui" line="260"/>
         <source>Test connection to the metadata-table</source>
         <translation>Test forbindelse til metadata tabellen</translation>
     </message>
     <message>
-        <location filename="../config/settings.ui" line="402"/>
+        <location filename="../config/settings.ui" line="263"/>
         <source>Test forbindelse til database</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.ui" line="270"/>
+        <source>Test forbindelse til Gui tabel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LayerLocatorFilter</name>
     <message>
-        <location filename="../layerlocatorfilter.py" line="26"/>
+        <location filename="../layerlocatorfilter.py" line="27"/>
         <source>Metadata-DB-Linker</source>
         <translation></translation>
     </message>
@@ -174,110 +183,107 @@
 <context>
     <name>MetadataDbLinker</name>
     <message>
-        <location filename="../metadata_db_linker.py" line="267"/>
+        <location filename="../metadata_db_linker.py" line="270"/>
         <source>&amp;{}</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../metadata_db_linker.py" line="242"/>
+        <location filename="../metadata_db_linker.py" line="245"/>
         <source>Enter or edit metadata</source>
         <translation>Tilføj eller ret metadata</translation>
+    </message>
+    <message>
+        <location filename="../metadata_db_linker.py" line="288"/>
+        <source>Missing settings.</source>
+        <translation type="Manglende indstillinger."></translation>
     </message>
 </context>
 <context>
     <name>MetadataDialog</name>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="180"/>
+        <location filename="../ui/dialog_metadata.py" line="185"/>
         <source>Save metadata and close</source>
         <translation>Gem metadata og luk</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="217"/>
+        <location filename="../ui/dialog_metadata.py" line="226"/>
         <source>No field definition properties</source>
         <translation>Ingen felt definitioner</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="217"/>
+        <location filename="../ui/dialog_metadata.py" line="226"/>
         <source>Could not read field definitions from gui_table, permission denied, using defaults</source>
         <translation>Kunne ikke læse felt definitioner fra gui_table, adgang nægtet, bruger defaults i stedet</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="266"/>
+        <location filename="../ui/dialog_metadata.py" line="301"/>
         <source>No taxon url and/or taxonomy</source>
         <translation>Ingen Taxon url og/eller taxonomy</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="266"/>
+        <location filename="../ui/dialog_metadata.py" line="301"/>
         <source>Please enter an url and taxonomy for Taxon service in settings.</source>
         <translation>Venligst indtast en url og en taxonomy for Taxon i indstillinger.</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="810"/>
+        <location filename="../ui/dialog_metadata.py" line="888"/>
         <source>Please!</source>
         <translation>Obs.</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="394"/>
+        <location filename="../ui/dialog_metadata.py" line="438"/>
         <source>Error selecting data.</source>
         <translation>Fejl ved udtræk af data</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="801"/>
+        <location filename="../ui/dialog_metadata.py" line="882"/>
         <source>See log for error details.</source>
         <translation>Se log for fejlmeddelelse</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="632"/>
+        <location filename="../ui/dialog_metadata.py" line="696"/>
         <source> (required)</source>
         <translation>(påkrævet)</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="650"/>
+        <location filename="../ui/dialog_metadata.py" line="714"/>
         <source>Could not validate additional field type for: %s</source>
         <translation>Kunne ikke validere felttype for: %s</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="801"/>
+        <location filename="../ui/dialog_metadata.py" line="882"/>
         <source>Error inserting data.</source>
         <translation>Fejl ved indsættelse af data</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="810"/>
+        <location filename="../ui/dialog_metadata.py" line="888"/>
         <source>Remember to select a table.</source>
         <translation>Husk at vælge en tabel</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="826"/>
+        <location filename="../ui/dialog_metadata.py" line="904"/>
         <source>Geodata-info UUID is not valid</source>
         <translation>Geodata-info UUID er ikke valid</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="826"/>
+        <location filename="../ui/dialog_metadata.py" line="904"/>
         <source>Please enter a valid Geodata-info UUID</source>
         <translation>Venligst indtast en valid Geodata-info UUID</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="896"/>
+        <location filename="../ui/dialog_metadata.py" line="974"/>
         <source>Save metadata</source>
         <translation>Gem Metadata</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="900"/>
+        <location filename="../ui/dialog_metadata.py" line="978"/>
         <source>All required fields need to be filled!</source>
         <translation>Alle påkrævede felter skal udfyldes!</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.py" line="901"/>
+        <location filename="../ui/dialog_metadata.py" line="979"/>
         <source>Save metadata (required fields missing)</source>
         <translation>Gem metadata (påkrævede felter mangler)</translation>
-    </message>
-</context>
-<context>
-    <name>MetadataDockWidgetBase</name>
-    <message>
-        <location filename="../dockwidget.ui" line="14"/>
-        <source>MetaMan History</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -393,92 +399,82 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="76"/>
+        <location filename="../ui/dialog_metadata.ui" line="275"/>
         <source>Geodata-info.dk UUID</source>
         <translation>Geodata-info.dk UUID</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="117"/>
-        <source>Lookup</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/dialog_metadata.ui" line="176"/>
+        <location filename="../ui/dialog_metadata.ui" line="365"/>
         <source>Search Kle</source>
         <translation>Søg KLE</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="198"/>
+        <location filename="../ui/dialog_metadata.ui" line="387"/>
         <source>Suggested KLE-numbers</source>
         <translation>Foreslåede KLE-numre</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="214"/>
+        <location filename="../ui/dialog_metadata.ui" line="197"/>
         <source>Descriptive name:</source>
         <translation>Beskrivende navn</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="230"/>
+        <location filename="../ui/dialog_metadata.ui" line="133"/>
         <source>Metadatainformation</source>
         <translation>Metadatainformation</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="244"/>
+        <location filename="../ui/dialog_metadata.ui" line="207"/>
         <source>Description of content:</source>
         <translation>Beskrivelse:</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="277"/>
+        <location filename="../ui/dialog_metadata.ui" line="166"/>
         <source>Kle-journal number:</source>
         <translation>KLE Journalnummer</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="284"/>
-        <source>Responsible centre or employée</source>
-        <translation>Ansvarligt center eller medarbejder</translation>
-    </message>
-    <message>
-        <location filename="../ui/dialog_metadata.ui" line="291"/>
+        <location filename="../ui/dialog_metadata.ui" line="173"/>
         <source>Projects in which the file is used:</source>
         <translation>Projekter tilknyttet dette lag</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="349"/>
+        <location filename="../ui/dialog_metadata.ui" line="408"/>
         <source>Additional Fields</source>
         <translation>Yderligere felter</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="368"/>
+        <location filename="../ui/dialog_metadata.ui" line="427"/>
         <source>The file to which you want to add or modify metadata:</source>
         <translation>Filen, som du vil tilføje eller ændre metadata til:</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="418"/>
+        <location filename="../ui/dialog_metadata.ui" line="477"/>
         <source>Save metadata</source>
         <translation>Gem metadata</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="436"/>
+        <location filename="../ui/dialog_metadata.ui" line="495"/>
         <source>Delete metadata</source>
         <translation>Slet metadata</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="449"/>
+        <location filename="../ui/dialog_metadata.ui" line="508"/>
         <source>Latest changes:</source>
         <translation>Seneste ændringer</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="459"/>
+        <location filename="../ui/dialog_metadata.ui" line="518"/>
         <source>dd/MM-yyyy HH:mm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="473"/>
+        <location filename="../ui/dialog_metadata.ui" line="532"/>
         <source>Help</source>
         <translation>Hjælp</translation>
     </message>
     <message>
-        <location filename="../ui/dialog_metadata.ui" line="482"/>
+        <location filename="../ui/dialog_metadata.ui" line="541"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -496,6 +492,54 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline;&quot;&gt;Adding or changing metadata to an existing table:&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Metadata to existing tables can be added or changed with the dialog from either the Plugin-menu or the plugin-button. In the dialog, navigate to the table to which you want to add or change metadata. Enter metadata in the fields and save.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../ui/dialog_metadata.ui" line="76"/>
+        <source>Metadatabase ODK GUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message encoding="UTF-8">
+        <location filename="../ui/dialog_metadata.ui" line="187"/>
+        <source>Responsible centre or employée</source>
+        <translation type="Ansvarligt center eller medarbejder"></translation>
+    </message>
+</context>
+<context>
+    <name>Settings</name>
+    <message>
+        <location filename="../config/settings.py" line="71"/>
+        <source>Missing host in settings</source>
+        <translation type="Mangler 'host' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="73"/>
+        <source>Missing port in settings</source>
+        <translation type="Mangler 'port' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="75"/>
+        <source>Missing database in settings</source>
+        <translation type="Mangler 'database' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="77"/>
+        <source>Missing schema in settings</source>
+        <translation type="Mangler 'skema' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="79"/>
+        <source>Missing table in settings</source>
+        <translation type="Mangler 'tabel' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="81"/>
+        <source>Missing username in settings</source>
+        <translation type="Mangler 'brugernavn' i indstillinger"></translation>
+    </message>
+    <message>
+        <location filename="../config/settings.py" line="83"/>
+        <source>Missing password in settings</source>
+        <translation type="Mangler 'password' i indstillinger"></translation>
     </message>
 </context>
 </TS>

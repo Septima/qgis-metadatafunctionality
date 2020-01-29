@@ -168,13 +168,17 @@ class MetadataDbLinkerTool(object):
         Returns a database object from the settings in the config.
         :return:
         """
-
+        
         db = QtSql.QSqlDatabase.addDatabase('QPSQL')
-        db.setHostName(self.settings.value("host"))
-        db.setPort(int(self.settings.value("port")))
-        db.setDatabaseName(self.settings.value("database"))
-        db.setUserName(self.settings.value("username"))
-        db.setPassword(self.settings.value("password"))
+        try:
+            db.setHostName(self.settings.value("host"))
+            db.setPort(int(self.settings.value("port")))
+            db.setDatabaseName(self.settings.value("database"))
+            db.setUserName(self.settings.value("username"))
+            db.setPassword(self.settings.value("password"))
+        except ValueError:
+            raise RuntimeWarning("Could not set database connection, missing settings")
+
 
         return db
 
@@ -350,6 +354,10 @@ class MetadataDbLinkerTool(object):
 
         # Add in valid additional fields when selecting
         flds = (list(self.field_def) + list(self.get_additional_fields().keys()))
+
+        if "metadata_odk_guid" in flds:
+            flds.remove("metadata_odk_guid")
+
         s = 'SELECT %s FROM "%s"."%s" WHERE %s' % (
             ','.join(flds),
             self.get_schema(),
@@ -444,6 +452,8 @@ class MetadataDbLinkerTool(object):
         """
 
         fld_names = list(self.field_def)
+        if "metadata_odk_guid" in fld_names:
+            fld_names.remove("metadata_odk_guid")
         db = self.get_db()
 
         s = """
@@ -486,28 +496,29 @@ class MetadataDbLinkerTool(object):
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
             raise Exception(db.lastError().text())
-        # check if the table exists
+        # check if the gui_table exists
         query = QtSql.QSqlQuery(db)
         s = """
             SELECT
-              1
+              id, metadata_col_name, type, required, editable, is_shown
             FROM
-              information_schema.tables
-            WHERE
-              table_name = '{table}'
-            AND
-              table_schema='{schema}';
+              {schema}.{table}
             """.format(
                 table=self.get_gui_table(),
                 schema=self.get_schema()
         )
+
         if query.exec_(s):
             while query.next():
-                f = query.value(0)
-                if f:
-                    return True
+                f = query.value(1)
+                if not f or f is "":
+                    raise Exception('Column "metadata_col_name" was empty, check gui_table configuration')
+        else:
+            raise Exception('Could not access gui_table \n' + str(query.lastError().text()))
 
-        raise Exception('Could not find gui table or schema in database')
+        return True
+
+        
 
     def get_field_def_properties(self):
         """
@@ -515,7 +526,11 @@ class MetadataDbLinkerTool(object):
             dict (key,bool)
         """
         field_def_properties = self.get_field_def()
-        db = self.get_db()
+        try:
+            db = self.get_db()
+        except RuntimeWarning as e:
+            self.logger.critical('Unable to connect to database.')
+            raise Exception(str(e))
 
         if not db.open():
             self.logger.critical('Unable to connect to database.')
@@ -560,6 +575,7 @@ class MetadataDbLinkerTool(object):
         """
         # get all extra fields that are described in gui_table, exists in metadata table and is classified as an extra_field
         db = self.get_db()
+        
         if not db.open():
             self.logger.critical('Unable to open database.')
             self.logger.critical(db.lastError().text())
