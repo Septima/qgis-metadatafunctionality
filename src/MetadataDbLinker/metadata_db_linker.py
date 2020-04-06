@@ -251,8 +251,8 @@ class MetadataDbLinker(object):
         self.iface.addPluginToMenu(self.menu, self.editmetadata_action)
         self.iface.addToolBarIcon(self.editmetadata_action)
         self.actions.append(self.editmetadata_action)
+        
         # Old way of putting settings
-
         #self.settings_action = QAction(
         #    QIcon(os.path.join(os.path.dirname(__file__),'./resources/settings.png')),
         #    self.tr(u'Settings'),

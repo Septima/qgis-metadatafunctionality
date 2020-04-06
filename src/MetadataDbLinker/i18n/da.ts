@@ -243,7 +243,7 @@
     <message>
         <location filename="../ui/dialog_metadata.py" line="696"/>
         <source> (required)</source>
-        <translation>(påkrævet)</translation>
+        <translation> (påkrævet)</translation>
     </message>
     <message>
         <location filename="../ui/dialog_metadata.py" line="714"/>
