@@ -4,14 +4,17 @@
 -- 3: Execute these statements in the postgresdatabase
 
 -- Table: metadata.gui_table
-CREATE TABLE [schema].gui_table
+
+CREATE TABLE metadata.gui_table
 (
     id SERIAL,
-    metadata_col_name character varying,
+    metadata_col_name character varying NOT NULL,
     type character varying,
-    required boolean,
-    editable boolean,
-    is_shown boolean,
+    required boolean DEFAULT false,
+    editable boolean DEFAULT true,
+    is_shown boolean DEFAULT true,
+    displayname character varying
+    extra_field boolean DEFAULT true,
     CONSTRAINT gui_table_pkey PRIMARY KEY (metadata_col_name)
 )
 WITH (
