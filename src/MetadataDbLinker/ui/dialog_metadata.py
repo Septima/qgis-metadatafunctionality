@@ -144,13 +144,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         self.deleteRecordButton.clicked.connect(self.delete_record)
 
-        # self.geodatainfoEdit.textChanged.connect(self.lookup_geodatainfo_uuid)
+        self.geodatainfoEdit.textChanged.connect(self.lookup_geodatainfo_uuid)
 
         # ODENSE SPECIFIC
         # self.metadatabaseodkEdit.textChanged.connect(self.lookup_metadatabaseodk_uuid)
 
-        # self.geodatainfoResult.setReadOnly(True)
-        # self.geodatainfo_link.linkActivated.connect(webbrowser.open(self.geodatainfo_link))
+        #self.geodatainfoResult.setReadOnly(True)
+        #self.geodatainfo_link.linkActivated.connect(webbrowser.open(self.geodatainfo_link))
 
         if self.scrollArea:
             self.scrollArea.setStyleSheet("QScrollArea {border: 0px}")
@@ -203,7 +203,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.kleNoEdit.textEdited.connect(self.validate_metadata)
         self.responsibleEdit.textEdited.connect(self.validate_metadata)
         self.projectEdit.textChanged.connect(self.validate_metadata)
-        # self.geodatainfoEdit.textEdited.connect(self.validate_metadata)
+        self.geodatainfoEdit.textEdited.connect(self.validate_metadata)
 
         # self.metadatabaseodkEdit.textEdited.connect(self.validate_metadata)
         # self.metadatabaseodkEdit.hide()
@@ -358,9 +358,6 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
     def lookup_geodatainfo_uuid(self):
         """
-            31-03-2020 Efter anmodning fra Odense er dette felt nu bare et normalt felt
-            Tries to lookup the UUID on geodata-info.dk
-
         """
         geodatainfo_url = (
             "https://www.geodata-info.dk/srv/dan/catalog.search#/metadata/"
@@ -368,6 +365,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
 
         # get the UUID from the lineedit
         geodatainfo_uuid = self.geodatainfoEdit.text()
+
+        # IF the paste is a LINK, strip the link part, and paste back the guid
+        # TODO: regex this, if this is the functionality needed
+        if("http" in self.geodatainfoEdit.text() and "metadata" in self.geodatainfoEdit.text()):
+            self.geodatainfoEdit.setText(geodatainfo_uuid.split("/")[-1])
+            geodatainfo_uuid = self.geodatainfoEdit.text()
+
         link_html = "<a href=%s>%s</a>" % (
             geodatainfo_url + geodatainfo_uuid,
             geodatainfo_url + geodatainfo_uuid,
@@ -543,10 +547,10 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 if "project" in list(results):
                     self.projectEdit.setPlainText(results.get("project"))
 
-                # if 'geodatainfo_uuid' in list(results):
-                #    self.geodatainfoEdit.setText(results.get('geodatainfo_uuid') if str(results.get('geodatainfo_uuid')).lower() != "null" else "")
+                if 'geodatainfo_uuid' in list(results):
+                    self.geodatainfoEdit.setText(results.get('geodatainfo_uuid') if str(results.get('geodatainfo_uuid')).lower() != "null" else "")
 
-                # if 'metadata_odk_guid' in list(results):
+                #if 'metadata_odk_guid' in list(results):
                 #    self.metadatabaseodkEdit.setText(results.get('metadata_odk_guid') if str(results.get('metadata_odk_guid')).lower() != "null" else "")
 
         else:
@@ -601,7 +605,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.kleNoLookupBtn.setEnabled(f["name"]["editable"])
                 self.responsibleEdit.setEnabled(f["responsible"]["editable"])
                 self.projectEdit.setEnabled(f["project"]["editable"])
-                # self.geodatainfoEdit.setEnabled(f['geodatainfo_uuid']['editable'])
+                self.geodatainfoEdit.setEnabled(f['geodatainfo_uuid']['editable'])
                 self.dateEdit.setEnabled(True)
 
                 # If the gui_table exists it means that validation rules should be enforced before button activates
@@ -624,7 +628,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.responsibleEdit.setEnabled(True)
             self.projectEdit.setEnabled(True)
             self.dateEdit.setEnabled(True)
-            # self.geodatainfoEdit.setEnabled(True)
+            self.geodatainfoEdit.setEnabled(True)
 
             self.saveRecordButton.setEnabled(True)
             self.deleteRecordButton.setEnabled(True)
@@ -652,7 +656,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 else:
                     continue
 
-        # self.geodatainfoEdit.setEnabled(False)
+        self.geodatainfoEdit.setEnabled(False)
 
     @pyqtSlot("QItemSelection")
     def selection_changed(self, newSelection):
@@ -700,11 +704,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.kleNoEdit.setText("")
         self.projectEdit.setPlainText("")
         self.kleSuggestions.setText("")
-        # self.geodatainfoEdit.setText('')
-        # self.geodatainfo_link.setText('')
+        self.geodatainfoEdit.setText('')
+        self.geodatainfo_link.setText('')
 
         # ODENSE SPECIFIC
-        # self.metadatabaseodkEdit.setText('')
+        #self.metadatabaseodkEdit.setText('')
         self.metadatabaseodk_link.setText("")
         if self.conn_info:
             self.conn_info.setText("")
@@ -733,12 +737,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
         port = self.get_selected_port()
         schema = self.get_selected_schema()
         table = self.get_selected_table()
-
+        host = self.get_selected_host()
         results = []
 
         try:
             results = self.db_tool.select(
-                {"db": db, "port": port, "schema": schema, "sourcetable": table,},
+                {"host": host,"db": db, "port": port, "schema": schema, "sourcetable": table,},
                 order_by={"field": "ts_timezone", "direction": "DESC"},
             )
         except RuntimeError as e:
@@ -750,8 +754,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.showMessage(self.tr(str(e)), level=1)
         # Update conn_info if available
         if self.conn_info:
-            c = 'DB: {db}:{port} "{schema}"."{table}"'.format(
-                db=db, port=port, schema=schema, table=table
+            c = 'Host: {host} DB: {db}:{port} "{schema}"."{table}"'.format(
+                host=host, db=db, port=port, schema=schema, table=table
             )
             self.conn_info.setText(c)
 
@@ -872,9 +876,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
             "responsible": self.responsibleEdit.text(),
             "project": self.projectEdit.toPlainText(),
         }
-        # _uuid = self.validate_uuid(self.geodatainfoEdit.text())
-        # if _uuid:
-        #    update_object['geodatainfo_uuid'] = _uuid
+        _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+        if _uuid:
+            update_object['geodatainfo_uuid'] = _uuid
         # If the gui_table exists add the additional_fields
         if self.gui_table_exists:
             form_layout = self.additional_form
@@ -906,9 +910,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 }
         try:
             odense_guid = self.field_def_properties["metadata_odk_guid"]
-            update_object["metadata_odk_guid"] = self.validate_uuid(
-                self.metadatabaseodkEdit.text()
-            )
+            #update_object["metadata_odk_guid"] = self.validate_uuid(
+            #    self.metadatabaseodkEdit.text()
+            #)
         except:
             pass  # no field
 
@@ -956,13 +960,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     "responsible": self.responsibleEdit.text(),
                     "project": self.projectEdit.toPlainText(),
                 }
-                # _uuid = self.validate_uuid(self.geodatainfoEdit.text())
-                # if _uuid:
-                #    insert_object['geodatainfo_uuid'] = _uuid
+                _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+                if _uuid:
+                   insert_object['geodatainfo_uuid'] = _uuid
                 try:
                     # odense_guid = self.field_def_properties['metadata_odk_guid']
                     odense_guid = guid
-                    # insert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
+                    # sinsert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
                 except:
                     pass
 

@@ -35,12 +35,12 @@ VALUES ('sourcetable','text','false','true','false','Sourcetable','false');
 INSERT INTO metadata.gui_table(metadata_col_name, type, required, editable, is_shown, displayname, extra_field)
 VALUES ('ts_timezone','text','false','true','false','Ts Timezone','false');
 
+INSERT INTO metadata.gui_table(metadata_col_name, type, required, editable, is_shown, displayname, extra_field)
+VALUES ('geodatainfo_uuid','text','false','true','true','Geodatainfo Uuid','false');
+
 -- Ekstra felterne
 INSERT INTO metadata.gui_table(metadata_col_name, type, required, editable, is_shown, displayname, extra_field)
 VALUES ('id','text','false','true','true','Id','true');
-
-INSERT INTO metadata.gui_table(metadata_col_name, type, required, editable, is_shown, displayname, extra_field)
-VALUES ('geodatainfo_uuid','text','false','true','true','Geodatainfo Uuid','true');
 
 INSERT INTO metadata.gui_table(metadata_col_name, type, required, editable, is_shown, displayname, extra_field)
 VALUES ('noegleord','text','false','true','true','Noegleord','true');

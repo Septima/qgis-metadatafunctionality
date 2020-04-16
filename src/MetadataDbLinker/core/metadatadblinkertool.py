@@ -105,13 +105,13 @@ class MetadataDbLinkerTool(object):
             "editable": True,
             "is_shown": False,
         },
-        #'geodatainfo_uuid': {
-        #    'label': 'Geodata-info UUID',
-        #    'type': 'uuid',
-        #    'required': False,
-        #    'editable': True,
-        #    'is_shown': True
-        # },
+        'geodatainfo_uuid': {
+            'label': 'Geodata-info UUID',
+            'type': 'uuid',
+            'required': False,
+            'editable': True,
+            'is_shown': True
+        },
     }
     field_order = [
         "name",
@@ -119,7 +119,7 @@ class MetadataDbLinkerTool(object):
         "kle_no",
         "ts_timezone",
         "responsible",
-        #'geodatainfo_uuid',
+        'geodatainfo_uuid',
         "project",
     ]
 
