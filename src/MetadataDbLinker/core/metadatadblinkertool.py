@@ -269,10 +269,13 @@ class MetadataDbLinkerTool(object):
 
         if not query.exec_():
             self.logger.critical(query.lastError().text())
+            self.logger.critical(query.lastError().text())
+            db.rollback()
+            db.close()
             raise RuntimeError("Failed to insert data." + query.lastError().text())
-
-        db.commit()
-        db.close()
+        else:
+            db.commit()
+            db.close()
 
     def update(self, data={}):
         """
@@ -304,10 +307,12 @@ class MetadataDbLinkerTool(object):
        
         if not query.exec_():
             self.logger.critical(query.lastError().text())
+            db.rollback()
+            db.close()
             raise RuntimeError("Failed to insert data. " + query.lastError().text() + db.lastError().text())
-
-        db.commit()
-        db.close()
+        else:     
+            db.commit()
+            db.close()
 
     def select(self, d, order_by={}):
         """
@@ -355,6 +360,8 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
+            db.rollback
+            db.close()
             raise RuntimeError(
                 "Failed to select data: "
                 + query.lastError().databaseText().split("\n")[0]
@@ -406,12 +413,15 @@ class MetadataDbLinkerTool(object):
         query = QtSql.QSqlQuery(db)
         if not query.exec_(s):
             self.logger.critical(query.lastError().text())
+            db.rollback()
+            db.close()
             raise RuntimeError(
                 "Failed to delete data. "
                 + query.lastError().databaseText().split("\n")[0]
             )
-        db.commit()
-        db.close()
+        else:
+            db.commit()
+            db.close()
 
     def validate_structure(self):
         """

@@ -561,24 +561,37 @@ class MetadataDialog(QDialog, FORM_CLASS):
         Delete a record given its GUID.
         Empties the fields.
         """
+        reply = QMessageBox.question(self,'Confirmation','Delete record?', QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.No:
+            return False
+
         selected_rows = self.tableView.selectionModel().selectedRows()
         for row in selected_rows:
             guid = self.guids[row.row()]
             try:
                 self.db_tool.delete({"guid": guid})
             except RuntimeError as e:
-                # QMessageBox.critical(
-                #    self,
-                #    self.tr('Error deleting data.'),
-                #    self.tr('See log for error details.')
-                # )
+                QMessageBox.critical(
+                   self,
+                   self.tr('Error deleting data.'),
+                   self.tr('See log for error details.')
+                )
                 self.showMessage(self.tr(str(e)), level=1)
+                return False
 
             self.update_grid()
             if self.has_table_data:
                 self.tableView.selectRow(0)
+
         self.empty_fields()
         self.deleteRecordButton.setEnabled(False)
+        QMessageBox.information(
+            self,
+            self.tr("Deleted!"),
+            self.tr(
+                'Deleted record'
+            )
+        )
 
     def activate_fields(self):
         """
@@ -688,6 +701,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     self.tableView.setModel(None)
                     self.currentlySelectedLine = None
                     self.dateEdit.setDateTime(datetime.now())
+                    self.deleteRecordButton.setEnabled(False)
 
                 self.validate_metadata()
             else:
@@ -840,13 +854,11 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.table_row_selected
             )
             self.has_table_data = True
-            # self.deleteRecordButton.setEnabled(True)
 
         else:
             self.has_table_data = False
             self.tableView.setModel(None)
             self.tableView.selectionModel().selectionChanged.disconnect()
-            # self.deleteRecordButton.setEnabled(False)
 
     def show(self):
         super(MetadataDialog, self).show()
@@ -876,7 +888,14 @@ class MetadataDialog(QDialog, FORM_CLASS):
             "responsible": self.responsibleEdit.text(),
             "project": self.projectEdit.toPlainText(),
         }
-        _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+        try:
+            _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+        except RuntimeError as e:
+            QMessageBox.warning(
+                self, self.tr("UUID is not valid"), self.tr("Please enter a valid UUID")
+            )
+            return False
+
         if _uuid:
             update_object['geodatainfo_uuid'] = _uuid
         # If the gui_table exists add the additional_fields
@@ -926,7 +945,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 ),
             )
         except RuntimeError as e:
-            self.showMessage("Error updating data: " + self.tr(str(e)), level=1)
+            self.showMessage(self.tr("Error updating data: ") + self.tr(str(e)), level=1)
+            return False
 
         self.update_grid()
 
@@ -960,13 +980,18 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     "responsible": self.responsibleEdit.text(),
                     "project": self.projectEdit.toPlainText(),
                 }
-                _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+                try:
+                    _uuid = self.validate_uuid(self.geodatainfoEdit.text())
+                except RuntimeError as e:
+                    QMessageBox.warning(
+                        self, self.tr("UUID is not valid"), self.tr("Please enter a valid UUID")
+                    )
+                    return False
+
                 if _uuid:
                    insert_object['geodatainfo_uuid'] = _uuid
                 try:
-                    # odense_guid = self.field_def_properties['metadata_odk_guid']
                     odense_guid = guid
-                    # sinsert_object['metadata_odk_guid'] = self.validate_uuid(self.metadatabaseodkEdit.text())
                 except:
                     pass
 
@@ -1004,19 +1029,22 @@ class MetadataDialog(QDialog, FORM_CLASS):
                             "value": field_val,
                             "type": field["type"],
                         }
+                try:
+                    self.db_tool.insert(insert_object)
+                    self.currentlySelectedLine = guid
+                    self.update_grid()
+                    self.tableView.selectRow(0)
 
-                self.db_tool.insert(insert_object)
-                self.currentlySelectedLine = guid
-                self.update_grid()
-                self.tableView.selectRow(0)
-
-                QMessageBox.information(
-                    self,
-                    self.tr("Success!"),
-                    self.tr(
-                        'Inserted Name: "{}" successfully'.format(insert_object["name"])
-                    ),
-                )
+                    QMessageBox.information(
+                        self,
+                        self.tr("Success!"),
+                        self.tr(
+                            'Inserted Name: "{}" successfully'.format(insert_object["name"])
+                        ),
+                    )
+                except RuntimeError as e:
+                    self.showMessage(self.tr("Error inserting data: ") + self.tr(str(e)), level=1)
+                    return False
 
             except Exception as e:
                 print(e)
@@ -1025,10 +1053,12 @@ class MetadataDialog(QDialog, FORM_CLASS):
                     self.tr("Error inserting data."),
                     self.tr("See log for error details."),
                 )
+                return False
         else:
             QMessageBox.information(
                 self, self.tr("Please!"), self.tr("Remember to select a table.")
             )
+            return False
 
     def validate_uuid(self, _uuid):
         """
@@ -1039,11 +1069,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         try:
             uuid_object = uuid.UUID(_uuid, version=4)
         except ValueError:
-            self.logger.critical("UUID is not valid")
-            QMessageBox.warning(
-                self, self.tr("UUID is not valid"), self.tr("Please enter a valid UUID")
-            )
-            # raise RuntimeError("Geodata-info UUID is not valid")
+            raise RuntimeError("Geodata-info UUID is not valid")
 
         return _uuid
 
