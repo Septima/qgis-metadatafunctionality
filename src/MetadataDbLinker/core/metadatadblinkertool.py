@@ -363,7 +363,7 @@ class MetadataDbLinkerTool(object):
             db.rollback
             db.close()
             raise RuntimeError(
-                "Failed to select data: "
+                "Data could not be selected, check connection info: "
                 + query.lastError().databaseText().split("\n")[0]
             )
         else:

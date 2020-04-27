@@ -127,7 +127,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
-        self.tab.layout().addWidget(self.bar, 0)
+        self.tab.layout().addWidget(self.bar)
 
         self.model = QgsBrowserModel()
         self.model.initialize()  # Qgis 3.x specific
@@ -489,7 +489,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
             self.add_record()
         else:
             self.update_record()
-
+        
         if self.close_dialog:
             self.close()
 
@@ -584,7 +584,9 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.tableView.selectRow(0)
 
         self.empty_fields()
+        self.empty_additional_fields()
         self.deleteRecordButton.setEnabled(False)
+        self.deactivate_fields()
         QMessageBox.information(
             self,
             self.tr("Deleted!"),
@@ -692,8 +694,8 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.schema = QgsDataSourceUri(b.uri()).schema()
 
                 self.selected_item = b
-                self.update_grid()
-                self.activate_fields()
+                if self.update_grid():
+                    self.activate_fields()
 
                 if self.has_table_data:
                     self.tableView.selectRow(0)
@@ -745,7 +747,7 @@ class MetadataDialog(QDialog, FORM_CLASS):
     def update_grid(self):
         """
         Updates the grid.
-        :return:
+        :return (boolean) True if the grid was update, False on errors and no update
         """
         db = self.get_selected_db()
         port = self.get_selected_port()
@@ -760,12 +762,13 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 order_by={"field": "ts_timezone", "direction": "DESC"},
             )
         except RuntimeError as e:
-            # QMessageBox.critical(
-            #    self,
-            #    self.tr('Error selecting data.'),
-            #    self.tr('See log for error details.')
-            # )
+            # Do not allow editing a file that could not be fetched from a database
+            # Flade filer...
+            self.has_table_data = False
+            self.deactivate_fields()
             self.showMessage(self.tr(str(e)), level=1)
+            return False
+
         # Update conn_info if available
         if self.conn_info:
             c = 'Host: {host} DB: {db}:{port} "{schema}"."{table}"'.format(
@@ -854,11 +857,16 @@ class MetadataDialog(QDialog, FORM_CLASS):
                 self.table_row_selected
             )
             self.has_table_data = True
+            self.deleteRecordButton.setEnabled(True)
 
         else:
             self.has_table_data = False
             self.tableView.setModel(None)
             self.tableView.selectionModel().selectionChanged.disconnect()
+            self.deleteRecordButton.setEnabled(False)
+            
+        # No exceptions
+        return True
 
     def show(self):
         super(MetadataDialog, self).show()
